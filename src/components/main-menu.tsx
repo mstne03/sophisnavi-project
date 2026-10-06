@@ -12,11 +12,11 @@ const item: Variants = {
   show: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] } },
 };
 
-export function MainMenu() {
+export function MainMenu({ animateIn = true }: { animateIn?: boolean }) {
   return (
     <motion.div
       className="relative z-10 mx-auto flex min-h-dvh w-full max-w-6xl flex-col px-6 py-10 [text-shadow:0_1px_14px_rgba(2,4,10,0.9)] sm:px-10 sm:py-14"
-      initial="hidden"
+      initial={animateIn ? "hidden" : false}
       animate="show"
       variants={list}
     >

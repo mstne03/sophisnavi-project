@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import type { TreeScene } from "@/lib/tree-scene";
 import { MainMenu } from "./main-menu";
@@ -8,11 +8,27 @@ import { MainMenu } from "./main-menu";
 const SEEN_KEY = "sophisnavi:intro-seen";
 const TITLE = "Sophisnavi";
 
+// Estado de la visita: sobrevive a las navegaciones en cliente (se reinicia al recargar),
+// así al volver desde una sección no se repite la intro ni se pierde el scroll.
+const visit = { introDone: false, sceneTime: 0, scrollY: 0 };
+
 export function Experience() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sceneRef = useRef<TreeScene | null>(null);
-  const [phase, setPhase] = useState<"intro" | "menu">("intro");
-  const [ready, setReady] = useState(false);
+  // En la carga completa vale false igual que en el servidor: no hay desajuste de hidratación.
+  const [returning] = useState(() => visit.introDone);
+  const [phase, setPhase] = useState<"intro" | "menu">(returning ? "menu" : "intro");
+  const [ready, setReady] = useState(returning);
+
+  // Restaura antes del primer pintado (sin salto visible). La posición se lee al desmontar,
+  // que ocurre antes de que Next suba al principio de la página nueva; no depende de eventos
+  // `scroll`, que pueden no haber llegado aún si el usuario hace clic justo después de desplazarse.
+  useLayoutEffect(() => {
+    if (returning) window.scrollTo(0, visit.scrollY);
+    return () => {
+      visit.scrollY = window.scrollY;
+    };
+  }, [returning]);
 
   useEffect(() => {
     let disposed = false;
@@ -22,6 +38,7 @@ export function Experience() {
       seen = sessionStorage.getItem(SEEN_KEY) === "1";
     } catch {}
     const done = () => {
+      visit.introDone = true;
       try {
         sessionStorage.setItem(SEEN_KEY, "1");
       } catch {}
@@ -32,17 +49,23 @@ export function Experience() {
     import("@/lib/tree-scene")
       .then(({ createTreeScene }) => {
         if (disposed || !canvasRef.current) return;
-        sceneRef.current = createTreeScene(canvasRef.current, { reducedMotion, skipIntro: seen, onIntroDone: done });
+        sceneRef.current = createTreeScene(canvasRef.current, {
+          reducedMotion,
+          skipIntro: seen,
+          startTime: returning ? visit.sceneTime : 0,
+          onIntroDone: done,
+        });
         setReady(true);
       })
       .catch(done); // sin WebGL: directo al menú sobre el fondo oscuro
 
     return () => {
       disposed = true;
+      if (sceneRef.current) visit.sceneTime = sceneRef.current.time();
       sceneRef.current?.dispose();
       sceneRef.current = null;
     };
-  }, []);
+  }, [returning]);
 
   const skip = () => sceneRef.current?.skipIntro();
 
@@ -110,7 +133,7 @@ export function Experience() {
             </motion.button>
           </motion.div>
         ) : (
-          <MainMenu key="menu" />
+          <MainMenu key="menu" animateIn={!returning} />
         )}
       </AnimatePresence>
     </main>

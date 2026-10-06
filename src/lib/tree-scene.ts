@@ -1,11 +1,12 @@
 import * as THREE from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 
-export type TreeScene = { skipIntro(): void; dispose(): void };
+export type TreeScene = { skipIntro(): void; time(): number; dispose(): void };
 
 type Options = {
   reducedMotion: boolean;
   skipIntro: boolean;
+  startTime?: number; // segundos; para continuar la escena donde iba al volver a la portada
   onIntroDone: () => void;
 };
 
@@ -330,7 +331,8 @@ export function createTreeScene(canvas: HTMLCanvasElement, opts: Options): TreeS
   const ro = new ResizeObserver(resize);
   ro.observe(canvas);
 
-  let start = performance.now() - (opts.skipIntro || opts.reducedMotion ? INTRO * 1000 : 0);
+  const startTime = Math.max(opts.startTime ?? 0, opts.skipIntro || opts.reducedMotion ? INTRO : 0);
+  let start = performance.now() - startTime * 1000;
   let introDone = false;
   const look = new THREE.Vector3();
 
@@ -366,6 +368,9 @@ export function createTreeScene(canvas: HTMLCanvasElement, opts: Options): TreeS
   return {
     skipIntro() {
       if (!introDone) start = performance.now() - INTRO * 1000;
+    },
+    time() {
+      return (performance.now() - start) / 1000;
     },
     dispose() {
       renderer.setAnimationLoop(null);
