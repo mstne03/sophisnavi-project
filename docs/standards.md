@@ -37,7 +37,7 @@ condiciona una decisión del plan de fase 0 queda registrada abajo con su ADR.
 |---|---|---|
 | Cobertura ≥ 85 % en las 4 métricas | EDS-3 §3.14, EDS-5 | `vitest.config.ts` con `thresholds` (lines, branches, functions, statements) = 85 |
 | Lista de exclusión única y justificada | EDS-3 §3.14 | Una sola lista en `vitest.config.ts`, compartida con `sonar.exclusions`; cada entrada con su motivo (ADR-0006) |
-| Tests junto al código (`X.ts` + `X.test.ts`) | EDS-3 §3.2 | Convención de *colocation*; `sonar.test.inclusions=**/*.test.ts(x)` |
+| Tests junto al código (`X.ts` + `X.test.ts`) | EDS-3 §3.2 | Convención de *colocation*; SonarCloud detecta los tests automáticamente |
 | Fakes sobre mocks; no mockear lo que no es frontera | EDS-3 §3.2 | Los puertos (`Mailer`, `CaptchaVerifier`, `ContentRepository`) se sustituyen por fakes en memoria |
 | Un test de regresión se ve en rojo antes de pasar | EDS-3 §3.12 | TDD: rojo → verde → refactor en cada paso |
 | E2E hermético contra el build de producción, falla ante `console.error` | EDS-3 §3.7–3.8 | Playwright sobre `next build && next start`; el fixture base falla si la página emite `console.error` |
