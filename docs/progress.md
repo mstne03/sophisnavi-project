@@ -11,8 +11,8 @@ Plan: `C:\Users\Marc\.claude\plans\resilient-seeking-squirrel.md`. Estándares: 
 | Paso | Estado | Notas |
 |---|---|---|
 | 0.0 Estándares | ✅ | `docs/standards.md`. Sin conflictos con decisiones cerradas; 5 desviaciones aprobadas por Marc (ver abajo) |
-| 0.1 Repo público + pnpm | 🔄 en curso | gitleaks limpio (3 commits). Hecho: alertas Dependabot, dependabot.yml, Node 22, limpieza. Pendiente de Marc: visibilidad pública y migración pnpm (bloqueadas por permisos del agente); después: secret scanning, push protection, protección de main |
-| 0.2 TDD y lint | pendiente | |
+| 0.1 Repo público + pnpm | ✅ | Repo público; secret scanning, push protection y alertas Dependabot activos; `main` protegida (PR, checks, lineal, squash, 0 aprobaciones; lista de checks vacía hasta 0.3); pnpm 10.34.6 + Node 22; lint y build en verde |
+| 0.2 TDD y lint | ⏳ siguiente | Excluir `data/seed/**` de cobertura |
 | 0.3 ci.yml | pendiente | |
 | 0.4 Sonar | pendiente | |
 
