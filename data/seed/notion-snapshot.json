@@ -1,0 +1,127 @@
+{
+  "categories": [
+    { "name_es": "1. Lore de Pandora", "slug_es": "lore-de-pandora", "section": "pandora" },
+    { "name_es": "2. Clanes y culturas", "slug_es": "clanes-y-culturas", "section": "clanes" },
+    { "name_es": "3. Detrás de cámaras", "slug_es": "detras-de-camaras", "section": "saga" },
+    { "name_es": "4. Personajes y arcos", "slug_es": "personajes-y-arcos", "section": "personajes" },
+    { "name_es": "5. Teorías Avatar 4 y 5", "slug_es": "teorias-avatar-4-y-5", "section": "saga" },
+    { "name_es": "6. Datos duros", "slug_es": "datos-duros", "section": "pandora" },
+    { "name_es": "7. Reacción a noticias", "slug_es": "reaccion-a-noticias", "section": "saga" },
+    { "name_es": "8. Merchandising", "slug_es": "merchandising", "section": "coleccion" },
+    { "name_es": "9. Naturaleza y Pandora", "slug_es": "naturaleza-y-pandora", "section": "pandora" },
+    { "name_es": "10. Mi historia con Avatar", "slug_es": "mi-historia-con-avatar", "section": "vida-fan" },
+    { "name_es": "11. Avatar fan", "slug_es": "avatar-fan", "section": "vida-fan" }
+  ],
+  "videos": [
+    {
+      "title": "5 cosas de Neytiri que probablemente no sabías",
+      "tema": "4. Personajes y arcos",
+      "category_slug": "personajes-y-arcos",
+      "source_db": "ideas",
+      "published_at": "2026-09-16",
+      "body_md": "Estas son 5 cosas de Neytiri que probablemente no sabías.\n\n- La pintura de guerra de Neytiri está inspirada en los colores de Seze, su primer Ikran, que murió en la batalla de las montañas Aleluya.\n- Originalmente Neytiri no estaba destinada a ser Tsahìk, sino su hermana mayor Sylwanin; cuando ella murió, Neytiri heredó el puesto. Esto aparece en el cómic *Avatar: Tsu'tey's Path*.\n- La canción de Neytiri en *The Way of Water* se compuso incluso antes de que existiera ninguna imagen de la película.\n- En una escena eliminada de la primera película, Neytiri ya aparece embarazada de Neteyam.\n- Los Na'vi usan el arco con la izquierda porque Neytiri (Zoe Saldaña) es zurda, igual que James Cameron.",
+      "sources": ["Pandorapedia", "Sound track fest", "Avatar Wiki", "Scoringsessions.com"],
+      "video_url": null
+    },
+    {
+      "title": "5 cosas de Lo'ak que probablemente no sabías",
+      "tema": "4. Personajes y arcos",
+      "category_slug": "personajes-y-arcos",
+      "source_db": "ideas",
+      "published_at": "2026-09-23",
+      "body_md": "Estas son 5 cosas de Lo'ak que probablemente no sabías.\n\n- Antes de que conociéramos a Lo'ak en Avatar 2, fracasó en su primer intento de domar a su Ikran y casi muere al caer por un precipicio. Esto aparece en el cómic *Avatar: The High Ground*.\n- A Lo'ak no solo le gusta luchar, sino también tejer, y aprendió esta habilidad de su abuela Mo'at.\n- James Cameron pidió que Lo'ak llevara una trenza en la parte delantera de la cabeza para darle un carácter rebelde.\n- En el guion original de Avatar 2, Jake nunca le dijo «te veo» a Lo'ak ni le agradeció por rescatarlo. Esto se añadió en la versión final para darle más evolución al personaje.\n- Britain Dalton, el actor que lo interpreta, reconoció que para él es difícil ver Avatar 3, ya que puso su alma en el personaje y está demasiado cerca de su corazón. Una vez estrenada la película, dijo al público: «a todas las almas solitarias y marginados incomprendidos, gracias por dejarme ser su voz».\n\n¿Sobre qué otro personaje de Avatar te gustaría escuchar 5 cosas que probablemente no sabías?",
+      "sources": ["Avatar Wiki", "Good Morning America", "Dark Horse Comics"],
+      "video_url": null
+    },
+    {
+      "title": "¿Eywa está basada en el budismo?",
+      "tema": "2. Clanes y culturas",
+      "category_slug": "clanes-y-culturas",
+      "source_db": "ideas",
+      "published_at": null,
+      "body_md": "¿Y si te dijera que la filosofía de Eywa en Avatar comparte varias ideas con el budismo?\n\n- En Avatar todos los seres vivos están conectados. Esto recuerda a la interdependencia budista: nada existe de forma aislada.\n- Jake comienza la película como humano y poco a poco deja de definirse por esa identidad; empieza a comprender que su existencia forma parte de algo más amplio. Esto puede relacionarse con la idea de la superación del apego y el ego que existe en el budismo.\n- Durante una escena de caza, Neytiri le enseña a Jake que el animal no es solo un recurso para comer. Esto recuerda al valor budista de que la vida es algo temporal, no una propiedad.\n- Para los Na'vi, cuando uno muere, la energía vital regresa a Eywa. Para ellos la muerte no representa una desconexión total, sino un retorno. Esto puede recordar al samsara, el ciclo de nacimiento, muerte y renacimiento presente en el budismo.\n\nMuchos análisis de Avatar también han relacionado Eywa con Gaia, el hinduismo, el taoísmo y las cosmovisiones indígenas.\n\nQuizá por eso Eywa transmite tanta paz: porque nos recuerda algo que muchas tradiciones espirituales llevan siglos enseñando, que formamos parte de la naturaleza.\n\n¿Y tú? ¿Qué opinas sobre esto? Dímelo en los comentarios, que te leo.",
+      "sources": ["Lion's Roar", "Campamentomestizo", "Reydekish"],
+      "video_url": null
+    },
+    {
+      "title": "5 cosas de Varang que probablemente no sabías",
+      "tema": "4. Personajes y arcos",
+      "category_slug": "personajes-y-arcos",
+      "source_db": "ideas",
+      "published_at": null,
+      "body_md": "Estas son 5 cosas de Varang que probablemente no sabías.\n\n- A sus 15 años, Varang arrebató el puesto de Tsahìk a su hermana mayor y envenenó a su propio padre para tomar el liderazgo como olo'eyktan. Esto aparece en el diccionario visual de Avatar 3.\n- Varang ya existía en 2013. Estuvo más de una década en desarrollo antes de que la viéramos en Avatar 3.\n- El ojo que lleva tatuado en la mano derecha no es simple decoración: representa el Ojo que todo lo ve y se asocia también con el poder y el control.\n- Oona Chaplin, la actriz que la interpreta, estudió el movimiento real de la lava para inspirarse a la hora de caminar. Por eso Varang se mueve desde la pelvis, cuando los demás Na'vi lo hacen desde el corazón.\n- Las armas que utiliza Varang se llaman Buungeng y para manejarlas se necesita muchísimo control. Por eso Oona Chaplin pasó miles de horas practicando con ellas, incluso mientras se lavaba los dientes.\n\n¿Sobre qué otro personaje de Avatar te gustaría escuchar «5 cosas que probablemente no sabías»?",
+      "sources": [],
+      "video_url": null
+    },
+    {
+      "title": "POV: la obsesión de tu infancia nunca ha desaparecido",
+      "tema": "10. Mi historia con Avatar",
+      "category_slug": "mi-historia-con-avatar",
+      "source_db": "ideas",
+      "published_at": null,
+      "body_md": "",
+      "sources": [],
+      "video_url": null
+    },
+    {
+      "title": "Por qué los Na'vi son azules?",
+      "tema": "1. Lore de Pandora",
+      "category_slug": "lore-de-pandora",
+      "source_db": "calendario",
+      "published_at": "2026-09-13",
+      "body_md": "",
+      "hook": "Sé que te lo has preguntado: ¿por qué los Na'vi son azules?",
+      "sources": [],
+      "video_url": null
+    },
+    {
+      "title": "Cosas que todo fan de Avatar debería tener",
+      "tema": "11. Avatar fan",
+      "category_slug": "avatar-fan",
+      "source_db": "calendario",
+      "published_at": "2026-09-11",
+      "body_md": "",
+      "sources": [],
+      "video_url": null
+    },
+    {
+      "title": "Agradecimiento vídeo viral",
+      "tema": "10. Mi historia con Avatar",
+      "category_slug": "mi-historia-con-avatar",
+      "source_db": "calendario",
+      "published_at": "2026-09-18",
+      "body_md": "",
+      "sources": [],
+      "video_url": null
+    }
+  ],
+  "collection_intro_notes": "Sofi colecciona sobre todo ediciones físicas de las tres películas de Avatar: DVD, Blu-ray, ediciones extendidas, limitadas, 3D, steelbooks y ediciones de coleccionista con busto. Le acompañan los videojuegos de Avatar en varias plataformas, los libros de arte, diccionarios y guías visuales, cómics de Dark Horse y bandas sonoras, incluso en vinilo. En figuras tiene tanto las clásicas de Mattel de 2009 como las de McFarlane Toys (figuras, dioramas luminosos y minifiguras), además de Funko Pop y Lego. Completa la colección con objetos de cine (cubos de palomitas, vasos, pósteres y revistas), un juego de mesa y ropa y accesorios de marcas de fans como Avatararcticlife.",
+  "meta": {
+    "extracted_at": "2026-10-06T01:25:00Z",
+    "sources": [
+      { "type": "page", "title": "Avatar", "id": "fab32130-a866-4d83-96e1-52ffd367fe8c" },
+      { "type": "database", "title": "💡 Ideas de vídeos", "id": "74a8d683-0e1c-43e2-bf24-3066e4752624", "data_source": "collection://ef99c041-8da1-4727-a530-6de555a8b3d3" },
+      { "type": "database", "title": "🎬 Calendario de publicación", "id": "292509fe-39ac-40f1-9a5d-95aa8bf7fd1b", "data_source": "collection://8eeb0f48-2688-45fe-8c40-8bb6ce03e54e" }
+    ],
+    "counts": {
+      "categories": 11,
+      "videos_included": 8,
+      "entries_seen": 21,
+      "entries_excluded": 13
+    },
+    "notes": [
+      "Los nombres de Tema en Notion llevan prefijo numérico ('1. Lore de Pandora', ..., '11. Avatar fan'); name_es conserva el texto exacto y slug_es omite el número.",
+      "Ideas de vídeos: 14 filas (5 Colgado, 8 Sin empezar, 1 sin Fase ni Tema: '5 cosas de Tsireya que probablemente no sabias', excluida).",
+      "Calendario de publicación: 7 filas (4 Publicado, 1 Programado, 1 Editado, 1 Idea).",
+      "Deduplicado por título: '5 cosas de Neytiri' aparece en ambas bases; se toma el cuerpo de Ideas y la fecha del Calendario (2026-09-16).",
+      "'5 cosas de Lo'ak' está Colgado en Ideas pero Editado en Calendario; se incluye por la regla OR y se usa la fecha del Calendario (2026-09-23).",
+      "'¿Eywa está basada en el budismo?', '5 cosas de Varang' y 'POV: la obsesión...' no tienen entrada en Calendario, por eso published_at es null.",
+      "Las 4 fichas del Calendario tienen la página en blanco (sin cuerpo); 'Por qué los Na'vi son azules?' aporta solo su Gancho (campo extra 'hook').",
+      "Las propiedades Gancho y Guion de Ideas de vídeos están vacías en todas las filas publicadas; el guion vive en el cuerpo de la página.",
+      "Ninguna ficha contiene enlace al vídeo publicado (video_url siempre null). Fuentes son nombres de medios, no URLs.",
+      "Existe una tercera base inline 'Videos Tik Tok Avatar' (collection://30411aad-5e58-809f-adf5-000b8bf452a5) con 17 tarjetas antiguas en inglés (Libros, Colección, Unboxings...) con estado 'Video colgado' pero sin Tema ni cuerpo; no se incluyó por no formar parte de las fuentes pedidas.",
+      "Se omitieron metas y cifras de seguidores de la página Avatar, la imagen y el cover (URLs firmadas) y el enlace a Linktree.",
+      "Tamaño final (~12k caracteres) por debajo del objetivo de 25-45k: la fuente solo tiene 8 vídeos publicados, 4 de ellos sin texto. No se rellenó con contenido inventado."
+    ]
+  }
+}
