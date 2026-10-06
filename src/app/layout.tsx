@@ -1,4 +1,4 @@
-﻿import type { Metadata, Viewport } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Marcellus } from "next/font/google";
 import { ServiceWorkerRegister } from "./sw-register";
 import "./globals.css";
