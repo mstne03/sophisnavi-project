@@ -1,5 +1,5 @@
 {
-  "$schema_note": "JSON intermedio del seed de la fase 1 (plan: paso 1.2). Generado por script desde docs/content/sections.md y data/seed/notion-snapshot.json. Todo status=draft. Sin filas EN en pages: la versión EN es opcional por página.",
+  "$schema_note": "JSON intermedio del seed de la fase 1 (plan: paso 1.2). Generado por script desde docs/content/sections.md y data/seed/notion-snapshot.json. Todo status=draft. Sin filas EN en pages: la versión EN es opcional por página. updated_at = fecha del último commit del archivo fuente (o published_at de Notion), para el lastModified del sitemap.",
   "generated_at": "2026-10-06",
   "locales": [
     "es",
@@ -14,6 +14,7 @@
       "title_en": "Pandora",
       "seo_description_es": "Lore, naturaleza y datos reales de Pandora: Eywa, la flora bioluminiscente, los animales y la ciencia que James Cameron tomó de la Tierra.",
       "seo_description_en": "The lore, wildlife and real science behind Pandora: Eywa, bioluminescent forests, the creatures, and what James Cameron borrowed from Earth.",
+      "updated_at": "2026-10-06",
       "intro_md_es": "Pandora es una luna, no un planeta. Orbita Polifemo, un gigante gaseoso del sistema de Alfa Centauri, y eso explica muchas de las cosas que vemos en las películas: los eclipses, la gravedad algo más baja, el aire que un humano no puede respirar sin máscara. Todo esto no es una interpretación mía, viene de los materiales oficiales de Lightstorm y de la Pandorapedia.\n\nEn esta sección reúno tres tipos de contenido. El **lore**: Eywa, los Árboles de las Almas, la red neuronal que conecta a cada ser vivo y que la ciencia humana de la película mide como señales eléctricas. La **naturaleza**: la bioluminiscencia, la fauna (ikran, toruk, viperlobos, ilu y tulkun) y por qué muchas criaturas tienen seis patas o respiran por el pecho. Y los **datos duros**: cuánto de Pandora está basado en biología real, de qué se inspiró Cameron (los arrecifes, la selva, el buceo) y qué cosas son pura invención.\n\nMi criterio es sencillo: cuando algo está en las películas o en los libros oficiales, lo digo tal cual. Cuando es una lectura mía o una teoría, lo aviso. Y siempre dejo las fuentes al final, porque yo también quiero poder comprobarlas.\n\nSi acabas de ver las películas y quieres entender cómo funciona este mundo, empieza por aquí.",
       "intro_md_en": "Pandora is a moon, not a planet. It orbits Polyphemus, a gas giant in the Alpha Centauri system, and that one fact explains a lot of what you see on screen: the eclipses, the slightly lower gravity, the air humans can't breathe without a mask. None of that is my interpretation; it comes straight from Lightstorm's official material and the Pandorapedia.\n\nThis section brings together three kinds of posts. **Lore**: Eywa, the Trees of Souls, the neural network linking every living thing, which the film's human scientists measure as electrical signals. **Nature**: the bioluminescence, the wildlife (ikran, toruk, viperwolves, ilu and tulkun) and why so many creatures have six legs or breathe through their chests. And **hard facts**: how much of Pandora is grounded in real biology, where Cameron found his inspiration (coral reefs, rainforests, his own diving) and what is pure invention.\n\nMy rule is simple. If something is in the films or the official books, I say so. If it's my own reading or a theory, I flag it. And I always leave the sources at the end, because I like to check them too.\n\nIf you've just watched the films and want to understand how this world works, start here."
     },
@@ -25,6 +26,7 @@
       "title_en": "Characters",
       "seo_description_es": "Jake, Neytiri, Lo'ak, Kiri, Tsireya, Varang, Quaritch… arcos, motivaciones y detalles que se pierden en un primer visionado de Avatar.",
       "seo_description_en": "Jake, Neytiri, Lo'ak, Kiri, Tsireya, Varang, Quaritch… character arcs, motivations and the details you miss on a first watch of Avatar.",
+      "updated_at": "2026-10-06",
       "intro_md_es": "Los personajes son el motivo por el que vuelvo a Avatar una y otra vez. Puedes quedarte con los efectos, con Pandora, con la música de James Horner y Simon Franglen, pero lo que hace que una historia aguante quince años es que sus personajes cambian, se equivocan y pagan por ello.\n\nAquí tienes mis vídeos y artículos sobre **personajes y arcos**: Jake Sully y su paso de marine a Toruk Makto y a padre; Neytiri y lo que la primera película no cuenta de ella; Lo'ak, Neteyam, Kiri y Tuk como segunda generación; Tsireya y los Metkayina; y los antagonistas, que en esta saga nunca son planos: Quaritch recombinante, Ardmore, y en *Fire and Ash*, Varang y el clan de la ceniza.\n\nLo que intento en cada pieza es ir más allá de \"me gusta este personaje\". Busco qué decisiones toma, qué le cuesta tomarlas y qué dicen los guionistas o los actores sobre ello en entrevistas y en los libros de arte oficiales. Cuando algo es canon, lo señalo. Cuando es mi lectura, también.\n\nSi tienes un personaje favorito y quieres defenderlo con argumentos, aquí tienes munición. Y si lo odias, también.",
       "intro_md_en": "The characters are the reason I keep going back to Avatar. You can come for the visuals, for Pandora, for James Horner's and Simon Franglen's music, but what makes a story last fifteen years is that its characters change, get things wrong and pay for it.\n\nThis is where I keep my videos and articles on **characters and arcs**: Jake Sully, from marine to Toruk Makto to father; Neytiri and everything the first film leaves unsaid about her; Lo'ak, Neteyam, Kiri and Tuk as the second generation; Tsireya and the Metkayina; and the antagonists, who are never flat in this saga: recombinant Quaritch, Ardmore and, in *Fire and Ash*, Varang and the Ash People.\n\nWhat I try to do in every piece is go past \"I like this character\". I look at the choices they make, what those choices cost them, and what the writers and actors have said about it in interviews and in the official art books. When something is canon, I say so. When it's my reading, I say that too.\n\nIf you have a favourite character and want to defend them with actual arguments, this is your ammunition. If you can't stand them, same."
     },
@@ -36,6 +38,7 @@
       "title_en": "Clans & Cultures",
       "seo_description_es": "Omatikaya, Metkayina, Mangkwan y los demás clanes na'vi: cómo viven, qué creen, cómo se visten y en qué se diferencian.",
       "seo_description_en": "Omatikaya, Metkayina, Mangkwan and the other Na'vi clans: how they live, what they believe, how they dress and what sets them apart.",
+      "updated_at": "2026-10-06",
       "intro_md_es": "Los na'vi no son un solo pueblo. Esa es la idea que más me gusta de la saga y la que más se pierde cuando hablamos de \"los azules\" en general. Cada clan se ha adaptado a un entorno distinto de Pandora y eso cambia su cuerpo, su lengua, sus rituales y hasta su manera de montar.\n\nEn esta sección hablo de los **Omatikaya** del bosque, el clan de Neytiri, con su Árbol Casa y sus ikran; de los **Metkayina** de los arrecifes, que en *The Way of Water* nos enseñan a respirar de otra manera; de los **Mangkwan**, el pueblo de la ceniza que aparece en *Fire and Ash*; y de los clanes que solo conocemos por los libros, la Pandorapedia o fragmentos de las películas. También dedico espacio a la cultura compartida: la lengua na'vi creada por el lingüista Paul Frommer, el *tsaheylu*, los cantos, el luto y la relación con Eywa.\n\nMi fuente principal son las películas y los libros oficiales de Lightstorm. Cuando algo viene de materiales ampliados (videojuegos, parque de Disney, cómics), lo indico, porque no todo tiene el mismo peso dentro del canon.\n\nSi alguna vez te has preguntado por qué los Metkayina tienen la cola plana o qué significa el pelo trenzado, aquí lo encuentras.",
       "intro_md_en": "The Na'vi are not one people. That is my favourite idea in the whole saga, and the one that gets lost fastest when we talk about \"the blue aliens\" as a block. Each clan has adapted to a different part of Pandora, and that shapes their bodies, their dialect, their rituals and even the way they ride.\n\nHere I cover the forest **Omatikaya**, Neytiri's clan, with their Hometree and their ikran; the reef **Metkayina**, who teach us a different way to breathe in *The Way of Water*; the **Mangkwan**, the Ash People of *Fire and Ash*; and the clans we only know from the books, the Pandorapedia or a few frames of the films. I also make room for the culture they share: the Na'vi language built by linguist Paul Frommer, *tsaheylu*, the songs, mourning, and the bond with Eywa.\n\nMy main sources are the films and Lightstorm's official books. When something comes from expanded material (games, the Disney park, comics), I flag it, because not everything carries the same weight in canon.\n\nIf you've ever wondered why the Metkayina have flat tails or what a braid means, this is the place."
     },
@@ -47,6 +50,7 @@
       "title_en": "The Saga",
       "seo_description_es": "Detrás de cámaras de Avatar, noticias comentadas y teorías con fundamento sobre Avatar 4 y 5. Lo que se sabe y lo que es especulación.",
       "seo_description_en": "Behind the scenes of Avatar, news with context, and grounded theories about Avatar 4 and 5. What's confirmed and what's speculation.",
+      "updated_at": "2026-10-06",
       "intro_md_es": "Avatar no es solo tres películas: es un proyecto de más de veinte años con dos entregas más anunciadas. Esta sección es mi cuaderno de seguimiento de la saga como obra, no como mundo.\n\nAquí encontrarás tres cosas. **Detrás de cámaras**: cómo se rodó la captura de interpretación bajo el agua, qué hace exactamente Wētā FX, por qué los rodajes de las secuelas se hicieron a la vez, y lo que cuentan Cameron, Jon Landau (que falleció en 2024 y a quien la saga le debe muchísimo) y el reparto. **Reacción a noticias**: cada vez que sale un tráiler, una fecha, un fichaje o una declaración, lo comento con contexto, no solo con emoción. Y **teorías sobre Avatar 4 y 5**: aquí me permito especular, pero siempre separando lo que Cameron ha dicho de forma pública de lo que es deducción mía.\n\nUna regla que me pongo: no doy por confirmado nada que no tenga una fuente clara (entrevista, nota de prensa, publicación oficial). Los rumores existen, pero se presentan como rumores.\n\nSi quieres saber qué viene después sin tragarte titulares exagerados, suscríbete a esta sección.",
       "intro_md_en": "Avatar is not just three films; it's a project spanning more than twenty years, with two more instalments announced. This section is my notebook for following the saga as a body of work, rather than as a world.\n\nYou'll find three things here. **Behind the scenes**: how underwater performance capture was shot, what Wētā FX actually does, why the sequels were filmed back to back, and what Cameron, the cast and Jon Landau (who passed away in 2024 and to whom this saga owes a great deal) have said about it. **News reactions**: every time a trailer, a date, a casting or a quote drops, I comment on it with context, not just excitement. And **theories about Avatar 4 and 5**: this is where I let myself speculate, always separating what Cameron has said publicly from what I'm deducing on my own.\n\nOne rule I hold myself to: I don't treat anything as confirmed without a clear source (an interview, a press release, an official post). Rumours exist, but they're labelled as rumours.\n\nIf you want to know what comes next without wading through clickbait, this is the section to follow."
     },
@@ -58,6 +62,7 @@
       "title_en": "Collection",
       "seo_description_es": "Mi colección de Avatar: figuras, libros de arte, ediciones físicas y merchandising. Qué merece la pena, dónde encontrarlo y qué evitar.",
       "seo_description_en": "My Avatar collection: figures, art books, physical editions and merchandise. What's worth it, where to find it and what to avoid.",
+      "updated_at": "2026-10-06",
       "intro_md_es": "Soy coleccionista de Avatar desde 2009 y esta es, probablemente, la sección más personal de la web. Aquí enseño lo que tengo, lo que busco y lo que he aprendido comprando (y a veces equivocándome).\n\nHablo de **merchandising** en sentido amplio: figuras y estatuas, los libros de arte oficiales y las guías de Pandora, las ediciones físicas de las películas y sus extras, pósteres, ropa y objetos del parque Pandora – The World of Avatar en Disney. De cada pieza intento contar tres cosas: qué es exactamente (fabricante, año, edición), por qué la tengo y qué calidad real ofrece, porque no todo lo que lleva el logo merece el precio.\n\nTambién te cuento dónde busco: tiendas oficiales, segunda mano, ferias, y las señales que me hacen desconfiar de una réplica o de una tienda que no existe. Una regla: aquí no hay enlaces de afiliado escondidos; si alguna vez los hay, se dirá claramente.\n\nLa galería de esta sección la actualizo según crece la colección. Si tienes una pieza rara o una duda sobre si algo es oficial, escríbeme por redes.",
       "intro_md_en": "I've been collecting Avatar since 2009, and this is probably the most personal section of the site. Here I show what I own, what I'm hunting for, and what I've learned from buying (and sometimes getting it wrong).\n\nI use **merchandise** in the broad sense: figures and statues, the official art books and Pandora guides, physical editions of the films and their extras, posters, clothing, and pieces from Pandora – The World of Avatar at Disney. For every item I try to cover three things: exactly what it is (maker, year, edition), why I have it, and what the real quality is like, because not everything with the logo on it earns its price tag.\n\nI also share where I look: official shops, second-hand, conventions, and the warning signs that make me suspect a replica or a store that doesn't really exist. One rule: there are no hidden affiliate links here; if that ever changes, it will be stated plainly.\n\nThe gallery in this section grows with the collection. If you own a rare piece or aren't sure whether something is official, message me on social media."
     },
@@ -69,6 +74,7 @@
       "title_en": "Fan Life",
       "seo_description_es": "Mi historia con Avatar desde 2009, la experiencia de ser fan en España, viajes, eventos, cosplay, tatuajes y comunidad.",
       "seo_description_en": "My story with Avatar since 2009, being a fan in Spain, trips, events, cosplay, tattoos and community.",
+      "updated_at": "2026-10-06",
       "intro_md_es": "Vi Avatar en el cine en 2009 y salí distinta. No lo digo como frase hecha: desde entonces esta historia me ha acompañado en las etapas buenas y en las malas, y me ha llevado a sitios y a personas que no habría conocido de otra forma.\n\nEsta sección es la parte de la web que no habla de Pandora, sino de lo que Pandora hace con nosotros. Aquí está **mi historia con Avatar**: por qué me enganché, qué significó esperar trece años una secuela, y cómo la saga se convirtió en un proyecto de contenido en español. Y también lo que llamo **Avatar fan** en general: visitas al parque de Disney y a exposiciones, estrenos y maratones, cosplay y tatuajes, la comunidad hispanohablante y los pequeños rituales de fan (sí, llorar con el mismo plano por décima vez cuenta).\n\nNo pretendo que sea una sección de \"experta\". Es la sección de alguien a la que le importa mucho una historia y que quiere compartirlo con quien sienta lo mismo. Si tú también sales del cine pensando en Eywa, estás en casa.",
       "intro_md_en": "I saw Avatar in the cinema in 2009 and walked out a different person. That isn't a line: since then, this story has been with me through good years and bad ones, and it has taken me to places and people I would never have found otherwise.\n\nThis is the part of the site that isn't about Pandora, but about what Pandora does to us. Here you'll find **my story with Avatar**: why I fell for it, what thirteen years of waiting for a sequel felt like, and how the saga turned into a Spanish-language content project. And everything I group under **Avatar fan** in general: trips to the Disney park and exhibitions, premieres and marathons, cosplay and tattoos, the Spanish-speaking community, and the small fan rituals (yes, crying at the same shot for the tenth time counts).\n\nI'm not claiming expert status here. This is the section of someone who cares deeply about a story and wants to share that with people who feel the same. If you also leave the cinema thinking about Eywa, you're home."
     }
@@ -179,6 +185,7 @@
       "type": "article",
       "category_slug": "personajes-y-arcos",
       "status": "draft",
+      "updated_at": "2026-09-16",
       "notion_published_at": "2026-09-16",
       "video_url": null,
       "translations": {
@@ -200,6 +207,7 @@
       "type": "article",
       "category_slug": "personajes-y-arcos",
       "status": "draft",
+      "updated_at": "2026-09-23",
       "notion_published_at": "2026-09-23",
       "video_url": null,
       "translations": {
@@ -220,6 +228,7 @@
       "type": "article",
       "category_slug": "clanes-y-culturas",
       "status": "draft",
+      "updated_at": "2026-10-06",
       "notion_published_at": null,
       "video_url": null,
       "translations": {
@@ -240,6 +249,7 @@
       "type": "article",
       "category_slug": "personajes-y-arcos",
       "status": "draft",
+      "updated_at": "2026-10-06",
       "notion_published_at": null,
       "video_url": null,
       "translations": {
@@ -256,6 +266,7 @@
       "type": "article",
       "category_slug": "mi-historia-con-avatar",
       "status": "draft",
+      "updated_at": "2026-10-06",
       "notion_published_at": null,
       "video_url": null,
       "translations": {
@@ -272,6 +283,7 @@
       "type": "article",
       "category_slug": "lore-de-pandora",
       "status": "draft",
+      "updated_at": "2026-09-13",
       "notion_published_at": "2026-09-13",
       "video_url": null,
       "translations": {
@@ -288,6 +300,7 @@
       "type": "article",
       "category_slug": "avatar-fan",
       "status": "draft",
+      "updated_at": "2026-09-11",
       "notion_published_at": "2026-09-11",
       "video_url": null,
       "translations": {
@@ -304,6 +317,7 @@
       "type": "article",
       "category_slug": "mi-historia-con-avatar",
       "status": "draft",
+      "updated_at": "2026-09-18",
       "notion_published_at": "2026-09-18",
       "video_url": null,
       "translations": {
@@ -320,6 +334,7 @@
       "type": "gallery",
       "category_slug": "merchandising",
       "status": "draft",
+      "updated_at": "2026-10-06",
       "notion_published_at": null,
       "video_url": null,
       "translations": {
