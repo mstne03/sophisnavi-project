@@ -18,7 +18,7 @@ Fuente: https://linktr.ee/sophisnavi, leído en el navegador en modo solo lectur
 Notas:
 - Los parámetros `_r`, `_t` y `si` son de seguimiento de cada plataforma; en `sameAs` deben ir las URL limpias.
 - El handle es el mismo en las cuatro redes: `sophisnavi`. En TikTok y YouTube lleva `@`.
-- Pinterest no estaba en el plan; es **decisión de Sofi** si entra en `sameAs` y en `/links`. Si entra, conviene usar el perfil raíz y no el tablero con código de invitación.
+- Pinterest no estaba en el plan. **Decisión (Marc, 2026-10-06): entra** en `sameAs` y en `/links`, con el perfil raíz y no el tablero con código de invitación. Sofi puede revertirlo.
 - La comprobación HTTP se hizo con `curl -L` y user-agent de navegador; TikTok e Instagram pueden devolver 200 incluso para páginas de "contenido no disponible", así que la verificación visual la hace Sofi al revisar `/links`.
 
 Propuesta de JSON-LD `Person` (valores a confirmar por Sofi):
@@ -102,7 +102,7 @@ Investigación delegada en un subagente que leyó cada página oficial el 2026-1
 5. **Cambios de 2025-2026:** Anthropic eliminó `Claude-Web` de su lista y movió la doc a `support.claude.com`; OpenAI movió la suya a `developers.openai.com`; Google renombró `Google-NotebookLM` a `Google-GeminiNotebook` en agosto de 2026 y movió la doc a `developers.google.com/crawling/`; Meta añadió `meta-webindexer` y retiró `FacebookBot`.
 6. **Los cambios en `robots.txt` tardan ~24 h** en aplicarse en OpenAI y Amazon, y ~72 h en DuckDuckGo.
 
-### 3.3 Propuesta para `robots.ts` (valor por defecto del plan, ampliado; **a confirmar con Sofi**)
+### 3.3 Decisión para `robots.ts` (confirmada por Marc el 2026-10-06; Sofi puede revertirla)
 
 Criterio: permitir todo lo que **busca y cita** (trae visitas y atribución) y bloquear lo que **entrena** sin devolver nada. Es la misma regla del plan 0.9, con los tokens actualizados a 2026-10-06.
 
@@ -122,6 +122,6 @@ Tokens que **no** se incluyen en `robots.ts` por no estar verificados: `Claude-W
 ## 4. Checklist de revisión para Sofi
 
 - [ ] Confirmar que las cuatro URL canónicas de la sección 1 son las tuyas (en especial Pinterest).
-- [ ] Decidir si Pinterest entra en `/links` y en el JSON-LD.
+- [x] Pinterest entra en `/links` y en el JSON-LD (2026-10-06).
 - [ ] Confirmar el texto de `Person.description` o dar uno mejor.
-- [ ] Responder la pregunta de la sección 3.3 sobre entrenamiento de IA.
+- [x] Entrenamiento de IA: NO; búsqueda con cita: SÍ (2026-10-06).

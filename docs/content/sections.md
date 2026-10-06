@@ -277,5 +277,5 @@ For collaborations and proposals, send me a direct message on Instagram or TikTo
 - [ ] "Fan desde 2009" y "coleccionista" salen de tu bio de Linktree. Confirma el año.
 - [ ] Nombres EN de las 11 categorías (tabla de arriba).
 - [ ] Datos de las películas que cito (Polifemo, Alfa Centauri, Paul Frommer, Jon Landau 2024, Mangkwan/Varang en *Fire and Ash*): si prefieres no mencionar algo, dilo.
-- [ ] Afirmación "no hay enlaces de afiliado" en Colección: si vas a usar afiliados, se cambia.
-- [ ] Pinterest: ¿quieres que aparezca en /links y en el JSON-LD `sameAs`, o solo las tres redes principales?
+- [x] Afirmación "no hay enlaces de afiliado" en Colección: se mantiene de momento (2026-10-06); si vas a usar afiliados, se cambia.
+- [x] Pinterest: incluido en /links y en el JSON-LD `sameAs` (decisión de Marc, 2026-10-06; Sofi puede revertirla).
