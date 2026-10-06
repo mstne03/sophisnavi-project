@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { motion, type Variants } from "motion/react";
-import { SECTIONS } from "@/lib/sections";
 
 const list: Variants = {
   show: { transition: { staggerChildren: 0.08, delayChildren: 0.3 } },
@@ -12,7 +11,9 @@ const item: Variants = {
   show: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] } },
 };
 
-export function MainMenu({ animateIn = true }: { animateIn?: boolean }) {
+export type MenuSection = { slug: string; title: string; description: string };
+
+export function MainMenu({ sections, animateIn = true }: { sections: MenuSection[]; animateIn?: boolean }) {
   return (
     <motion.div
       className="relative z-10 mx-auto flex min-h-dvh w-full max-w-6xl flex-col px-6 py-10 [text-shadow:0_1px_14px_rgba(2,4,10,0.9)] sm:px-10 sm:py-14"
@@ -30,7 +31,7 @@ export function MainMenu({ animateIn = true }: { animateIn?: boolean }) {
 
       <nav aria-label="Menú principal" className="mt-16 sm:mt-auto sm:pt-16">
         <ul className="grid gap-x-12 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
-          {SECTIONS.map((s, i) => (
+          {sections.map((s, i) => (
             <motion.li key={s.slug} variants={item}>
               <Link
                 href={`/${s.slug}`}

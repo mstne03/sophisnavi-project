@@ -21,14 +21,15 @@ replica las mismas rutas en `sonar.coverage.exclusions` y añade las de fuera de
 
 | Ruta | Motivo | Quién lo cubre |
 |---|---|---|
-| `src/lib/tree-scene.ts` | Escena three.js/WebGL; en el paso 0.5 se divide y solo quedan excluidos `renderer.ts` y `shaders.ts` | E2E (Playwright contra el build) |
+| `src/ui/tree-scene/renderer.ts` | Conecta con WebGL (three.js); no se ejecuta en jsdom | E2E (Playwright contra el build) |
+| `src/ui/tree-scene/shaders.ts` | Cadenas GLSL, sin lógica | E2E |
 | `data/seed/**` | Datos JSON del seed de la fase 1, no código | — |
 | `e2e/**`, `*.config.{ts,mjs,cjs}`, `vitest.setup.ts`, `lighthouserc.cjs` (solo en Sonar) | Fuera de `src/`: Vitest no los mide porque su `include` es `src/**`; SonarCloud analiza todo el repo y los contaría como código nuevo al 0 % | E2E y el propio CI |
 
 ## Consequences
 
 - El umbral del 85 % se aplica al código realmente testeable en unidad.
-- Cuando el paso 0.5 extraiga `geometry.ts` y `timeline.ts` (puros), **entran** en la cobertura.
+- Desde el paso 0.5 (S2), `geometry.ts` y `timeline.ts` (puros) **entran** en la cobertura.
 - Añadir una exclusión exige actualizar esta tabla y las dos configuraciones.
 
 ## Alternatives

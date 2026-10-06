@@ -16,6 +16,21 @@ Plan: `C:\Users\Marc\.claude\plans\resilient-seeking-squirrel.md`. Estándares: 
 | 0.3 ci.yml | ✅ | 5 jobs, acciones por SHA, permisos mínimos, concurrency, caché pnpm. quality/unit/e2e en verde en la PR #7. Lighthouse informativo: portada 0,54 de rendimiento (intro three.js, se optimiza en 0.12); secciones ≥ 0,85 |
 | 0.4 Sonar | ✅ | Automatic Analysis desactivado (el escaneo de CI fue aceptado). Cobertura importada (67,8 % global, 100 % en el código nuevo de src). SonarCloud ignora `sonar.sources`: las exclusiones de cobertura incluyen config de raíz y `e2e/**` (ADR-0006) |
 
+## S2 (2026-10-06) · demo del sitio y del panel
+
+Marc repriorizó a mitad de sesión: **primero lo que se puede enseñar a Sofi**. Entregado en `feat/fase-0-s2`:
+
+| Paso | Estado | Notas |
+|---|---|---|
+| 0.5 Refactor a capas | ✅ | `src/ui/tree-scene/{geometry,timeline,shaders,renderer}.ts` con tests de caracterización (rng, buildTree = 13 104 vértices / 336 anclajes, smooth, timeline). `SECTIONS` sustituido por `domain/content.ts` + puerto `application/content/ContentRepository` + adaptador `infrastructure/content/staticContent.ts` (lee `data/seed/content-seed.json`). Raíz de composición: `src/app/content.ts` |
+| 0.8 Contenido real | ✅ (solo ES) | Portada con las 6 secciones del seed; `/[section]` con intro Markdown, categorías y tarjetas de páginas; `/[section]/[page]` con plantillas article y gallery (huecos de ejemplo). Markdown mínimo propio en `src/ui/markdown.tsx` (párrafos, títulos, listas, énfasis) |
+| Demo del panel | ✅ | `/admin` (contadores, tabla de páginas, secciones), `/admin/paginas/[slug]` (editor con vista previa en vivo; "Guardar" solo avisa), `/admin/login` (formulario sin credenciales). `robots: noindex`, banner permanente de demo. Sin auth ni escritura: no expone nada que no sea ya público |
+| 0.7 reducido | ⏳ | **Pendiente**: menú en el HTML del servidor con la intro como capa cliente encima, h1 visible desde el primer pintado |
+
+Otros cambios: arreglado el fake de `experience.test.tsx` (faltaba `time()` tras el PR #8; la suite estaba en rojo en `main`); `playwright.config.ts` admite `E2E_PORT` (un `next start` huérfano de la S1 ocupaba el 3000). Cobertura: 97,8 / 90,5 / 96,9 / 98,2 %. E2E: 8/8.
+
+**Siguiente sesión (S3):** 0.7 reducido (portada rastreable) y después Supabase 1.0–1.2 (esquema, RLS, `SupabaseContentRepository` implementando el mismo puerto, seed desde el JSON). El panel de demo se convierte en el real en 1.3–1.5.
+
 ## ⚠️ Desviación activa: gates de CI no bloquean (desde 2026-10-06)
 
 Decisión de Marc para entregar rápido hasta el MVP. La protección de `main` mantiene PR obligatoria, historial lineal, squash, sin force push y `enforce_admins`, pero **sin checks obligatorios**. `ci.yml` sigue corriendo en cada PR: **leer sus resultados antes de fusionar**.
@@ -62,4 +77,4 @@ esas rutas ni esa rama; push solo de la propia rama (nunca `--all`/`--mirror`); 
 
 ## CI
 
-PR #7 (`feat/fase-0-s1`) lista para fusionar; PR #8 (`hotfix/home-intro-scroll`, de la otra sesión) también. Ninguna bloqueada por checks.
+PR #7 y #8 fusionadas. `feat/fase-0-s2`: typecheck, lint, test:coverage, build y e2e en verde en local; leer el workflow en GitHub antes de dar por buena la fusión.

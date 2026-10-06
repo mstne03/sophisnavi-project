@@ -3,7 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import type { TreeScene } from "@/ui/tree-scene/renderer";
-import { MainMenu } from "./main-menu";
+import { MainMenu, type MenuSection } from "./main-menu";
 
 const SEEN_KEY = "sophisnavi:intro-seen";
 const TITLE = "Sophisnavi";
@@ -12,7 +12,7 @@ const TITLE = "Sophisnavi";
 // así al volver desde una sección no se repite la intro ni se pierde el scroll.
 const visit = { introDone: false, sceneTime: 0, scrollY: 0 };
 
-export function Experience() {
+export function Experience({ sections }: { sections: MenuSection[] }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sceneRef = useRef<TreeScene | null>(null);
   // En la carga completa vale false igual que en el servidor: no hay desajuste de hidratación.
@@ -133,7 +133,7 @@ export function Experience() {
             </motion.button>
           </motion.div>
         ) : (
-          <MainMenu key="menu" animateIn={!returning} />
+          <MainMenu key="menu" sections={sections} animateIn={!returning} />
         )}
       </AnimatePresence>
     </main>
