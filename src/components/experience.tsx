@@ -2,7 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import type { TreeScene } from "@/lib/tree-scene";
+import type { TreeScene } from "@/ui/tree-scene/renderer";
 import { MainMenu } from "./main-menu";
 
 const SEEN_KEY = "sophisnavi:intro-seen";
@@ -46,7 +46,7 @@ export function Experience() {
     };
 
     // three.js se carga aparte: no bloquea el primer render de la página.
-    import("@/lib/tree-scene")
+    import("@/ui/tree-scene/renderer")
       .then(({ createTreeScene }) => {
         if (disposed || !canvasRef.current) return;
         sceneRef.current = createTreeScene(canvasRef.current, {

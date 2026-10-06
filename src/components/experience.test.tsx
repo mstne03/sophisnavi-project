@@ -1,14 +1,14 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { TreeScene } from "@/lib/tree-scene";
+import type { TreeScene } from "@/ui/tree-scene/renderer";
 
 type Opts = { reducedMotion: boolean; skipIntro: boolean; onIntroDone: () => void };
 const createTreeScene = vi.fn<(canvas: HTMLCanvasElement, opts: Opts) => TreeScene>();
-vi.mock("@/lib/tree-scene", () => ({ createTreeScene: (c: HTMLCanvasElement, o: Opts) => createTreeScene(c, o) }));
+vi.mock("@/ui/tree-scene/renderer", () => ({ createTreeScene: (c: HTMLCanvasElement, o: Opts) => createTreeScene(c, o) }));
 
 import { Experience } from "./experience";
 
-const fakeScene = (opts: Opts): TreeScene => ({ skipIntro: () => opts.onIntroDone(), dispose: vi.fn() });
+const fakeScene = (opts: Opts): TreeScene => ({ skipIntro: () => opts.onIntroDone(), time: () => 0, dispose: vi.fn() });
 
 // Protege: la intro se puede saltar (clic, teclado o sesión ya vista) y sin WebGL se va directo al menú.
 describe("Experience", () => {

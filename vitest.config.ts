@@ -4,7 +4,8 @@ import { defineConfig } from "vitest/config";
 
 // Lista única de exclusiones de cobertura (ADR-0006). sonar-project.properties usa la misma lista.
 export const coverageExclusions = [
-  "src/lib/tree-scene.ts", // WebGL: lo cubre el E2E; en 0.5 pasa a ui/tree-scene/{renderer,shaders}.ts
+  "src/ui/tree-scene/renderer.ts", // WebGL: lo cubre el E2E (ADR-0006)
+  "src/ui/tree-scene/shaders.ts", // cadenas GLSL, sin lógica
   "data/seed/**", // datos JSON de la sesión de contenido, no código
 ];
 
