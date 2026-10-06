@@ -1,0 +1,344 @@
+{
+  "$schema_note": "JSON intermedio del seed de la fase 1 (plan: paso 1.2). Generado por script desde docs/content/sections.md y data/seed/notion-snapshot.json. Todo status=draft. Sin filas EN en pages: la versión EN es opcional por página.",
+  "generated_at": "2026-10-06",
+  "locales": [
+    "es",
+    "en"
+  ],
+  "sections": [
+    {
+      "position": 1,
+      "slug_es": "pandora",
+      "slug_en": "pandora",
+      "title_es": "Pandora",
+      "title_en": "Pandora",
+      "seo_description_es": "Lore, naturaleza y datos reales de Pandora: Eywa, la flora bioluminiscente, los animales y la ciencia que James Cameron tomó de la Tierra.",
+      "seo_description_en": "The lore, wildlife and real science behind Pandora: Eywa, bioluminescent forests, the creatures, and what James Cameron borrowed from Earth.",
+      "intro_md_es": "Pandora es una luna, no un planeta. Orbita Polifemo, un gigante gaseoso del sistema de Alfa Centauri, y eso explica muchas de las cosas que vemos en las películas: los eclipses, la gravedad algo más baja, el aire que un humano no puede respirar sin máscara. Todo esto no es una interpretación mía, viene de los materiales oficiales de Lightstorm y de la Pandorapedia.\n\nEn esta sección reúno tres tipos de contenido. El **lore**: Eywa, los Árboles de las Almas, la red neuronal que conecta a cada ser vivo y que la ciencia humana de la película mide como señales eléctricas. La **naturaleza**: la bioluminiscencia, la fauna (ikran, toruk, viperlobos, ilu y tulkun) y por qué muchas criaturas tienen seis patas o respiran por el pecho. Y los **datos duros**: cuánto de Pandora está basado en biología real, de qué se inspiró Cameron (los arrecifes, la selva, el buceo) y qué cosas son pura invención.\n\nMi criterio es sencillo: cuando algo está en las películas o en los libros oficiales, lo digo tal cual. Cuando es una lectura mía o una teoría, lo aviso. Y siempre dejo las fuentes al final, porque yo también quiero poder comprobarlas.\n\nSi acabas de ver las películas y quieres entender cómo funciona este mundo, empieza por aquí.",
+      "intro_md_en": "Pandora is a moon, not a planet. It orbits Polyphemus, a gas giant in the Alpha Centauri system, and that one fact explains a lot of what you see on screen: the eclipses, the slightly lower gravity, the air humans can't breathe without a mask. None of that is my interpretation; it comes straight from Lightstorm's official material and the Pandorapedia.\n\nThis section brings together three kinds of posts. **Lore**: Eywa, the Trees of Souls, the neural network linking every living thing, which the film's human scientists measure as electrical signals. **Nature**: the bioluminescence, the wildlife (ikran, toruk, viperwolves, ilu and tulkun) and why so many creatures have six legs or breathe through their chests. And **hard facts**: how much of Pandora is grounded in real biology, where Cameron found his inspiration (coral reefs, rainforests, his own diving) and what is pure invention.\n\nMy rule is simple. If something is in the films or the official books, I say so. If it's my own reading or a theory, I flag it. And I always leave the sources at the end, because I like to check them too.\n\nIf you've just watched the films and want to understand how this world works, start here."
+    },
+    {
+      "position": 2,
+      "slug_es": "personajes",
+      "slug_en": "characters",
+      "title_es": "Personajes",
+      "title_en": "Characters",
+      "seo_description_es": "Jake, Neytiri, Lo'ak, Kiri, Tsireya, Varang, Quaritch… arcos, motivaciones y detalles que se pierden en un primer visionado de Avatar.",
+      "seo_description_en": "Jake, Neytiri, Lo'ak, Kiri, Tsireya, Varang, Quaritch… character arcs, motivations and the details you miss on a first watch of Avatar.",
+      "intro_md_es": "Los personajes son el motivo por el que vuelvo a Avatar una y otra vez. Puedes quedarte con los efectos, con Pandora, con la música de James Horner y Simon Franglen, pero lo que hace que una historia aguante quince años es que sus personajes cambian, se equivocan y pagan por ello.\n\nAquí tienes mis vídeos y artículos sobre **personajes y arcos**: Jake Sully y su paso de marine a Toruk Makto y a padre; Neytiri y lo que la primera película no cuenta de ella; Lo'ak, Neteyam, Kiri y Tuk como segunda generación; Tsireya y los Metkayina; y los antagonistas, que en esta saga nunca son planos: Quaritch recombinante, Ardmore, y en *Fire and Ash*, Varang y el clan de la ceniza.\n\nLo que intento en cada pieza es ir más allá de \"me gusta este personaje\". Busco qué decisiones toma, qué le cuesta tomarlas y qué dicen los guionistas o los actores sobre ello en entrevistas y en los libros de arte oficiales. Cuando algo es canon, lo señalo. Cuando es mi lectura, también.\n\nSi tienes un personaje favorito y quieres defenderlo con argumentos, aquí tienes munición. Y si lo odias, también.",
+      "intro_md_en": "The characters are the reason I keep going back to Avatar. You can come for the visuals, for Pandora, for James Horner's and Simon Franglen's music, but what makes a story last fifteen years is that its characters change, get things wrong and pay for it.\n\nThis is where I keep my videos and articles on **characters and arcs**: Jake Sully, from marine to Toruk Makto to father; Neytiri and everything the first film leaves unsaid about her; Lo'ak, Neteyam, Kiri and Tuk as the second generation; Tsireya and the Metkayina; and the antagonists, who are never flat in this saga: recombinant Quaritch, Ardmore and, in *Fire and Ash*, Varang and the Ash People.\n\nWhat I try to do in every piece is go past \"I like this character\". I look at the choices they make, what those choices cost them, and what the writers and actors have said about it in interviews and in the official art books. When something is canon, I say so. When it's my reading, I say that too.\n\nIf you have a favourite character and want to defend them with actual arguments, this is your ammunition. If you can't stand them, same."
+    },
+    {
+      "position": 3,
+      "slug_es": "clanes",
+      "slug_en": "clans",
+      "title_es": "Clanes y culturas",
+      "title_en": "Clans & Cultures",
+      "seo_description_es": "Omatikaya, Metkayina, Mangkwan y los demás clanes na'vi: cómo viven, qué creen, cómo se visten y en qué se diferencian.",
+      "seo_description_en": "Omatikaya, Metkayina, Mangkwan and the other Na'vi clans: how they live, what they believe, how they dress and what sets them apart.",
+      "intro_md_es": "Los na'vi no son un solo pueblo. Esa es la idea que más me gusta de la saga y la que más se pierde cuando hablamos de \"los azules\" en general. Cada clan se ha adaptado a un entorno distinto de Pandora y eso cambia su cuerpo, su lengua, sus rituales y hasta su manera de montar.\n\nEn esta sección hablo de los **Omatikaya** del bosque, el clan de Neytiri, con su Árbol Casa y sus ikran; de los **Metkayina** de los arrecifes, que en *The Way of Water* nos enseñan a respirar de otra manera; de los **Mangkwan**, el pueblo de la ceniza que aparece en *Fire and Ash*; y de los clanes que solo conocemos por los libros, la Pandorapedia o fragmentos de las películas. También dedico espacio a la cultura compartida: la lengua na'vi creada por el lingüista Paul Frommer, el *tsaheylu*, los cantos, el luto y la relación con Eywa.\n\nMi fuente principal son las películas y los libros oficiales de Lightstorm. Cuando algo viene de materiales ampliados (videojuegos, parque de Disney, cómics), lo indico, porque no todo tiene el mismo peso dentro del canon.\n\nSi alguna vez te has preguntado por qué los Metkayina tienen la cola plana o qué significa el pelo trenzado, aquí lo encuentras.",
+      "intro_md_en": "The Na'vi are not one people. That is my favourite idea in the whole saga, and the one that gets lost fastest when we talk about \"the blue aliens\" as a block. Each clan has adapted to a different part of Pandora, and that shapes their bodies, their dialect, their rituals and even the way they ride.\n\nHere I cover the forest **Omatikaya**, Neytiri's clan, with their Hometree and their ikran; the reef **Metkayina**, who teach us a different way to breathe in *The Way of Water*; the **Mangkwan**, the Ash People of *Fire and Ash*; and the clans we only know from the books, the Pandorapedia or a few frames of the films. I also make room for the culture they share: the Na'vi language built by linguist Paul Frommer, *tsaheylu*, the songs, mourning, and the bond with Eywa.\n\nMy main sources are the films and Lightstorm's official books. When something comes from expanded material (games, the Disney park, comics), I flag it, because not everything carries the same weight in canon.\n\nIf you've ever wondered why the Metkayina have flat tails or what a braid means, this is the place."
+    },
+    {
+      "position": 4,
+      "slug_es": "saga",
+      "slug_en": "saga",
+      "title_es": "La saga",
+      "title_en": "The Saga",
+      "seo_description_es": "Detrás de cámaras de Avatar, noticias comentadas y teorías con fundamento sobre Avatar 4 y 5. Lo que se sabe y lo que es especulación.",
+      "seo_description_en": "Behind the scenes of Avatar, news with context, and grounded theories about Avatar 4 and 5. What's confirmed and what's speculation.",
+      "intro_md_es": "Avatar no es solo tres películas: es un proyecto de más de veinte años con dos entregas más anunciadas. Esta sección es mi cuaderno de seguimiento de la saga como obra, no como mundo.\n\nAquí encontrarás tres cosas. **Detrás de cámaras**: cómo se rodó la captura de interpretación bajo el agua, qué hace exactamente Wētā FX, por qué los rodajes de las secuelas se hicieron a la vez, y lo que cuentan Cameron, Jon Landau (que falleció en 2024 y a quien la saga le debe muchísimo) y el reparto. **Reacción a noticias**: cada vez que sale un tráiler, una fecha, un fichaje o una declaración, lo comento con contexto, no solo con emoción. Y **teorías sobre Avatar 4 y 5**: aquí me permito especular, pero siempre separando lo que Cameron ha dicho de forma pública de lo que es deducción mía.\n\nUna regla que me pongo: no doy por confirmado nada que no tenga una fuente clara (entrevista, nota de prensa, publicación oficial). Los rumores existen, pero se presentan como rumores.\n\nSi quieres saber qué viene después sin tragarte titulares exagerados, suscríbete a esta sección.",
+      "intro_md_en": "Avatar is not just three films; it's a project spanning more than twenty years, with two more instalments announced. This section is my notebook for following the saga as a body of work, rather than as a world.\n\nYou'll find three things here. **Behind the scenes**: how underwater performance capture was shot, what Wētā FX actually does, why the sequels were filmed back to back, and what Cameron, the cast and Jon Landau (who passed away in 2024 and to whom this saga owes a great deal) have said about it. **News reactions**: every time a trailer, a date, a casting or a quote drops, I comment on it with context, not just excitement. And **theories about Avatar 4 and 5**: this is where I let myself speculate, always separating what Cameron has said publicly from what I'm deducing on my own.\n\nOne rule I hold myself to: I don't treat anything as confirmed without a clear source (an interview, a press release, an official post). Rumours exist, but they're labelled as rumours.\n\nIf you want to know what comes next without wading through clickbait, this is the section to follow."
+    },
+    {
+      "position": 5,
+      "slug_es": "coleccion",
+      "slug_en": "collection",
+      "title_es": "Colección",
+      "title_en": "Collection",
+      "seo_description_es": "Mi colección de Avatar: figuras, libros de arte, ediciones físicas y merchandising. Qué merece la pena, dónde encontrarlo y qué evitar.",
+      "seo_description_en": "My Avatar collection: figures, art books, physical editions and merchandise. What's worth it, where to find it and what to avoid.",
+      "intro_md_es": "Soy coleccionista de Avatar desde 2009 y esta es, probablemente, la sección más personal de la web. Aquí enseño lo que tengo, lo que busco y lo que he aprendido comprando (y a veces equivocándome).\n\nHablo de **merchandising** en sentido amplio: figuras y estatuas, los libros de arte oficiales y las guías de Pandora, las ediciones físicas de las películas y sus extras, pósteres, ropa y objetos del parque Pandora – The World of Avatar en Disney. De cada pieza intento contar tres cosas: qué es exactamente (fabricante, año, edición), por qué la tengo y qué calidad real ofrece, porque no todo lo que lleva el logo merece el precio.\n\nTambién te cuento dónde busco: tiendas oficiales, segunda mano, ferias, y las señales que me hacen desconfiar de una réplica o de una tienda que no existe. Una regla: aquí no hay enlaces de afiliado escondidos; si alguna vez los hay, se dirá claramente.\n\nLa galería de esta sección la actualizo según crece la colección. Si tienes una pieza rara o una duda sobre si algo es oficial, escríbeme por redes.",
+      "intro_md_en": "I've been collecting Avatar since 2009, and this is probably the most personal section of the site. Here I show what I own, what I'm hunting for, and what I've learned from buying (and sometimes getting it wrong).\n\nI use **merchandise** in the broad sense: figures and statues, the official art books and Pandora guides, physical editions of the films and their extras, posters, clothing, and pieces from Pandora – The World of Avatar at Disney. For every item I try to cover three things: exactly what it is (maker, year, edition), why I have it, and what the real quality is like, because not everything with the logo on it earns its price tag.\n\nI also share where I look: official shops, second-hand, conventions, and the warning signs that make me suspect a replica or a store that doesn't really exist. One rule: there are no hidden affiliate links here; if that ever changes, it will be stated plainly.\n\nThe gallery in this section grows with the collection. If you own a rare piece or aren't sure whether something is official, message me on social media."
+    },
+    {
+      "position": 6,
+      "slug_es": "vida-fan",
+      "slug_en": "fan-life",
+      "title_es": "Vida fan",
+      "title_en": "Fan Life",
+      "seo_description_es": "Mi historia con Avatar desde 2009, la experiencia de ser fan en España, viajes, eventos, cosplay, tatuajes y comunidad.",
+      "seo_description_en": "My story with Avatar since 2009, being a fan in Spain, trips, events, cosplay, tattoos and community.",
+      "intro_md_es": "Vi Avatar en el cine en 2009 y salí distinta. No lo digo como frase hecha: desde entonces esta historia me ha acompañado en las etapas buenas y en las malas, y me ha llevado a sitios y a personas que no habría conocido de otra forma.\n\nEsta sección es la parte de la web que no habla de Pandora, sino de lo que Pandora hace con nosotros. Aquí está **mi historia con Avatar**: por qué me enganché, qué significó esperar trece años una secuela, y cómo la saga se convirtió en un proyecto de contenido en español. Y también lo que llamo **Avatar fan** en general: visitas al parque de Disney y a exposiciones, estrenos y maratones, cosplay y tatuajes, la comunidad hispanohablante y los pequeños rituales de fan (sí, llorar con el mismo plano por décima vez cuenta).\n\nNo pretendo que sea una sección de \"experta\". Es la sección de alguien a la que le importa mucho una historia y que quiere compartirlo con quien sienta lo mismo. Si tú también sales del cine pensando en Eywa, estás en casa.",
+      "intro_md_en": "I saw Avatar in the cinema in 2009 and walked out a different person. That isn't a line: since then, this story has been with me through good years and bad ones, and it has taken me to places and people I would never have found otherwise.\n\nThis is the part of the site that isn't about Pandora, but about what Pandora does to us. Here you'll find **my story with Avatar**: why I fell for it, what thirteen years of waiting for a sequel felt like, and how the saga turned into a Spanish-language content project. And everything I group under **Avatar fan** in general: trips to the Disney park and exhibitions, premieres and marathons, cosplay and tattoos, the Spanish-speaking community, and the small fan rituals (yes, crying at the same shot for the tenth time counts).\n\nI'm not claiming expert status here. This is the section of someone who cares deeply about a story and wants to share that with people who feel the same. If you also leave the cinema thinking about Eywa, you're home."
+    }
+  ],
+  "categories": [
+    {
+      "position": 1,
+      "section_slug": "pandora",
+      "name_es": "Lore de Pandora",
+      "slug_es": "lore-de-pandora",
+      "name_en": "Pandora Lore",
+      "slug_en": "pandora-lore",
+      "notion_name": "1. Lore de Pandora"
+    },
+    {
+      "position": 2,
+      "section_slug": "pandora",
+      "name_es": "Naturaleza y Pandora",
+      "slug_es": "naturaleza-y-pandora",
+      "name_en": "Nature & Wildlife",
+      "slug_en": "nature-and-wildlife",
+      "notion_name": "9. Naturaleza y Pandora"
+    },
+    {
+      "position": 3,
+      "section_slug": "pandora",
+      "name_es": "Datos duros",
+      "slug_es": "datos-duros",
+      "name_en": "Hard Facts",
+      "slug_en": "hard-facts",
+      "notion_name": "6. Datos duros"
+    },
+    {
+      "position": 4,
+      "section_slug": "personajes",
+      "name_es": "Personajes y arcos",
+      "slug_es": "personajes-y-arcos",
+      "name_en": "Characters & Arcs",
+      "slug_en": "characters-and-arcs",
+      "notion_name": "4. Personajes y arcos"
+    },
+    {
+      "position": 5,
+      "section_slug": "clanes",
+      "name_es": "Clanes y culturas",
+      "slug_es": "clanes-y-culturas",
+      "name_en": "Clans & Cultures",
+      "slug_en": "clans-and-cultures",
+      "notion_name": "2. Clanes y culturas"
+    },
+    {
+      "position": 6,
+      "section_slug": "saga",
+      "name_es": "Detrás de cámaras",
+      "slug_es": "detras-de-camaras",
+      "name_en": "Behind the Scenes",
+      "slug_en": "behind-the-scenes",
+      "notion_name": "3. Detrás de cámaras"
+    },
+    {
+      "position": 7,
+      "section_slug": "saga",
+      "name_es": "Teorías Avatar 4 y 5",
+      "slug_es": "teorias-avatar-4-y-5",
+      "name_en": "Avatar 4 & 5 Theories",
+      "slug_en": "avatar-4-5-theories",
+      "notion_name": "5. Teorías Avatar 4 y 5"
+    },
+    {
+      "position": 8,
+      "section_slug": "saga",
+      "name_es": "Reacción a noticias",
+      "slug_es": "reaccion-a-noticias",
+      "name_en": "News Reactions",
+      "slug_en": "news-reactions",
+      "notion_name": "7. Reacción a noticias"
+    },
+    {
+      "position": 9,
+      "section_slug": "coleccion",
+      "name_es": "Merchandising",
+      "slug_es": "merchandising",
+      "name_en": "Merchandise",
+      "slug_en": "merchandise",
+      "notion_name": "8. Merchandising"
+    },
+    {
+      "position": 10,
+      "section_slug": "vida-fan",
+      "name_es": "Mi historia con Avatar",
+      "slug_es": "mi-historia-con-avatar",
+      "name_en": "My Avatar Story",
+      "slug_en": "my-avatar-story",
+      "notion_name": "10. Mi historia con Avatar"
+    },
+    {
+      "position": 11,
+      "section_slug": "vida-fan",
+      "name_es": "Avatar fan",
+      "slug_es": "avatar-fan",
+      "name_en": "Avatar Fan",
+      "slug_en": "avatar-fan",
+      "notion_name": "11. Avatar fan"
+    }
+  ],
+  "pages": [
+    {
+      "type": "article",
+      "category_slug": "personajes-y-arcos",
+      "status": "draft",
+      "notion_published_at": "2026-09-16",
+      "video_url": null,
+      "translations": {
+        "es": {
+          "slug": "5-cosas-de-neytiri-que-probablemente-no-sabias",
+          "title": "5 cosas de Neytiri que probablemente no sabías",
+          "seo_description": "Estas son 5 cosas de Neytiri que probablemente no sabías. La pintura de guerra de Neytiri está inspirada en los colores de Seze, su primer Ikran, que",
+          "body_md": "Estas son 5 cosas de Neytiri que probablemente no sabías.\n\n- La pintura de guerra de Neytiri está inspirada en los colores de Seze, su primer Ikran, que murió en la batalla de las montañas Aleluya.\n- Originalmente Neytiri no estaba destinada a ser Tsahìk, sino su hermana mayor Sylwanin; cuando ella murió, Neytiri heredó el puesto. Esto aparece en el cómic *Avatar: Tsu'tey's Path*.\n- La canción de Neytiri en *The Way of Water* se compuso incluso antes de que existiera ninguna imagen de la película.\n- En una escena eliminada de la primera película, Neytiri ya aparece embarazada de Neteyam.\n- Los Na'vi usan el arco con la izquierda porque Neytiri (Zoe Saldaña) es zurda, igual que James Cameron.\n\n## Fuentes\n- Pandorapedia\n- Sound track fest\n- Avatar Wiki\n- Scoringsessions.com"
+        }
+      },
+      "sources": [
+        "Pandorapedia",
+        "Sound track fest",
+        "Avatar Wiki",
+        "Scoringsessions.com"
+      ]
+    },
+    {
+      "type": "article",
+      "category_slug": "personajes-y-arcos",
+      "status": "draft",
+      "notion_published_at": "2026-09-23",
+      "video_url": null,
+      "translations": {
+        "es": {
+          "slug": "5-cosas-de-lo-ak-que-probablemente-no-sabias",
+          "title": "5 cosas de Lo'ak que probablemente no sabías",
+          "seo_description": "Estas son 5 cosas de Lo'ak que probablemente no sabías. Antes de que conociéramos a Lo'ak en Avatar 2, fracasó en su primer intento de domar a su",
+          "body_md": "Estas son 5 cosas de Lo'ak que probablemente no sabías.\n\n- Antes de que conociéramos a Lo'ak en Avatar 2, fracasó en su primer intento de domar a su Ikran y casi muere al caer por un precipicio. Esto aparece en el cómic *Avatar: The High Ground*.\n- A Lo'ak no solo le gusta luchar, sino también tejer, y aprendió esta habilidad de su abuela Mo'at.\n- James Cameron pidió que Lo'ak llevara una trenza en la parte delantera de la cabeza para darle un carácter rebelde.\n- En el guion original de Avatar 2, Jake nunca le dijo «te veo» a Lo'ak ni le agradeció por rescatarlo. Esto se añadió en la versión final para darle más evolución al personaje.\n- Britain Dalton, el actor que lo interpreta, reconoció que para él es difícil ver Avatar 3, ya que puso su alma en el personaje y está demasiado cerca de su corazón. Una vez estrenada la película, dijo al público: «a todas las almas solitarias y marginados incomprendidos, gracias por dejarme ser su voz».\n\n¿Sobre qué otro personaje de Avatar te gustaría escuchar 5 cosas que probablemente no sabías?\n\n## Fuentes\n- Avatar Wiki\n- Good Morning America\n- Dark Horse Comics"
+        }
+      },
+      "sources": [
+        "Avatar Wiki",
+        "Good Morning America",
+        "Dark Horse Comics"
+      ]
+    },
+    {
+      "type": "article",
+      "category_slug": "clanes-y-culturas",
+      "status": "draft",
+      "notion_published_at": null,
+      "video_url": null,
+      "translations": {
+        "es": {
+          "slug": "eywa-esta-basada-en-el-budismo",
+          "title": "¿Eywa está basada en el budismo?",
+          "seo_description": "¿Y si te dijera que la filosofía de Eywa en Avatar comparte varias ideas con el budismo? En Avatar todos los seres vivos están conectados. Esto",
+          "body_md": "¿Y si te dijera que la filosofía de Eywa en Avatar comparte varias ideas con el budismo?\n\n- En Avatar todos los seres vivos están conectados. Esto recuerda a la interdependencia budista: nada existe de forma aislada.\n- Jake comienza la película como humano y poco a poco deja de definirse por esa identidad; empieza a comprender que su existencia forma parte de algo más amplio. Esto puede relacionarse con la idea de la superación del apego y el ego que existe en el budismo.\n- Durante una escena de caza, Neytiri le enseña a Jake que el animal no es solo un recurso para comer. Esto recuerda al valor budista de que la vida es algo temporal, no una propiedad.\n- Para los Na'vi, cuando uno muere, la energía vital regresa a Eywa. Para ellos la muerte no representa una desconexión total, sino un retorno. Esto puede recordar al samsara, el ciclo de nacimiento, muerte y renacimiento presente en el budismo.\n\nMuchos análisis de Avatar también han relacionado Eywa con Gaia, el hinduismo, el taoísmo y las cosmovisiones indígenas.\n\nQuizá por eso Eywa transmite tanta paz: porque nos recuerda algo que muchas tradiciones espirituales llevan siglos enseñando, que formamos parte de la naturaleza.\n\n¿Y tú? ¿Qué opinas sobre esto? Dímelo en los comentarios, que te leo.\n\n## Fuentes\n- Lion's Roar\n- Campamentomestizo\n- Reydekish"
+        }
+      },
+      "sources": [
+        "Lion's Roar",
+        "Campamentomestizo",
+        "Reydekish"
+      ]
+    },
+    {
+      "type": "article",
+      "category_slug": "personajes-y-arcos",
+      "status": "draft",
+      "notion_published_at": null,
+      "video_url": null,
+      "translations": {
+        "es": {
+          "slug": "5-cosas-de-varang-que-probablemente-no-sabias",
+          "title": "5 cosas de Varang que probablemente no sabías",
+          "seo_description": "Estas son 5 cosas de Varang que probablemente no sabías. A sus 15 años, Varang arrebató el puesto de Tsahìk a su hermana mayor y envenenó a su propio",
+          "body_md": "Estas son 5 cosas de Varang que probablemente no sabías.\n\n- A sus 15 años, Varang arrebató el puesto de Tsahìk a su hermana mayor y envenenó a su propio padre para tomar el liderazgo como olo'eyktan. Esto aparece en el diccionario visual de Avatar 3.\n- Varang ya existía en 2013. Estuvo más de una década en desarrollo antes de que la viéramos en Avatar 3.\n- El ojo que lleva tatuado en la mano derecha no es simple decoración: representa el Ojo que todo lo ve y se asocia también con el poder y el control.\n- Oona Chaplin, la actriz que la interpreta, estudió el movimiento real de la lava para inspirarse a la hora de caminar. Por eso Varang se mueve desde la pelvis, cuando los demás Na'vi lo hacen desde el corazón.\n- Las armas que utiliza Varang se llaman Buungeng y para manejarlas se necesita muchísimo control. Por eso Oona Chaplin pasó miles de horas practicando con ellas, incluso mientras se lavaba los dientes.\n\n¿Sobre qué otro personaje de Avatar te gustaría escuchar «5 cosas que probablemente no sabías»?"
+        }
+      },
+      "sources": []
+    },
+    {
+      "type": "article",
+      "category_slug": "mi-historia-con-avatar",
+      "status": "draft",
+      "notion_published_at": null,
+      "video_url": null,
+      "translations": {
+        "es": {
+          "slug": "pov-la-obsesion-de-tu-infancia-nunca-ha-desaparecido",
+          "title": "POV: la obsesión de tu infancia nunca ha desaparecido",
+          "seo_description": "",
+          "body_md": ""
+        }
+      },
+      "sources": []
+    },
+    {
+      "type": "article",
+      "category_slug": "lore-de-pandora",
+      "status": "draft",
+      "notion_published_at": "2026-09-13",
+      "video_url": null,
+      "translations": {
+        "es": {
+          "slug": "por-que-los-na-vi-son-azules",
+          "title": "Por qué los Na'vi son azules?",
+          "seo_description": "Sé que te lo has preguntado: ¿por qué los Na'vi son",
+          "body_md": "Sé que te lo has preguntado: ¿por qué los Na'vi son azules?"
+        }
+      },
+      "sources": []
+    },
+    {
+      "type": "article",
+      "category_slug": "avatar-fan",
+      "status": "draft",
+      "notion_published_at": "2026-09-11",
+      "video_url": null,
+      "translations": {
+        "es": {
+          "slug": "cosas-que-todo-fan-de-avatar-deberia-tener",
+          "title": "Cosas que todo fan de Avatar debería tener",
+          "seo_description": "",
+          "body_md": ""
+        }
+      },
+      "sources": []
+    },
+    {
+      "type": "article",
+      "category_slug": "mi-historia-con-avatar",
+      "status": "draft",
+      "notion_published_at": "2026-09-18",
+      "video_url": null,
+      "translations": {
+        "es": {
+          "slug": "agradecimiento-video-viral",
+          "title": "Agradecimiento vídeo viral",
+          "seo_description": "",
+          "body_md": ""
+        }
+      },
+      "sources": []
+    },
+    {
+      "type": "gallery",
+      "category_slug": "merchandising",
+      "status": "draft",
+      "notion_published_at": null,
+      "video_url": null,
+      "translations": {
+        "es": {
+          "slug": "mi-coleccion-de-avatar",
+          "title": "Mi colección de Avatar",
+          "seo_description": "Figuras, libros de arte, ediciones físicas y merchandising de Avatar: la colección de sophisnavi desde 2009.",
+          "body_md": "Sofi colecciona sobre todo ediciones físicas de las tres películas de Avatar: DVD, Blu-ray, ediciones extendidas, limitadas, 3D, steelbooks y ediciones de coleccionista con busto. Le acompañan los videojuegos de Avatar en varias plataformas, los libros de arte, diccionarios y guías visuales, cómics de Dark Horse y bandas sonoras, incluso en vinilo. En figuras tiene tanto las clásicas de Mattel de 2009 como las de McFarlane Toys (figuras, dioramas luminosos y minifiguras), además de Funko Pop y Lego. Completa la colección con objetos de cine (cubos de palomitas, vasos, pósteres y revistas), un juego de mesa y ropa y accesorios de marcas de fans como Avatararcticlife."
+        }
+      },
+      "sources": [],
+      "media": []
+    }
+  ],
+  "counts": {
+    "sections": 6,
+    "categories": 11,
+    "pages": 9,
+    "articles": 8,
+    "galleries": 1
+  }
+}
