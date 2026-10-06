@@ -1,14 +1,14 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { TreeScene } from "@/lib/tree-scene";
+import type { TreeScene } from "@/ui/tree-scene/renderer";
 
 type Opts = { reducedMotion: boolean; skipIntro: boolean; onIntroDone: () => void };
 const createTreeScene = vi.fn<(canvas: HTMLCanvasElement, opts: Opts) => TreeScene>();
-vi.mock("@/lib/tree-scene", () => ({ createTreeScene: (c: HTMLCanvasElement, o: Opts) => createTreeScene(c, o) }));
+vi.mock("@/ui/tree-scene/renderer", () => ({ createTreeScene: (c: HTMLCanvasElement, o: Opts) => createTreeScene(c, o) }));
 
 import { Experience } from "./experience";
 
-const fakeScene = (opts: Opts): TreeScene => ({ skipIntro: () => opts.onIntroDone(), dispose: vi.fn() });
+const fakeScene = (opts: Opts): TreeScene => ({ skipIntro: () => opts.onIntroDone(), time: () => 0, dispose: vi.fn() });
 
 // Protege: la intro se puede saltar (clic, teclado o sesión ya vista) y sin WebGL se va directo al menú.
 describe("Experience", () => {
@@ -18,7 +18,7 @@ describe("Experience", () => {
   });
 
   it("muestra la intro y pasa al menú al pulsar Saltar intro, recordándolo en la sesión", async () => {
-    render(<Experience />);
+    render(<Experience sections={[]} />);
     expect(screen.getByRole("heading", { level: 1, name: "Sophisnavi" })).toBeTruthy();
     await vi.waitFor(() => expect(createTreeScene).toHaveBeenCalled());
     fireEvent.click(screen.getByRole("button", { name: "Saltar intro" }));
@@ -27,7 +27,7 @@ describe("Experience", () => {
   });
 
   it("salta la intro con Enter", async () => {
-    render(<Experience />);
+    render(<Experience sections={[]} />);
     await vi.waitFor(() => expect(createTreeScene).toHaveBeenCalled());
     fireEvent.keyDown(window, { key: "Enter" });
     expect(await screen.findByRole("navigation")).toBeTruthy();
@@ -35,7 +35,7 @@ describe("Experience", () => {
 
   it("pide saltar la intro si ya se vio en esta sesión", async () => {
     sessionStorage.setItem("sophisnavi:intro-seen", "1");
-    render(<Experience />);
+    render(<Experience sections={[]} />);
     await vi.waitFor(() => expect(createTreeScene).toHaveBeenCalled());
     expect(createTreeScene.mock.calls[0][1].skipIntro).toBe(true);
   });
@@ -44,7 +44,7 @@ describe("Experience", () => {
     createTreeScene.mockImplementation(() => {
       throw new Error("no webgl");
     });
-    render(<Experience />);
+    render(<Experience sections={[]} />);
     expect(await screen.findByRole("navigation", { name: "Menú principal" })).toBeTruthy();
   });
 });

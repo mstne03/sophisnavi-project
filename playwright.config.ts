@@ -1,6 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const PORT = 3000;
+// E2E_PORT permite ejecutar el E2E aunque el 3000 esté ocupado por otro servidor local.
+const PORT = Number(process.env.E2E_PORT ?? 3000);
 const baseURL = `http://127.0.0.1:${PORT}`;
 
 export default defineConfig({
