@@ -1,4 +1,10 @@
-import json, re, unicodedata, datetime, io
+import json, re, unicodedata, datetime, io, subprocess
+
+def git_date(path):
+    # fecha del último commit del archivo fuente: reproducible y no cambia en cada build
+    out=subprocess.run(['git','log','-1','--format=%cI','--',path],capture_output=True,text=True).stdout.strip()
+    return out[:10] if out else datetime.date.today().isoformat()
+
 ROOT='.'  # ejecutar desde la raíz del repo: python data/seed/build-content-seed.py
 md=io.open(f'{ROOT}/docs/content/sections.md',encoding='utf-8').read()
 snap=json.load(io.open(f'{ROOT}/data/seed/notion-snapshot.json',encoding='utf-8'))
@@ -15,6 +21,7 @@ def intro(block,label,stop):
     m=re.search(r"\*\*"+re.escape(label)+r"\*\*\s*\n\n(.*?)\n\n\*\*"+stop,block,re.S)
     return m.group(1).strip() if m else None
 
+SECTIONS_DATE=git_date('docs/content/sections.md'); SNAPSHOT_DATE=git_date('data/seed/notion-snapshot.json')
 sections=[]
 for m in re.finditer(r"### (\d)\. (.+?) · `/es/([a-z-]+)` · `/en/([a-z-]+)`\n(.*?)(?=\n---\n)",md,re.S):
     pos,_,slug_es,slug_en,block=m.groups()
@@ -22,6 +29,7 @@ for m in re.finditer(r"### (\d)\. (.+?) · `/es/([a-z-]+)` · `/en/([a-z-]+)`\n(
       "position":int(pos),"slug_es":slug_es,"slug_en":slug_en,
       "title_es":field(block,"Título ES:"),"title_en":field(block,"Title EN:"),
       "seo_description_es":field(block,"Descripción SEO ES"),"seo_description_en":field(block,"SEO description EN"),
+      "updated_at":SECTIONS_DATE,
       "intro_md_es":intro(block,"Intro ES:","Title EN"),
       "intro_md_en":re.search(r"\*\*Intro EN:\*\*\s*\n\n(.*)",block,re.S).group(1).strip(),
     })
@@ -46,15 +54,15 @@ for v in snap["videos"]:
     if v.get("hook") and not body: body=v["hook"].strip()
     if v["sources"]: body+=("\n\n" if body else "")+"## Fuentes\n"+"\n".join(f"- {s}" for s in v["sources"])
     seo=re.sub(r"\s+"," ",re.sub(r"[#*_>`\-]"," ",body.split("## Fuentes")[0]))[:150].rsplit(" ",1)[0].strip().rstrip(",;:") if body else ""
-    pages.append({"type":"article","category_slug":c["slug_es"],"status":"draft",
+    pages.append({"type":"article","category_slug":c["slug_es"],"status":"draft","updated_at":(v.get("published_at") or SNAPSHOT_DATE)[:10],
       "notion_published_at":v.get("published_at"),"video_url":v.get("video_url"),
       "translations":{"es":{"slug":slugify(v["title"]),"title":v["title"],"seo_description":seo,"body_md":body}},
       "sources":v["sources"]})
-pages.append({"type":"gallery","category_slug":"merchandising","status":"draft","notion_published_at":None,"video_url":None,
+pages.append({"type":"gallery","category_slug":"merchandising","status":"draft","updated_at":SNAPSHOT_DATE,"notion_published_at":None,"video_url":None,
   "translations":{"es":{"slug":"mi-coleccion-de-avatar","title":"Mi colección de Avatar","seo_description":"Figuras, libros de arte, ediciones físicas y merchandising de Avatar: la colección de sophisnavi desde 2009.","body_md":snap["collection_intro_notes"].strip()}},
   "sources":[],"media":[]})
 slugs=[p["translations"]["es"]["slug"] for p in pages]; assert len(slugs)==len(set(slugs))
-out={"$schema_note":"JSON intermedio del seed de la fase 1 (plan: paso 1.2). Generado por script desde docs/content/sections.md y data/seed/notion-snapshot.json. Todo status=draft. Sin filas EN en pages: la versión EN es opcional por página.",
+out={"$schema_note":"JSON intermedio del seed de la fase 1 (plan: paso 1.2). Generado por script desde docs/content/sections.md y data/seed/notion-snapshot.json. Todo status=draft. Sin filas EN en pages: la versión EN es opcional por página. updated_at = fecha del último commit del archivo fuente (o published_at de Notion), para el lastModified del sitemap.",
  "generated_at":datetime.date.today().isoformat(),"locales":["es","en"],"sections":sections,"categories":cats,"pages":pages,
  "counts":{"sections":6,"categories":11,"pages":len(pages),"articles":len(pages)-1,"galleries":1}}
 io.open(f'{ROOT}/data/seed/content-seed.json','w',encoding='utf-8',newline='\n').write(json.dumps(out,ensure_ascii=False,indent=2)+"\n")
