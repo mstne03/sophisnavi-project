@@ -13,8 +13,8 @@ Plan: `C:\Users\Marc\.claude\plans\resilient-seeking-squirrel.md`. Estándares: 
 | 0.0 Estándares | ✅ | `docs/standards.md`. Sin conflictos con decisiones cerradas; 5 desviaciones aprobadas por Marc (ver abajo) |
 | 0.1 Repo público + pnpm | ✅ | Repo público; secret scanning, push protection y alertas Dependabot activos; `main` protegida (PR, checks, lineal, squash, 0 aprobaciones; lista de checks vacía hasta 0.3); pnpm 10.34.6 + Node 22; lint y build en verde |
 | 0.2 TDD y lint | ✅ | Vitest 5 + Testing Library + cobertura v8 (umbral 85 % en 4 métricas; real 98,5/88,9/100/100); Playwright (Chromium escritorio + Pixel 7) con fixture que falla ante console.error; regla de capas en ESLint verificada por test; scripts lint/typecheck/test/test:coverage/e2e/lhci/dod; ADR-0006 |
-| 0.3 ci.yml | ⏳ siguiente | Falta instalar @lhci/cli y lighthouserc; añadir checks obligatorios a la protección de main al terminar |
-| 0.4 Sonar | pendiente | |
+| 0.3 ci.yml | 🔄 verificando en CI | 5 jobs, acciones fijadas por SHA, permisos de solo lectura, concurrency, caché pnpm; LHCI con 7 rutas fijas hasta el sitemap (0.9); checks obligatorios en main: quality, unit, e2e, sonar |
+| 0.4 Sonar | 🔄 verificando en CI | `sonar-project.properties` con la misma lista de exclusiones que vitest; falta confirmar Automatic Analysis desactivado y cobertura importada ≠ 0 % en el primer PR |
 
 ## Decisiones tomadas en la S1 (aprobadas 2026-10-06)
 
@@ -46,4 +46,4 @@ esas rutas ni esa rama; push solo de la propia rama (nunca `--all`/`--mirror`); 
 
 ## CI
 
-Sin workflow todavía.
+`ci.yml` creado; primera ejecución pendiente en la PR de la rama `feat/fase-0-s1`.
