@@ -4,7 +4,7 @@ import { useEffect, useState, type MouseEvent } from "react";
 import { ABOUT_ID } from "./home-anchors";
 const SCROLLBAR_CLASS = "home-no-scrollbar";
 
-// Pestañas de la portada (arriba a la izquierda): Inicio (menú de secciones) y Quién soy (bienvenida de Notion).
+// Pestañas de la portada (arriba a la derecha): Inicio (menú de secciones) y Quién soy (bienvenida de Notion).
 // La página no muestra barra de desplazamiento: se navega con las pestañas, que desplazan con transición
 // y reflejan la posición en la URL (#quien-soy). El fondo 3D es fijo y sigue visible en las dos.
 export function HomeNav() {
@@ -52,7 +52,7 @@ export function HomeNav() {
   };
 
   return (
-    <nav aria-label="Portada" className="fixed top-5 left-5 z-20 flex gap-1 rounded-full border border-white/10 bg-[rgba(2,4,10,0.45)] p-1 backdrop-blur-md">
+    <nav aria-label="Portada" className="fixed top-5 right-5 z-20 flex gap-1 rounded-full border border-white/10 bg-[rgba(2,4,10,0.45)] p-1 backdrop-blur-md">
       {tab("inicio", "/", "Inicio")}
       {tab("about", `#${ABOUT_ID}`, "Quién soy")}
     </nav>
