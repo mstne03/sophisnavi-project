@@ -3,6 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import type { TreeScene } from "@/ui/tree-scene/renderer";
+import { HomeNav } from "./home-nav";
 import { MainMenu, type MenuSection } from "./main-menu";
 
 const SEEN_KEY = "sophisnavi:intro-seen";
@@ -136,6 +137,7 @@ export function Experience({ sections }: { sections: MenuSection[] }) {
           <MainMenu key="menu" sections={sections} animateIn={!returning} />
         )}
       </AnimatePresence>
+      {phase === "menu" && <HomeNav />}
     </main>
   );
 }

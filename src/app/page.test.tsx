@@ -13,6 +13,9 @@ describe("Home", () => {
     expect(screen.getByTestId("experience").textContent).toBe("pandora,personajes,clanes,saga,coleccion,vida-fan");
     expect(screen.getByRole("heading", { level: 2, name: /Bienvenida/ })).toBeTruthy();
     expect(screen.getByText(/Kaltxì/)).toBeTruthy();
+    const about = document.getElementById("quien-soy")!; // ancla de la pestaña «Quién soy»
+    expect(about.tagName).toBe("SECTION");
+    expect(about.className).not.toMatch(/bg-/); // sin fondo propio: el árbol 3D sigue detrás
   });
 
   it("declara canonical y Open Graph de la portada", () => {
