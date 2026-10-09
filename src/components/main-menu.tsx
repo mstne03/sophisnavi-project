@@ -16,7 +16,7 @@ export type MenuSection = { slug: string; title: string; description: string };
 export function MainMenu({ sections, animateIn = true }: { sections: MenuSection[]; animateIn?: boolean }) {
   return (
     <motion.div
-      className="relative z-10 mx-auto flex min-h-dvh w-full max-w-6xl flex-col px-6 py-10 [text-shadow:0_1px_14px_rgba(2,4,10,0.9)] sm:px-10 sm:py-14"
+      className="relative z-10 mx-auto flex min-h-dvh w-full max-w-6xl flex-col px-6 pt-20 pb-10 [text-shadow:0_1px_14px_rgba(2,4,10,0.9)] sm:px-10 sm:pt-24 sm:pb-14"
       initial={animateIn ? "hidden" : false}
       animate="show"
       variants={list}

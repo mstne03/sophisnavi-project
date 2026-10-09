@@ -51,6 +51,15 @@ describe("Markdown", () => {
     expect(b.getAttribute("width")).toBeNull();
   });
 
+  it("varias imágenes seguidas se agrupan en una cuadrícula de <figure>; una sola, no", () => {
+    const { container } = render(<Markdown source={"Intro\n\n![a](/content/p/1.webp)\n\n![b](/content/p/2.webp)\n\n![c](/content/p/3.webp)\n\nTexto\n\n![d](/content/p/4.webp)"} />);
+    const grids = container.querySelectorAll(".img-grid");
+    expect(grids).toHaveLength(1);
+    expect(grids[0].querySelectorAll("figure img")).toHaveLength(3);
+    expect(container.querySelectorAll("figure")).toHaveLength(4);
+    expect(container.querySelectorAll("p")).toHaveLength(2); // nunca <figure> dentro de <p>
+  });
+
   it("un enlace sin destino no lleva atributos externos", () => {
     const { container } = render(<Markdown source={"[sin destino]()"} />);
     expect(container.querySelector("a")?.getAttribute("target")).toBeNull();

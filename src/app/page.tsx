@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { pageMetadata, SITE_NAME } from "@/application/seo/metadata";
 import { Experience } from "@/components/experience";
+import { ABOUT_ID } from "@/components/home-anchors";
 import { Markdown } from "@/ui/markdown";
 import { content } from "./content";
 
@@ -15,9 +16,10 @@ export default async function Home() {
   return (
     <>
       <Experience sections={sections.map(({ slug, title, description }) => ({ slug, title, description }))} />
-      {/* Texto de bienvenida (fila Home · Introducción de Notion): HTML del servidor, lo leen los bots sin JS. */}
+      {/* Texto de bienvenida (fila Home · Introducción de Notion): HTML del servidor, lo leen los bots sin JS.
+          Sin fondo propio: el árbol 3D (fijo) sigue detrás; se llega con la pestaña «Quién soy» (#quien-soy). */}
       {home && (
-        <section aria-labelledby="bienvenida" className="relative z-10 bg-[#02040a] px-6 pb-24 text-white">
+        <section id={ABOUT_ID} aria-labelledby="bienvenida" className="relative z-10 min-h-dvh px-6 pt-24 pb-24 text-white">
           <div className="mx-auto w-full max-w-3xl">
             <h2 id="bienvenida" className="font-display text-3xl text-cyan-100 sm:text-4xl">
               Bienvenida, bienvenido

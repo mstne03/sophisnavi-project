@@ -20,9 +20,11 @@ describe("Experience", () => {
   it("muestra la intro y pasa al menú al pulsar Saltar intro, recordándolo en la sesión", async () => {
     render(<Experience sections={[]} />);
     expect(screen.getByRole("heading", { level: 1, name: "Sophisnavi" })).toBeTruthy();
+    expect(screen.queryByRole("navigation", { name: "Portada" })).toBeNull();
     await vi.waitFor(() => expect(createTreeScene).toHaveBeenCalled());
     fireEvent.click(screen.getByRole("button", { name: "Saltar intro" }));
     expect(await screen.findByRole("navigation", { name: "Menú principal" })).toBeTruthy();
+    expect(screen.getByRole("navigation", { name: "Portada" })).toBeTruthy(); // pestañas solo tras la intro
     expect(sessionStorage.getItem("sophisnavi:intro-seen")).toBe("1");
   });
 
@@ -30,7 +32,7 @@ describe("Experience", () => {
     render(<Experience sections={[]} />);
     await vi.waitFor(() => expect(createTreeScene).toHaveBeenCalled());
     fireEvent.keyDown(window, { key: "Enter" });
-    expect(await screen.findByRole("navigation")).toBeTruthy();
+    expect(await screen.findByRole("navigation", { name: "Menú principal" })).toBeTruthy();
   });
 
   it("pide saltar la intro si ya se vio en esta sesión", async () => {
