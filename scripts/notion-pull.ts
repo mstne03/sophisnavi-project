@@ -10,6 +10,12 @@ const root = process.cwd();
 const OUT = join(root, "data", "content", "content.json");
 const PUBLIC = join(root, "public");
 
+// En local el token vive en .env.local (lo lee Next, no tsx); en Vercel ya está en el entorno y el archivo no existe.
+// Las variables ya definidas en el proceso tienen prioridad: loadEnvFile no las sobrescribe.
+try {
+  process.loadEnvFile(join(root, ".env.local"));
+} catch {}
+
 async function main() {
   const token = process.env.NOTION_TOKEN;
   if (!token) {
