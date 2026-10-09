@@ -53,17 +53,21 @@ Marc decidió que Sofi publique desde Notion y que todo sea automático por webh
 3. Suscripción de webhook en la integración de Notion apuntando a `https://www.sophisnavi.com/api/notion/webhook` (eventos de página); copiar el `verification_token` de los logs de Vercel → `NOTION_WEBHOOK_SECRET`; pulsar «Verify» en Notion.
 4. Sofi pone `Publicado` en lo que quiera ver en la web.
 
-## ⚠️ Desviación activa: gates de CI no bloquean (desde 2026-10-06)
+## Desviación cerrada: gates de CI vuelven a bloquear (2026-10-06 → 2026-10-09)
 
-Decisión de Marc para entregar rápido hasta el MVP. La protección de `main` mantiene PR obligatoria, historial lineal, squash, sin force push y `enforce_admins`, pero **sin checks obligatorios**. `ci.yml` sigue corriendo en cada PR: **leer sus resultados antes de fusionar**.
+Entre el 6 y el 9 de octubre `main` no exigía checks (decisión de Marc para entregar rápido). El 9 de octubre, antes de fusionar
+la PR #14, Marc restauró `required_status_checks` con `strict: true` y los contextos `quality`, `unit`, `e2e` y `sonar`.
+`lighthouse` sigue siendo informativo hasta el paso 0.12 (portada con three.js por debajo de 0,85).
 
-**Reversión (al cerrar el MVP, sesión S4/S5 del plan repriorizado):**
+Comando usado, por si hay que repetirlo (PowerShell; en bash basta un heredoc con el mismo JSON):
 
-```bash
-gh api -X PATCH repos/mstne03/sophisnavi-project/branches/main/protection/required_status_checks -H "Accept: application/vnd.github+json" --input - <<'EOF2'
-{"strict":true,"contexts":["quality","unit","e2e","sonar"]}
-EOF2
+```powershell
+'{"strict":true,"contexts":["quality","unit","e2e","sonar"]}' | Set-Content -Encoding ascii protection.json
+gh api -X PATCH repos/mstne03/sophisnavi-project/branches/main/protection/required_status_checks -H "Accept: application/vnd.github+json" --input protection.json
+Remove-Item protection.json
 ```
+
+Comprobación: `gh api repos/mstne03/sophisnavi-project/branches/main/protection/required_status_checks`.
 
 ## Repriorización (2026-10-06)
 

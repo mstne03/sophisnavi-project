@@ -64,7 +64,7 @@ Cada paso lleva una **estimación de los tokens de contexto que consume** en la 
 
 **Decisión de Marc:** entregar y demostrar valor rápido. Dos cambios:
 
-1. **Gates de CI informativos hasta el MVP.** La protección de `main` conserva PR obligatoria, historial lineal, solo squash, sin force push y `enforce_admins`, pero **sin checks obligatorios**. El workflow `ci.yml` sigue ejecutándose completo en cada PR y sus resultados se leen antes de fusionar. **Reversión:** al cerrar el MVP (cuando Sofi lo haya visto funcionando) se restauran los contextos `quality`, `unit`, `e2e` y `sonar` con `gh api -X PATCH .../branches/main/protection/required_status_checks`. Registrado en `docs/progress.md`.
+1. **Gates de CI informativos hasta el MVP.** ~~La protección de `main` conserva PR obligatoria, historial lineal, solo squash, sin force push y `enforce_admins`, pero **sin checks obligatorios**.~~ **Cerrado el 2026-10-09:** `quality`, `unit`, `e2e` y `sonar` vuelven a ser obligatorios (`strict: true`) antes de fusionar la PR #14; `lighthouse` sigue informativo hasta el 0.12. Registrado en `docs/progress.md`.
 2. **El orden de los pasos cambia: primero lo visible.** El MVP es que la web refleje lo nuevo: secciones reales con contenido de ejemplo visible (seed de `data/seed/content-seed.json` y textos de `docs/content/`), y el panel de administración para Sofi. Orden nuevo:
 
 | Sesión | Pasos | Qué entrega |
