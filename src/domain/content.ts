@@ -93,15 +93,15 @@ export const isSlug = (s: string) => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(s);
 // Primer párrafo del Markdown, sin marcas, recortado a `max` sin partir palabras.
 export function excerpt(markdown: string, max = 155): string {
   const paragraph = markdown
-    .split(/\n\s*\n/)
+    .split(/\n[ \t]*\n/) // líneas en blanco; [ \t] no solapa con \n (sin retroceso)
     .map((b) => b.trim())
     .find((b) => b !== "" && !/^(#|!\[|>|-|\d+\.)/.test(b));
   if (!paragraph) return "";
   const plain = paragraph
-    .replace(/\s{2,}\n/g, " ")
+    .replace(/[ \t]{2,}\n/g, " ") // salto de línea duro de Markdown
     .replace(/\n/g, " ")
     .replace(/[*_`]/g, "")
-    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/\[([^[\]]*)\]\([^()]*\)/g, "$1") // [texto](url) → texto; sin [ ni ( anidados, lineal
     .trim();
   if (plain.length <= max) return plain;
   const cut = plain.slice(0, max - 1);
