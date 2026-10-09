@@ -28,7 +28,7 @@ describe("SectionPage", () => {
 
   it("sin intro de Notion muestra la descripción corta; sin artículos lo indica", async () => {
     render(await SectionPage(props("saga")));
-    expect(screen.getByText(/Detrás de cámaras de Avatar/)).toBeTruthy();
+    expect(screen.getByText(/Explora noticias, análisis, teorías/)).toBeTruthy();
     expect(screen.getByText(/Todavía no hay artículos/)).toBeTruthy();
     expect(within(screen.getByRole("main")).queryAllByRole("link").filter((a) => a.getAttribute("href")?.startsWith("/saga/"))).toHaveLength(0);
   });

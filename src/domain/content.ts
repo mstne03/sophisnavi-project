@@ -15,37 +15,37 @@ export const SECTIONS: readonly Section[] = [
   {
     slug: "pandora",
     title: "Pandora",
-    description: "Lore, naturaleza y datos reales de Pandora: Eywa, la flora bioluminiscente, los animales y la ciencia que James Cameron tomó de la Tierra.",
+    description: "Explora su fauna, flora, ecosistemas, y descubre por qué los Na'vi son azules, en qué se basa Eywa y la ciencia real detrás de Avatar.",
     notionNames: ["Pandora"],
   },
   {
     slug: "personajes",
     title: "Personajes",
-    description: "Jake, Neytiri, Lo'ak, Kiri, Tsireya, Varang, Quaritch… arcos, motivaciones y detalles que se pierden en un primer visionado de Avatar.",
+    description: "Conoce más a fondo a tus personajes favoritos, desde sus personalidades y habilidades hasta detalles que probablemente no sabías.",
     notionNames: ["Personajes"],
   },
   {
     slug: "clanes",
     title: "Clanes y culturas",
-    description: "Omatikaya, Metkayina, Mangkwan y los demás clanes na'vi: cómo viven, qué creen, cómo se visten y en qué se diferencian.",
+    description: "Adéntrate en las tradiciones, creencias y formas de vida de los diferentes clanes Na'vi. ¿Qué costumbres tienen y por qué son tan diferentes?",
     notionNames: ["Clanes y culturas"],
   },
   {
     slug: "saga",
     title: "La saga",
-    description: "Detrás de cámaras de Avatar, noticias comentadas y teorías con fundamento sobre Avatar 4 y 5. Lo que se sabe y lo que es especulación.",
+    description: "Explora noticias, análisis, teorías y detalles que revelan todo lo que se esconde detrás de las películas. ¿Sabías que existen cómics y videojuegos?",
     notionNames: ["La saga", "Teorías", "Detrás de cámaras"],
   },
   {
     slug: "coleccion",
     title: "Colección",
-    description: "Mi colección de Avatar: figuras, libros de arte, ediciones físicas y merchandising. Qué merece la pena, dónde encontrarlo y qué evitar.",
+    description: "Un rincón dedicado a los míos: los coleccionistas. Descubre todas las figuras, ediciones especiales, libros y formas de convertir tu habitación en Pandora.",
     notionNames: ["Colección"],
   },
   {
     slug: "vida-fan",
     title: "Vida fan",
-    description: "Mi historia con Avatar desde 2009, la experiencia de ser fan en España, viajes, eventos, cosplay, tatuajes y comunidad.",
+    description: "Un espacio personal para compartir lo que significa para mí ser fan de Avatar, desde experiencias, eventos, mi historia y momentos especiales con vosotros.",
     notionNames: ["Vida fan"],
   },
 ];
