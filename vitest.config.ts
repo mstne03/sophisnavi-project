@@ -6,7 +6,7 @@ import { defineConfig } from "vitest/config";
 export const coverageExclusions = [
   "src/ui/tree-scene/renderer.ts", // WebGL: lo cubre el E2E (ADR-0006)
   "src/ui/tree-scene/shaders.ts", // cadenas GLSL, sin lógica
-  "data/seed/**", // datos JSON de la sesión de contenido, no código
+  "data/content/**", // JSON generado desde Notion en el build, no código
 ];
 
 export default defineConfig({

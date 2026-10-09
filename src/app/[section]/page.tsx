@@ -1,54 +1,53 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { breadcrumbJsonLd, pageMetadata } from "@/application/seo/metadata";
+import { ArticleCard } from "@/ui/article-card";
+import { JsonLd } from "@/ui/json-ld";
 import { Markdown } from "@/ui/markdown";
-import { PageCard } from "@/ui/page-card";
 import { SiteHeader } from "@/ui/site-header";
-import { content, locale } from "../content";
+import { content } from "../content";
 
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
-  return (await content.listSections(locale)).map((s) => ({ section: s.slug }));
+  return (await content.listSections()).map((s) => ({ section: s.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps<"/[section]">): Promise<Metadata> {
   const { section } = await params;
-  const s = await content.getSection(locale, section);
-  return s ? { title: `${s.title} · Sophisnavi`, description: s.description } : {};
+  const s = await content.getSection(section);
+  return s ? pageMetadata({ title: s.title, description: s.description, path: `/${s.slug}`, updatedAt: s.intro?.updatedAt }) : {};
 }
 
 export default async function SectionPage({ params }: PageProps<"/[section]">) {
   const { section } = await params;
-  const s = await content.getSection(locale, section);
+  const s = await content.getSection(section);
   if (!s) notFound();
-  const pages = await content.listPages(locale, s.slug);
+  const articles = await content.listArticles(s.slug);
 
   return (
     <main className="min-h-dvh w-full bg-[radial-gradient(ellipse_at_50%_100%,#1a0b2e,#02040a_70%)] px-6 pb-24 text-white">
+      <JsonLd data={breadcrumbJsonLd([{ name: "Inicio", path: "/" }, { name: s.title, path: `/${s.slug}` }])} />
       <div className="mx-auto w-full max-w-3xl">
         <SiteHeader />
         <p className="text-xs uppercase tracking-[0.4em] text-cyan-200">Sección</p>
         <h1 className="mt-3 font-display text-5xl sm:text-7xl">{s.title}</h1>
-        <Markdown source={s.intro} className="prose-sophis mt-8" />
-
-        <h2 className="mt-14 font-display text-2xl text-cyan-100">Categorías</h2>
-        <ul className="mt-4 flex flex-wrap gap-2">
-          {s.categories.map((c) => (
-            <li key={c.slug} className="rounded-full border border-cyan-300/30 px-3 py-1 text-sm text-cyan-100">
-              {c.name}
-            </li>
-          ))}
-        </ul>
-
-        <h2 className="mt-14 font-display text-2xl text-cyan-100">Páginas</h2>
-        {pages.length === 0 ? (
-          <p className="mt-4 text-white/70">Todavía no hay páginas publicadas en esta sección.</p>
+        {s.intro ? (
+          <Markdown source={s.intro.body} images={s.intro.images} className="prose-sophis mt-8" />
         ) : (
-          <ul className="mt-4 grid gap-4 sm:grid-cols-2">
-            {pages.map((p) => (
-              <li key={p.slug}>
-                <PageCard page={p} category={s.categories.find((c) => c.slug === p.categorySlug)?.name} />
+          <p className="prose-sophis mt-8">{s.description}</p>
+        )}
+
+        <h2 className="mt-14 font-display text-2xl text-cyan-100">Artículos</h2>
+        {articles.length === 0 ? (
+          <p className="mt-4 text-white/70">Todavía no hay artículos publicados en esta sección.</p>
+        ) : (
+          // Carrusel: desplazamiento horizontal con ajuste; en pantallas anchas, cuadrícula.
+          <ul aria-label="Artículos de la sección" className="mt-4 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 sm:grid sm:grid-cols-2 sm:overflow-visible">
+            {articles.map((a) => (
+              <li key={a.slug} className="w-[80%] shrink-0 snap-start sm:w-auto">
+                <ArticleCard article={a} />
               </li>
             ))}
           </ul>

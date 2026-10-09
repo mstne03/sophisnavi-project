@@ -1,5 +1,5 @@
-// ponytail: lista fija de rutas hasta que exista sitemap.xml (paso 0.9); entonces se leen de ahí.
-const routes = ["/", "/pandora", "/clanes", "/criaturas", "/lengua-navi", "/peliculas", "/galeria"];
+// Rutas públicas: portada, las seis secciones y un artículo publicado. El sitemap las enumera todas; aquí se fija una muestra estable.
+const routes = ["/", "/pandora", "/personajes", "/clanes", "/saga", "/coleccion", "/vida-fan", "/pandora/la-ciencia-real-detras-de-avatar"];
 const gate = ["error", { minScore: 0.85, aggregationMethod: "median" }];
 
 module.exports = {

@@ -20,9 +20,20 @@ describe("RootLayout", () => {
     expect(html).toContain("<p>hola</p>");
   });
 
-  it("exporta título, icono de Apple y color de tema", () => {
-    expect(metadata.title).toBe("Sophisnavi Project");
+  it("exporta plantilla de título, metadataBase, icono de Apple y color de tema", () => {
+    expect(metadata.title).toEqual({ default: "Sophisnavi", template: "%s · Sophisnavi" });
+    expect(String(metadata.metadataBase)).toBe("https://www.sophisnavi.com/");
     expect(metadata.icons).toEqual({ apple: "/icon-192x192.png" });
     expect(viewport.themeColor).toBe("#02040a");
+  });
+
+  it("inserta el JSON-LD de WebSite en el body", () => {
+    const html = renderToStaticMarkup(
+      <RootLayout params={Promise.resolve({})}>
+        <p>x</p>
+      </RootLayout>,
+    );
+    expect(html).toContain('<script type="application/ld+json">');
+    expect(html).toContain('"@type":"WebSite"');
   });
 });

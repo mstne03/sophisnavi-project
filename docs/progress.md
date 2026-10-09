@@ -2,7 +2,7 @@
 llm-load-when: "Al retomar el trabajo de la fase 0 o 1 en una sesión nueva. Leer junto al plan."
 ---
 
-# Progreso · fase 0
+# Progreso · fases 0 y Notion CMS
 
 Plan: `C:\Users\Marc\.claude\plans\resilient-seeking-squirrel.md`. Estándares: `docs/standards.md`.
 
@@ -30,6 +30,28 @@ Marc repriorizó a mitad de sesión: **primero lo que se puede enseñar a Sofi**
 Otros cambios: arreglado el fake de `experience.test.tsx` (faltaba `time()` tras el PR #8; la suite estaba en rojo en `main`); `playwright.config.ts` admite `E2E_PORT` (un `next start` huérfano de la S1 ocupaba el 3000). Cobertura: 97,8 / 90,5 / 96,9 / 98,2 %. E2E: 8/8.
 
 **Siguiente sesión (S3):** 0.7 reducido (portada rastreable) y después Supabase 1.0–1.2 (esquema, RLS, `SupabaseContentRepository` implementando el mismo puerto, seed desde el JSON). El panel de demo se convierte en el real en 1.3–1.5.
+
+## S3 (2026-10-09) · Notion como CMS (ADR-0007)
+
+Marc decidió que Sofi publique desde Notion y que todo sea automático por webhook. Sustituye la fase 1 (Supabase). Entregado en `feat/notion-cms`:
+
+| Pieza | Estado | Notas |
+|---|---|---|
+| Modelo | ✅ | `src/domain/content.ts`: seis secciones fijas (título + descripción de tarjeta) + `Article`/`Intro`/`Content`; `Sección` de Notion → sección (Teorías y Detrás de cámaras → La saga); `Home` → portada. Sin categorías |
+| Extracción | ✅ | `scripts/notion-pull.ts` antes de `next build` (`pnpm build`): filas `Publicado` → Markdown vía `GET /pages/{id}/markdown` → normalizado (`src/infrastructure/notion/markdown.ts`) → imágenes WebP ≤ 1600 px sin EXIF en `public/content/<id>/` → `data/content/content.json`. Sin `NOTION_TOKEN` usa el JSON versionado |
+| Webhook | ✅ | `POST /api/notion/webhook`: firma HMAC verificada con el SDK, consulta el estado de la página y dispara el Deploy Hook solo si afecta a lo publicado (`publishDecision.ts`) |
+| Rutas | ✅ | Portada con bienvenida de Notion en HTML del servidor; `/[section]` con intro de Notion (o descripción corta) y carrusel; `/[section]/[article]` con figuras, citas, anterior/siguiente |
+| SEO | ✅ | `pageMetadata()` (canonical, hreflang es + x-default, OG, Twitter, robots), JSON-LD WebSite/Person/BreadcrumbList/Article, `sitemap.ts` con lastModified e imágenes, `robots.ts` (seo-facts §3.3), OG images generadas (portada y secciones) |
+| Renderizado | ✅ | `react-markdown` + `rehype-sanitize` (sin HTML crudo, noopener en externos) |
+| Borrado | ⏳ | Pendiente de aprobación de Marc: `/admin`, `src/ui/admin`, gallery, page-card, `[page]`, `data/seed` |
+
+**Instantánea actual:** `data/content/content.json` se generó desde el MCP con las tres páginas «Escrito/En proceso» como si estuvieran publicadas (bienvenida, El mundo de AVATAR, La ciencia real detrás de AVATAR). El primer build con token las sustituirá por lo que de verdad esté en `Publicado`.
+
+**Acciones manuales pendientes (Marc/Sofi):**
+1. Integración interna de Notion (solo lectura) en el workspace de Sofi, compartida solo con «Web Sophisnavi» → `NOTION_TOKEN` en Vercel (Production + Preview) y en `.env.local`.
+2. Deploy Hook en Vercel (Settings → Git → Deploy Hooks, rama `main`) → `VERCEL_DEPLOY_HOOK_URL`.
+3. Suscripción de webhook en la integración de Notion apuntando a `https://www.sophisnavi.com/api/notion/webhook` (eventos de página); copiar el `verification_token` de los logs de Vercel → `NOTION_WEBHOOK_SECRET`; pulsar «Verify» en Notion.
+4. Sofi pone `Publicado` en lo que quiera ver en la web.
 
 ## ⚠️ Desviación activa: gates de CI no bloquean (desde 2026-10-06)
 

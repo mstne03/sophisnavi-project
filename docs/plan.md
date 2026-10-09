@@ -373,6 +373,8 @@ En su lugar, un aviso discreto en el cliente: «*This page is available in Engli
 
 # Fase 1 · Panel de administración (CMS propio) — Sofi como única superadmin
 
+> **SUSTITUIDA el 2026-10-09 por ADR-0007 (`docs/adr/0007-notion-como-cms.md`):** Notion es el CMS y el panel de Sofi; un webhook dispara el build en Vercel. No se implementa Supabase ni el panel propio. Esta sección se conserva como historial.
+
 ## Qué resuelve
 Sofi gestiona las páginas sin depender de un desarrollador:
 - crear, editar, publicar, despublicar y borrar páginas;
