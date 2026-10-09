@@ -2,7 +2,7 @@
 llm-load-when: "Al retomar el trabajo de la fase 0 o 1 en una sesión nueva. Leer junto al plan."
 ---
 
-# Progreso · fase 0
+# Progreso · fases 0 y Notion CMS
 
 Plan: `C:\Users\Marc\.claude\plans\resilient-seeking-squirrel.md`. Estándares: `docs/standards.md`.
 
@@ -31,17 +31,43 @@ Otros cambios: arreglado el fake de `experience.test.tsx` (faltaba `time()` tras
 
 **Siguiente sesión (S3):** 0.7 reducido (portada rastreable) y después Supabase 1.0–1.2 (esquema, RLS, `SupabaseContentRepository` implementando el mismo puerto, seed desde el JSON). El panel de demo se convierte en el real en 1.3–1.5.
 
-## ⚠️ Desviación activa: gates de CI no bloquean (desde 2026-10-06)
+## S3 (2026-10-09) · Notion como CMS (ADR-0007)
 
-Decisión de Marc para entregar rápido hasta el MVP. La protección de `main` mantiene PR obligatoria, historial lineal, squash, sin force push y `enforce_admins`, pero **sin checks obligatorios**. `ci.yml` sigue corriendo en cada PR: **leer sus resultados antes de fusionar**.
+Marc decidió que Sofi publique desde Notion y que todo sea automático por webhook. Sustituye la fase 1 (Supabase). Entregado en `feat/notion-cms`:
 
-**Reversión (al cerrar el MVP, sesión S4/S5 del plan repriorizado):**
+| Pieza | Estado | Notas |
+|---|---|---|
+| Modelo | ✅ | `src/domain/content.ts`: seis secciones fijas (título + descripción de tarjeta) + `Article`/`Intro`/`Content`; `Sección` de Notion → sección (Teorías y Detrás de cámaras → La saga); `Home` → portada. Sin categorías |
+| Extracción | ✅ | `scripts/notion-pull.ts` antes de `next build` (`pnpm build`): filas `Publicado` → Markdown vía `GET /pages/{id}/markdown` → normalizado (`src/infrastructure/notion/markdown.ts`) → imágenes WebP ≤ 1600 px sin EXIF en `public/content/<id>/` → `data/content/content.json`. Sin `NOTION_TOKEN` usa el JSON versionado |
+| Webhook | ✅ | `POST /api/notion/webhook`: firma HMAC verificada con el SDK, consulta el estado de la página y dispara el Deploy Hook solo si afecta a lo publicado (`publishDecision.ts`) |
+| Rutas | ✅ | Portada con bienvenida de Notion en HTML del servidor; `/[section]` con intro de Notion (o descripción corta) y carrusel; `/[section]/[article]` con figuras, citas, anterior/siguiente |
+| SEO | ✅ | `pageMetadata()` (canonical, hreflang es + x-default, OG, Twitter, robots), JSON-LD WebSite/Person/BreadcrumbList/Article, `sitemap.ts` con lastModified e imágenes, `robots.ts` (seo-facts §3.3), OG images generadas (portada y secciones) |
+| Renderizado | ✅ | `react-markdown` + `rehype-sanitize` (sin HTML crudo, noopener en externos) |
+| Borrado | ⏳ | Pendiente de aprobación de Marc: `/admin`, `src/ui/admin`, gallery, page-card, `[page]`, `data/seed` |
 
-```bash
-gh api -X PATCH repos/mstne03/sophisnavi-project/branches/main/protection/required_status_checks -H "Accept: application/vnd.github+json" --input - <<'EOF2'
-{"strict":true,"contexts":["quality","unit","e2e","sonar"]}
-EOF2
+**Instantánea actual:** `data/content/content.json` se generó desde el MCP con las tres páginas «Escrito/En proceso» como si estuvieran publicadas (bienvenida, El mundo de AVATAR, La ciencia real detrás de AVATAR). El primer build con token las sustituirá por lo que de verdad esté en `Publicado`.
+
+**Acciones manuales pendientes (Marc/Sofi):**
+1. Integración interna de Notion (solo lectura) en el workspace de Sofi, compartida solo con «Web Sophisnavi» → `NOTION_TOKEN` en Vercel (Production + Preview) y en `.env.local`.
+2. Deploy Hook en Vercel (Settings → Git → Deploy Hooks, rama `main`) → `VERCEL_DEPLOY_HOOK_URL`.
+3. Suscripción de webhook en la integración de Notion apuntando a `https://www.sophisnavi.com/api/notion/webhook` (eventos de página); copiar el `verification_token` de los logs de Vercel → `NOTION_WEBHOOK_SECRET`; pulsar «Verify» en Notion.
+4. Sofi pone `Publicado` en lo que quiera ver en la web.
+
+## Desviación cerrada: gates de CI vuelven a bloquear (2026-10-06 → 2026-10-09)
+
+Entre el 6 y el 9 de octubre `main` no exigía checks (decisión de Marc para entregar rápido). El 9 de octubre, antes de fusionar
+la PR #14, Marc restauró `required_status_checks` con `strict: true` y los contextos `quality`, `unit`, `e2e` y `sonar`.
+`lighthouse` sigue siendo informativo hasta el paso 0.12 (portada con three.js por debajo de 0,85).
+
+Comando usado, por si hay que repetirlo (PowerShell; en bash basta un heredoc con el mismo JSON):
+
+```powershell
+'{"strict":true,"contexts":["quality","unit","e2e","sonar"]}' | Set-Content -Encoding ascii protection.json
+gh api -X PATCH repos/mstne03/sophisnavi-project/branches/main/protection/required_status_checks -H "Accept: application/vnd.github+json" --input protection.json
+Remove-Item protection.json
 ```
+
+Comprobación: `gh api repos/mstne03/sophisnavi-project/branches/main/protection/required_status_checks`.
 
 ## Repriorización (2026-10-06)
 

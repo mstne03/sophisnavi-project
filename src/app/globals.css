@@ -47,3 +47,48 @@ body {
 .prose-sophis h3 {
   font-size: 1.25rem;
 }
+.prose-sophis h4,
+.prose-sophis h5,
+.prose-sophis h6 {
+  margin-top: 1.6em;
+  font-family: var(--font-display), serif;
+  font-size: 1.1rem;
+  color: #cffafe;
+}
+.prose-sophis a {
+  color: #f0abfc;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.prose-sophis blockquote {
+  margin-top: 1.4em;
+  padding: 1em 1.25em;
+  border-left: 3px solid #67e8f9;
+  border-radius: 0 0.75rem 0.75rem 0;
+  background: rgb(255 255 255 / 0.04);
+  color: rgb(255 255 255 / 0.9);
+}
+.prose-sophis blockquote p {
+  margin-top: 0.4em;
+}
+.prose-sophis blockquote p:first-child {
+  margin-top: 0;
+}
+.prose-sophis figure {
+  margin-top: 1.6em;
+}
+.prose-sophis figure img,
+.prose-sophis p img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+}
+.prose-sophis figcaption {
+  margin-top: 0.5em;
+  font-size: 0.8rem;
+  color: rgb(255 255 255 / 0.55);
+}
+.prose-sophis hr {
+  margin-top: 2em;
+  border-color: rgb(255 255 255 / 0.15);
+}

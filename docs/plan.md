@@ -64,7 +64,7 @@ Cada paso lleva una **estimación de los tokens de contexto que consume** en la 
 
 **Decisión de Marc:** entregar y demostrar valor rápido. Dos cambios:
 
-1. **Gates de CI informativos hasta el MVP.** La protección de `main` conserva PR obligatoria, historial lineal, solo squash, sin force push y `enforce_admins`, pero **sin checks obligatorios**. El workflow `ci.yml` sigue ejecutándose completo en cada PR y sus resultados se leen antes de fusionar. **Reversión:** al cerrar el MVP (cuando Sofi lo haya visto funcionando) se restauran los contextos `quality`, `unit`, `e2e` y `sonar` con `gh api -X PATCH .../branches/main/protection/required_status_checks`. Registrado en `docs/progress.md`.
+1. **Gates de CI informativos hasta el MVP.** ~~La protección de `main` conserva PR obligatoria, historial lineal, solo squash, sin force push y `enforce_admins`, pero **sin checks obligatorios**.~~ **Cerrado el 2026-10-09:** `quality`, `unit`, `e2e` y `sonar` vuelven a ser obligatorios (`strict: true`) antes de fusionar la PR #14; `lighthouse` sigue informativo hasta el 0.12. Registrado en `docs/progress.md`.
 2. **El orden de los pasos cambia: primero lo visible.** El MVP es que la web refleje lo nuevo: secciones reales con contenido de ejemplo visible (seed de `data/seed/content-seed.json` y textos de `docs/content/`), y el panel de administración para Sofi. Orden nuevo:
 
 | Sesión | Pasos | Qué entrega |
@@ -372,6 +372,8 @@ En su lugar, un aviso discreto en el cliente: «*This page is available in Engli
 ---
 
 # Fase 1 · Panel de administración (CMS propio) — Sofi como única superadmin
+
+> **SUSTITUIDA el 2026-10-09 por ADR-0007 (`docs/adr/0007-notion-como-cms.md`):** Notion es el CMS y el panel de Sofi; un webhook dispara el build en Vercel. No se implementa Supabase ni el panel propio. Esta sección se conserva como historial.
 
 ## Qué resuelve
 Sofi gestiona las páginas sin depender de un desarrollador:

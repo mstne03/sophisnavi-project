@@ -1,62 +1,30 @@
 import type { ContentRepository } from "@/application/content/ContentRepository";
-import type { Locale, Page, PageStatus, PageType, Section } from "@/domain/content";
-import seed from "../../../data/seed/content-seed.json";
+import { SECTIONS, type Content, type SectionSlug } from "@/domain/content";
 
-type SeedPage = (typeof seed.pages)[number];
-type Translation = { slug: string; title: string; seo_description: string; body_md: string };
-
-const sectionOf = (categorySlug: string) => seed.categories.find((c) => c.slug_es === categorySlug)?.section_slug ?? "";
-
-function toSection(s: (typeof seed.sections)[number], locale: Locale): Section {
+// Adaptador de lectura sobre el JSON que genera `scripts/notion-pull.ts` en el build (ADR-0007).
+export function createContentRepository(content: Content): ContentRepository {
+  const byDate = (a: { createdAt: string }, b: { createdAt: string }) => a.createdAt.localeCompare(b.createdAt);
+  const articles = (section?: string) => content.articles.filter((a) => !section || a.sectionSlug === section).sort(byDate);
+  const link = (a?: { slug: string; title: string }) => (a ? { slug: a.slug, title: a.title } : undefined);
   return {
-    slug: s[`slug_${locale}`],
-    title: s[`title_${locale}`],
-    description: s[`seo_description_${locale}`],
-    intro: s[`intro_md_${locale}`],
-    updatedAt: s.updated_at,
-    categories: seed.categories
-      .filter((c) => c.section_slug === s.slug_es)
-      .sort((a, b) => a.position - b.position)
-      .map((c) => ({ slug: c[`slug_${locale}`], name: c[`name_${locale}`] })),
+    async listSections() {
+      return [...SECTIONS];
+    },
+    async getSection(slug) {
+      const s = SECTIONS.find((x) => x.slug === slug);
+      return s && { ...s, intro: content.intros[s.slug] };
+    },
+    async getHome() {
+      return content.home;
+    },
+    async listArticles(sectionSlug?: SectionSlug) {
+      return articles(sectionSlug);
+    },
+    async getArticle(sectionSlug, slug) {
+      const list = articles(sectionSlug);
+      const i = list.findIndex((a) => a.slug === slug);
+      if (i < 0) return undefined;
+      return { article: list[i], prev: link(list[i - 1]), next: link(list[i + 1]) };
+    },
   };
 }
-
-// El seed solo tiene traducción ES de las páginas; en EN no se publican copias (sin contenido duplicado).
-function toPage(p: SeedPage, locale: Locale): Page | undefined {
-  const t = (p.translations as Partial<Record<Locale, Translation>>)[locale];
-  if (!t) return undefined;
-  const sectionEs = sectionOf(p.category_slug);
-  const section = seed.sections.find((s) => s.slug_es === sectionEs);
-  const category = seed.categories.find((c) => c.slug_es === p.category_slug);
-  return {
-    slug: t.slug,
-    type: p.type as PageType,
-    status: p.status as PageStatus,
-    title: t.title,
-    description: t.seo_description,
-    body: t.body_md,
-    sectionSlug: section?.[`slug_${locale}`] ?? sectionEs,
-    categorySlug: category?.[`slug_${locale}`] ?? p.category_slug,
-    updatedAt: p.updated_at,
-    sources: p.sources,
-    media: "media" in p ? (p.media as string[]) : [],
-  };
-}
-
-const sections = (locale: Locale) => [...seed.sections].sort((a, b) => a.position - b.position).map((s) => toSection(s, locale));
-const pages = (locale: Locale) => seed.pages.map((p) => toPage(p, locale)).filter((p): p is Page => p !== undefined);
-
-export const staticContent: ContentRepository = {
-  async listSections(locale) {
-    return sections(locale);
-  },
-  async getSection(locale, slug) {
-    return sections(locale).find((s) => s.slug === slug);
-  },
-  async listPages(locale, sectionSlug) {
-    return pages(locale).filter((p) => !sectionSlug || p.sectionSlug === sectionSlug);
-  },
-  async getPage(locale, sectionSlug, pageSlug) {
-    return pages(locale).find((p) => p.sectionSlug === sectionSlug && p.slug === pageSlug);
-  },
-};

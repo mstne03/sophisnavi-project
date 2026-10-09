@@ -7,8 +7,9 @@ MotionGlobalConfig.skipAnimations = true;
 
 afterEach(cleanup);
 
-// jsdom no implementa matchMedia.
-window.matchMedia ??= (query: string) =>
+// jsdom no implementa matchMedia. Los tests con `@vitest-environment node` (SDK de Notion) no tienen window.
+if (typeof window !== "undefined")
+  window.matchMedia ??= (query: string) =>
   ({
     matches: false,
     media: query,

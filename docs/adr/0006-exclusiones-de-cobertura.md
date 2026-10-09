@@ -23,7 +23,7 @@ replica las mismas rutas en `sonar.coverage.exclusions` y añade las de fuera de
 |---|---|---|
 | `src/ui/tree-scene/renderer.ts` | Conecta con WebGL (three.js); no se ejecuta en jsdom | E2E (Playwright contra el build) |
 | `src/ui/tree-scene/shaders.ts` | Cadenas GLSL, sin lógica | E2E |
-| `data/seed/**` | Datos JSON del seed de la fase 1, no código | — |
+| `data/content/**`, `scripts/**` | JSON e imágenes generados desde Notion en el build y el script que los genera (ADR-0007); la lógica testeable vive en `src/infrastructure/notion/` | — |
 | `e2e/**`, `*.config.{ts,mjs,cjs}`, `vitest.setup.ts`, `lighthouserc.cjs` (solo en Sonar) | Fuera de `src/`: Vitest no los mide porque su `include` es `src/**`; SonarCloud analiza todo el repo y los contaría como código nuevo al 0 % | E2E y el propio CI |
 
 ## Consequences

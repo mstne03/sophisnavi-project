@@ -1,9 +1,13 @@
-import type { Locale, Page, Section } from "@/domain/content";
+import type { Article, Intro, Section, SectionSlug } from "@/domain/content";
 
-// Puerto de lectura del contenido. Fase 0: staticContent (seed JSON); fase 1: SupabaseContentRepository.
+export type ArticleLink = { slug: string; title: string };
+export type ArticleView = { article: Article; prev?: ArticleLink; next?: ArticleLink };
+
+// Puerto de lectura del contenido. Adaptador: staticContent (JSON generado en el build desde Notion, ADR-0007).
 export interface ContentRepository {
-  listSections(locale: Locale): Promise<Section[]>;
-  getSection(locale: Locale, slug: string): Promise<Section | undefined>;
-  listPages(locale: Locale, sectionSlug?: string): Promise<Page[]>;
-  getPage(locale: Locale, sectionSlug: string, pageSlug: string): Promise<Page | undefined>;
+  listSections(): Promise<Section[]>;
+  getSection(slug: string): Promise<(Section & { intro?: Intro }) | undefined>;
+  getHome(): Promise<Intro | undefined>;
+  listArticles(sectionSlug?: SectionSlug): Promise<Article[]>;
+  getArticle(sectionSlug: string, slug: string): Promise<ArticleView | undefined>;
 }

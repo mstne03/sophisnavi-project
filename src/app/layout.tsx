@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Marcellus } from "next/font/google";
+import { SITE_NAME, SITE_URL, websiteJsonLd } from "@/application/seo/metadata";
+import { JsonLd } from "@/ui/json-ld";
 import { ServiceWorkerRegister } from "./sw-register";
 import "./globals.css";
 
@@ -20,10 +22,12 @@ const marcellus = Marcellus({
 });
 
 export const metadata: Metadata = {
-  title: "Sophisnavi Project",
-  description: "Sophisnavi Project",
-  appleWebApp: { capable: true, title: "Sophisnavi", statusBarStyle: "black-translucent" },
+  metadataBase: new URL(SITE_URL),
+  title: { default: SITE_NAME, template: `%s · ${SITE_NAME}` },
+  description: "Todo sobre Avatar en español: Pandora, personajes, clanes, la saga, colección y vida fan, por Sofi (@sophisnavi).",
+  appleWebApp: { capable: true, title: SITE_NAME, statusBarStyle: "black-translucent" },
   icons: { apple: "/icon-192x192.png" },
+  formatDetection: { telephone: false },
 };
 
 export const viewport: Viewport = {
@@ -37,6 +41,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} ${marcellus.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <JsonLd data={websiteJsonLd()} />
         <ServiceWorkerRegister />
         {children}
       </body>

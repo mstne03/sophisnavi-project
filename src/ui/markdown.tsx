@@ -1,48 +1,55 @@
-import type { ReactNode } from "react";
+import type { ComponentProps } from "react";
+import ReactMarkdown from "react-markdown";
+import rehypeSanitize from "rehype-sanitize";
+import type { ImageMeta } from "@/domain/content";
 
-// ponytail: Markdown mínimo para el seed (párrafos, ## títulos, listas, **negrita**, *cursiva*).
-// Cambiar por react-markdown si el panel de Sofi necesita tablas, enlaces o imágenes.
-function inline(text: string): ReactNode[] {
-  return text
-    .split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g)
-    .filter(Boolean)
-    .map((part, i) => {
-      if (part.startsWith("**")) return <strong key={i}>{part.slice(2, -2)}</strong>;
-      if (part.startsWith("*")) return <em key={i}>{part.slice(1, -1)}</em>;
-      return part;
-    });
-}
-
-type HeadingTag = "h2" | "h3" | "h4" | "h5" | "h6";
-
-export function Markdown({ source, className }: { source: string; className?: string }) {
-  // Un título siempre forma su propio bloque, aunque el autor no deje línea en blanco tras él.
-  const blocks = source
-    .replace(/^(#{1,6}\s.*)$/gm, "\n$1\n")
-    .trim()
-    .split(/\n\s*\n/)
-    .filter(Boolean);
+// Markdown → HTML semántico, en el servidor, sanitizado: el contenido de Notion es entrada no confiable
+// (sin HTML crudo; un enlace externo nunca abre con acceso al opener).
+export function Markdown({ source, images = [], className }: { source: string; images?: ImageMeta[]; className?: string }) {
+  if (source.trim() === "") return <div className={className} />;
+  const bydSrc = new Map(images.map((i) => [i.src, i]));
   return (
     <div className={className}>
-      {blocks.map((block, i) => {
-        const heading = /^(#{1,6})\s+(.*)$/.exec(block);
-        if (heading) {
-          // El h1 lo pone la página: los títulos del cuerpo empiezan en h2.
-          const Tag = `h${Math.min(heading[1].length + 1, 6)}` as HeadingTag;
-          return <Tag key={i}>{inline(heading[2])}</Tag>;
-        }
-        const lines = block.split("\n");
-        if (lines.every((l) => /^[-*]\s+/.test(l))) {
-          return (
-            <ul key={i}>
-              {lines.map((l, j) => (
-                <li key={j}>{inline(l.replace(/^[-*]\s+/, ""))}</li>
-              ))}
-            </ul>
-          );
-        }
-        return <p key={i}>{inline(lines.join(" "))}</p>;
-      })}
+      <ReactMarkdown
+        rehypePlugins={[rehypeSanitize]}
+        components={{
+          a: ({ href, children }) => {
+            const external = /^https?:\/\//.test(href ?? "");
+            return (
+              <a href={href} {...(external ? { rel: "noopener noreferrer", target: "_blank" } : {})}>
+                {children}
+              </a>
+            );
+          },
+          // Un párrafo que solo contiene una imagen se convierte en <figure> (HTML válido: <figure> no cabe en <p>).
+          p: ({ node, children, ...rest }) => {
+            const only = node?.children.length === 1 ? node.children[0] : undefined;
+            if (only?.type === "element" && only.tagName === "img") {
+              const src = String(only.properties.src ?? "");
+              const alt = String(only.properties.alt ?? "");
+              return <Figure src={src} alt={alt} meta={bydSrc.get(src)} />;
+            }
+            return <p {...rest}>{children}</p>;
+          },
+          img: ({ src, alt }) => <Figure src={String(src ?? "")} alt={alt ?? ""} meta={bydSrc.get(String(src ?? ""))} inline />,
+        }}
+      >
+        {source}
+      </ReactMarkdown>
     </div>
+  );
+}
+
+function Figure({ src, alt, meta, inline }: { src: string; alt: string; meta?: ImageMeta; inline?: boolean }) {
+  // Sin pie escrito por Sofi, el alt cae al de la imagen (su título de página); el pie solo se pinta si lo escribió ella.
+  const attrs: ComponentProps<"img"> = { src, loading: "lazy", decoding: "async", width: meta?.width, height: meta?.height };
+  // eslint-disable-next-line @next/next/no-img-element -- ya son WebP ≤ 1600 px generados en el build; next/image no aporta nada aquí
+  const img = <img {...attrs} alt={alt || meta?.alt || ""} />;
+  if (inline) return img;
+  return (
+    <figure>
+      {img}
+      {alt && <figcaption>{alt}</figcaption>}
+    </figure>
   );
 }
