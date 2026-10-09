@@ -6,7 +6,8 @@ import { content } from "./content";
 // lastModified sale de cada entrada, nunca de la fecha del build.
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [sections, articles, home] = await Promise.all([content.listSections(), content.listArticles(), content.getHome()]);
-  const latest = (dates: string[]) => dates.sort().at(-1);
+  // Fechas ISO: la mayor lexicográfica es la más reciente. Sin sort(): no muta y Sonar exige comparador.
+  const latest = (dates: string[]) => (dates.length > 0 ? dates.reduce((a, b) => (b > a ? b : a)) : undefined);
   const entries: MetadataRoute.Sitemap = [
     { url: SITE_URL, lastModified: latest([home?.updatedAt ?? "", ...articles.map((a) => a.updatedAt)].filter(Boolean)), changeFrequency: "weekly", priority: 1 },
   ];
