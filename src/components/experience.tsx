@@ -153,10 +153,15 @@ export function Experience({ sections, about }: { sections: MenuSection[]; about
             </motion.button>
           </motion.div>
         ) : (
-          // inert: con «Quién soy» abierto el menú no recibe foco ni clics
-          <div key="menu" inert={view === "about" || undefined}>
+          // Con «Quién soy» abierto el menú se desvanece (queda el árbol) y no recibe foco ni clics (inert).
+          <motion.div
+            key="menu"
+            inert={view === "about" || undefined}
+            animate={{ opacity: view === "about" ? 0 : 1 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          >
             <MainMenu sections={sections} animateIn={!returning} />
-          </div>
+          </motion.div>
         )}
       </AnimatePresence>
       {phase === "menu" && <HomeNav view={view} onSelect={select} />}
