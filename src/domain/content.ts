@@ -84,8 +84,8 @@ export function slugify(text: string): string {
     .replace(/[\u0300-\u036f]/g, "") // marcas diacríticas combinantes tras NFD
     .replace(/[’']/g, "")
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
+    .replace(/[^a-z0-9]+/g, "-") // cada racha de separadores queda en un solo guion…
+    .replace(/^-|-$/g, ""); // …así que como mucho sobra uno al inicio y otro al final
 }
 
 export const isSlug = (s: string) => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(s);
