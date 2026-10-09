@@ -44,3 +44,6 @@ next-env.d.ts
 /playwright-report/
 /test-results/
 /.lighthouseci/
+
+# carpeta de preparación de scripts/notion-pull.ts
+.notion-pull/
