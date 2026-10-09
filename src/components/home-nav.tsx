@@ -1,46 +1,23 @@
 "use client";
 
-import { useEffect, useState, type MouseEvent } from "react";
+import type { MouseEvent } from "react";
 import { ABOUT_ID } from "./home-anchors";
-const SCROLLBAR_CLASS = "home-no-scrollbar";
 
-// Pestañas de la portada (arriba a la derecha): Inicio (menú de secciones) y Quién soy (bienvenida de Notion).
-// La página no muestra barra de desplazamiento: se navega con las pestañas, que desplazan con transición
-// y reflejan la posición en la URL (#quien-soy). El fondo 3D es fijo y sigue visible en las dos.
-export function HomeNav() {
-  const [active, setActive] = useState<"inicio" | "about">(() =>
-    typeof window !== "undefined" && window.location.hash === `#${ABOUT_ID}` ? "about" : "inicio",
-  );
+export type HomeView = "inicio" | "about";
 
-  useEffect(() => {
-    document.documentElement.classList.add(SCROLLBAR_CLASS);
-    return () => document.documentElement.classList.remove(SCROLLBAR_CLASS);
-  }, []);
-
-  // La pestaña activa sigue al desplazamiento (rueda, teclado o pestaña), no solo al clic.
-  useEffect(() => {
-    const about = document.getElementById(ABOUT_ID);
-    if (!about || typeof IntersectionObserver === "undefined") return;
-    const io = new IntersectionObserver(([e]) => setActive(e.isIntersecting ? "about" : "inicio"), { threshold: 0.4 });
-    io.observe(about);
-    return () => io.disconnect();
-  }, []);
-
-  const go = (tab: "inicio" | "about") => (e: MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    const target = tab === "about" ? document.getElementById(ABOUT_ID) : null;
-    if (tab === "about" && !target) return;
-    (target ?? document.documentElement).scrollIntoView?.({ behavior: "smooth", block: "start" });
-    history.replaceState(null, "", tab === "about" ? `#${ABOUT_ID}` : window.location.pathname);
-    setActive(tab);
-  };
-
-  const tab = (tab: "inicio" | "about", href: string, label: string) => {
-    const on = active === tab;
+// Pestañas de la portada (arriba a la derecha). Son la única forma de pasar de Inicio a «Quién soy» y volver:
+// no hay desplazamiento de página entre las dos vistas. El estado y el historial los lleva Experience.
+export function HomeNav({ view, onSelect }: { view: HomeView; onSelect: (view: HomeView) => void }) {
+  const tab = (target: HomeView, href: string, label: string) => {
+    const on = view === target;
+    const click = (e: MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
+      onSelect(target);
+    };
     return (
       <a
         href={href}
-        onClick={go(tab)}
+        onClick={click}
         aria-current={on ? "page" : undefined}
         className={`rounded-full px-4 py-1.5 text-xs uppercase tracking-[0.3em] outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-cyan-300 ${
           on ? "bg-white/15 text-white" : "text-white/60 hover:text-white"

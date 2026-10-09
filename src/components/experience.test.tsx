@@ -14,6 +14,7 @@ const fakeScene = (opts: Opts): TreeScene => ({ skipIntro: () => opts.onIntroDon
 describe("Experience", () => {
   beforeEach(() => {
     sessionStorage.clear();
+    history.replaceState(null, "", "/");
     createTreeScene.mockReset().mockImplementation((_c, o) => fakeScene(o));
   });
 
@@ -48,5 +49,34 @@ describe("Experience", () => {
     });
     render(<Experience sections={[]} />);
     expect(await screen.findByRole("navigation", { name: "Menú principal" })).toBeTruthy();
+  });
+
+  // Protege: «Quién soy» solo se abre desde las pestañas, queda en el historial (#quien-soy) y «atrás» lo cierra.
+  it("muestra «Quién soy» solo desde la pestaña, con #quien-soy en el historial, y el botón atrás vuelve a Inicio", async () => {
+    render(<Experience sections={[]} about={<p>Kaltxì, soy Sofi</p>} />);
+    // Según el estado de la visita (módulo), la intro puede estar ya hecha; si no, se salta.
+    screen.queryByRole("button", { name: "Saltar intro" })?.click();
+    await screen.findByRole("navigation", { name: "Menú principal" });
+    // Antes de abrirla, el texto existe para los bots pero oculto, y no hay panel #quien-soy
+    expect(screen.getByText("Kaltxì, soy Sofi").closest("[hidden]")).not.toBeNull();
+    expect(document.getElementById("quien-soy")).toBeNull();
+
+    fireEvent.click(screen.getByRole("link", { name: "Quién soy" }));
+    expect(window.location.hash).toBe("#quien-soy");
+    const panel = document.getElementById("quien-soy")!;
+    expect(panel.textContent).toContain("Kaltxì, soy Sofi");
+    expect(screen.getByRole("link", { name: "Quién soy" }).getAttribute("aria-current")).toBe("page");
+
+    history.back(); // jsdom no dispara popstate por sí solo
+    history.replaceState(null, "", "/");
+    fireEvent(window, new PopStateEvent("popstate"));
+    await vi.waitFor(() => expect(screen.getByRole("link", { name: "Inicio" }).getAttribute("aria-current")).toBe("page"));
+  });
+
+  it("abre «Quién soy» directamente si la URL ya trae #quien-soy", async () => {
+    history.replaceState(null, "", "/#quien-soy");
+    render(<Experience sections={[]} about={<p>Kaltxì</p>} />);
+    screen.queryByRole("button", { name: "Saltar intro" })?.click();
+    await vi.waitFor(() => expect(document.getElementById("quien-soy")).not.toBeNull());
   });
 });

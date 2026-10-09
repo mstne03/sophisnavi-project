@@ -15,11 +15,11 @@ html {
     scroll-behavior: auto;
   }
 }
-/* Portada: se navega con las pestañas (Inicio / Quién soy), sin barra de desplazamiento visible. */
-html.home-no-scrollbar {
+/* Portada: se navega con las pestañas (Inicio / Quién soy); sus contenedores no muestran barra de desplazamiento. */
+.home-no-scrollbar {
   scrollbar-width: none;
 }
-html.home-no-scrollbar::-webkit-scrollbar {
+.home-no-scrollbar::-webkit-scrollbar {
   display: none;
 }
 

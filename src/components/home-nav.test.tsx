@@ -1,46 +1,24 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { HomeNav } from "./home-nav";
 
-// Protege: la portada se recorre con dos pestañas; «Quién soy» desplaza a la bienvenida y lo refleja en la URL,
-// «Inicio» vuelve arriba y la quita. Mientras está montada, la página oculta la barra de desplazamiento.
+// Protege: las pestañas marcan la vista activa y delegan el cambio (sin navegar ni desplazar por su cuenta).
 describe("HomeNav", () => {
-  afterEach(() => {
-    document.body.innerHTML = "";
-    history.replaceState(null, "", "/");
-  });
-
-  it("marca Inicio por defecto y oculta la barra de desplazamiento solo mientras existe", () => {
-    const { unmount } = render(<HomeNav />);
+  it("marca la vista activa con aria-current", () => {
+    const { rerender } = render(<HomeNav view="inicio" onSelect={() => {}} />);
     expect(screen.getByRole("link", { name: "Inicio" }).getAttribute("aria-current")).toBe("page");
     expect(screen.getByRole("link", { name: "Quién soy" }).getAttribute("aria-current")).toBeNull();
-    expect(document.documentElement.classList.contains("home-no-scrollbar")).toBe(true);
-    unmount();
-    expect(document.documentElement.classList.contains("home-no-scrollbar")).toBe(false);
+    rerender(<HomeNav view="about" onSelect={() => {}} />);
+    expect(screen.getByRole("link", { name: "Quién soy" }).getAttribute("aria-current")).toBe("page");
   });
 
-  it("«Quién soy» desplaza a #quien-soy con transición y lo pone en la URL; «Inicio» lo deshace", () => {
-    const about = document.createElement("section");
-    about.id = "quien-soy";
-    about.scrollIntoView = vi.fn();
-    document.body.appendChild(about);
-    document.documentElement.scrollIntoView = vi.fn();
-    render(<HomeNav />);
-
-    fireEvent.click(screen.getByRole("link", { name: "Quién soy" }));
-    expect(about.scrollIntoView).toHaveBeenCalledWith({ behavior: "smooth", block: "start" });
-    expect(window.location.hash).toBe("#quien-soy");
-    expect(screen.getByRole("link", { name: "Quién soy" }).getAttribute("aria-current")).toBe("page");
-
-    fireEvent.click(screen.getByRole("link", { name: "Inicio" }));
-    expect(document.documentElement.scrollIntoView).toHaveBeenCalled();
-    expect(window.location.hash).toBe("");
-    expect(screen.getByRole("link", { name: "Inicio" }).getAttribute("aria-current")).toBe("page");
-  });
-
-  it("arranca en «Quién soy» si la URL ya lleva el ancla", () => {
-    history.replaceState(null, "", "/#quien-soy");
-    render(<HomeNav />);
-    expect(screen.getByRole("link", { name: "Quién soy" }).getAttribute("aria-current")).toBe("page");
+  it("al pulsar una pestaña avisa con la vista elegida y no sigue el enlace", () => {
+    const onSelect = vi.fn();
+    render(<HomeNav view="inicio" onSelect={onSelect} />);
+    const link = screen.getByRole("link", { name: "Quién soy" });
+    expect(link.getAttribute("href")).toBe("#quien-soy"); // sin JS sigue siendo un ancla válida
+    const ev = fireEvent.click(link);
+    expect(ev).toBe(false); // preventDefault
+    expect(onSelect).toHaveBeenCalledWith("about");
   });
 });

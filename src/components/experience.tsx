@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import type { TreeScene } from "@/ui/tree-scene/renderer";
-import { HomeNav } from "./home-nav";
+import { ABOUT_ID } from "./home-anchors";
+import { HomeNav, type HomeView } from "./home-nav";
 import { MainMenu, type MenuSection } from "./main-menu";
 
 const SEEN_KEY = "sophisnavi:intro-seen";
@@ -13,8 +14,10 @@ const TITLE = "Sophisnavi";
 // así al volver desde una sección no se repite la intro ni se pierde el scroll.
 const visit = { introDone: false, sceneTime: 0, scrollY: 0 };
 
-export function Experience({ sections }: { sections: MenuSection[] }) {
+// `about` es la bienvenida de Notion renderizada en el servidor: panel a pantalla completa con scroll propio.
+export function Experience({ sections, about }: { sections: MenuSection[]; about?: ReactNode }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const mainRef = useRef<HTMLElement>(null);
   const sceneRef = useRef<TreeScene | null>(null);
   // En la carga completa vale false igual que en el servidor: no hay desajuste de hidratación.
   const [returning] = useState(() => visit.introDone);
@@ -25,9 +28,10 @@ export function Experience({ sections }: { sections: MenuSection[] }) {
   // que ocurre antes de que Next suba al principio de la página nueva; no depende de eventos
   // `scroll`, que pueden no haber llegado aún si el usuario hace clic justo después de desplazarse.
   useLayoutEffect(() => {
-    if (returning) window.scrollTo(0, visit.scrollY);
+    const main = mainRef.current;
+    if (returning && main) main.scrollTop = visit.scrollY;
     return () => {
-      visit.scrollY = window.scrollY;
+      visit.scrollY = main?.scrollTop ?? 0;
     };
   }, [returning]);
 
@@ -70,6 +74,21 @@ export function Experience({ sections }: { sections: MenuSection[] }) {
 
   const skip = () => sceneRef.current?.skipIntro();
 
+  // Vista de la portada. Se lee del hash tras montar (no en el render inicial: el servidor no lo conoce)
+  // y se sincroniza con el historial: la pestaña hace pushState, el botón «atrás» dispara popstate.
+  const [view, setView] = useState<HomeView>("inicio");
+  useEffect(() => {
+    const fromHash = () => setView(window.location.hash === `#${ABOUT_ID}` ? "about" : "inicio");
+    fromHash();
+    window.addEventListener("popstate", fromHash);
+    return () => window.removeEventListener("popstate", fromHash);
+  }, []);
+  const select = (next: HomeView) => {
+    if (next === view) return;
+    history.pushState(null, "", next === "about" ? `#${ABOUT_ID}` : window.location.pathname);
+    setView(next);
+  };
+
   useEffect(() => {
     if (phase !== "intro") return;
     const onKey = (e: KeyboardEvent) => {
@@ -80,7 +99,7 @@ export function Experience({ sections }: { sections: MenuSection[] }) {
   }, [phase]);
 
   return (
-    <main className="relative min-h-dvh overflow-x-hidden bg-[#02040a] text-white">
+    <main ref={mainRef} className="home-no-scrollbar relative h-dvh overflow-x-hidden overflow-y-auto bg-[#02040a] text-white">
       <canvas
         ref={canvasRef}
         aria-hidden
@@ -134,10 +153,32 @@ export function Experience({ sections }: { sections: MenuSection[] }) {
             </motion.button>
           </motion.div>
         ) : (
-          <MainMenu key="menu" sections={sections} animateIn={!returning} />
+          // inert: con «Quién soy» abierto el menú no recibe foco ni clics
+          <div key="menu" inert={view === "about" || undefined}>
+            <MainMenu sections={sections} animateIn={!returning} />
+          </div>
         )}
       </AnimatePresence>
-      {phase === "menu" && <HomeNav />}
+      {phase === "menu" && <HomeNav view={view} onSelect={select} />}
+
+      {/* «Quién soy»: encima del menú, con su propio scroll; el fondo 3D (fijo) sigue detrás. */}
+      <AnimatePresence>
+        {about && phase === "menu" && view === "about" && (
+          <motion.div
+            key="about"
+            id={ABOUT_ID}
+            className="home-no-scrollbar fixed inset-0 z-10 overflow-y-auto"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 40 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {about}
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {/* Sin JS (y para los bots) la bienvenida sigue en el HTML, pero no ocupa sitio ni se alcanza por scroll. */}
+      {about && !(phase === "menu" && view === "about") && <div hidden>{about}</div>}
     </main>
   );
 }
