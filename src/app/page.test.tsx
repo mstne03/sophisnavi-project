@@ -16,7 +16,7 @@ describe("Home", () => {
   it("renderiza Experience con las seis secciones y la bienvenida", async () => {
     render(await Home());
     expect(screen.getByTestId("experience").textContent).toBe("pandora,personajes,clanes,saga,coleccion,vida-fan");
-    const heading = screen.getByRole("heading", { level: 2, name: "Kaltxì" });
+    const heading = screen.getByRole("heading", { level: 2, name: "Kaltxì!" });
     expect(heading.closest("section")?.className).not.toMatch(/bg-/); // sin fondo propio: el árbol 3D sigue detrás
     expect(screen.getByText(/Soy Sofi/)).toBeTruthy(); // cuerpo de Notion
   });

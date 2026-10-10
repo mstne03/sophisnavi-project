@@ -22,7 +22,7 @@ export default async function Home() {
           <section aria-labelledby="bienvenida" className="min-h-full px-6 pt-24 pb-24 text-white">
             <div className="mx-auto w-full max-w-3xl">
               <h2 id="bienvenida" className="font-display text-3xl text-cyan-100 sm:text-4xl">
-                Kaltxì
+                Kaltxì!
               </h2>
               <Markdown source={home.body} images={home.images} className="prose-sophis mt-6" />
             </div>
