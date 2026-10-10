@@ -11,9 +11,9 @@ beforeAll(async () => {
 });
 afterAll(() => rm(dir, { recursive: true, force: true }));
 
-// Protege: toda imagen de Notion acaba como WebP de ≤ 1600 px, sin EXIF, con dimensiones conocidas para evitar saltos de maquetación.
+// Protege: toda imagen de Notion acaba como WebP de ≤ 1200 px, sin EXIF, con dimensiones conocidas para evitar saltos de maquetación.
 describe("storeImage", () => {
-  it("convierte a WebP, reduce a 1600 px de ancho y elimina metadatos", async () => {
+  it("convierte a WebP, reduce a 1200 px de ancho y elimina metadatos", async () => {
     const big = await sharp({ create: { width: 4000, height: 2500, channels: 3, background: "#123456" } })
       .jpeg()
       .withExif({ IFD0: { ImageDescription: "gps-aqui" } })

@@ -22,7 +22,7 @@ estático con SEO completo (canonical, Open Graph, JSON-LD, hreflang, sitemap).
    `src/domain/content.ts`; todo lo demás (bienvenida, intro de cada sección, artículos, imágenes) viene de Notion.
 2. **El contenido se descarga en el build, no en tiempo de ejecución.** `scripts/notion-pull.ts` corre antes de `next build`:
    lee las filas `Publicado`, pide cada página como Markdown (`GET /pages/{id}/markdown`, versión `2026-03-11`), lo normaliza
-   a Markdown estándar, descarga las imágenes a `public/content/<pageId>/<n>.webp` (≤ 1600 px, sin EXIF) y escribe
+   a Markdown estándar, descarga las imágenes a `public/content/<pageId>/<n>.webp` (≤ 1200 px, sin EXIF) y escribe
    `data/content/content.json`. Sin `NOTION_TOKEN` el build usa el JSON versionado: el CI de forks y los clones sin
    credenciales siguen funcionando.
 3. **Publicar = disparar un build.** `POST /api/notion/webhook` recibe los eventos de Notion, verifica la firma HMAC-SHA256

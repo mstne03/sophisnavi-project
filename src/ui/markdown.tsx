@@ -68,7 +68,7 @@ export function Markdown({ source, images = [], className }: { source: string; i
 function Figure({ src, alt, meta, inline }: { src: string; alt: string; meta?: ImageMeta; inline?: boolean }) {
   // Sin pie escrito por Sofi, el alt cae al de la imagen (su título de página); el pie solo se pinta si lo escribió ella.
   const attrs: ComponentProps<"img"> = { src, loading: "lazy", decoding: "async", width: meta?.width, height: meta?.height };
-  // eslint-disable-next-line @next/next/no-img-element -- ya son WebP ≤ 1600 px generados en el build; next/image no aporta nada aquí
+  // eslint-disable-next-line @next/next/no-img-element -- ya son WebP ≤ 1200 px generados en el build; next/image no aporta nada aquí
   const img = <img {...attrs} alt={alt || meta?.alt || ""} />;
   if (inline) return img;
   return (
