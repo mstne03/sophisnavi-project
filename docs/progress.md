@@ -53,7 +53,7 @@ Marc decidió que Sofi publique desde Notion y que todo sea automático por webh
 | Pieza | Estado | Notas |
 |---|---|---|
 | Modelo | ✅ | `src/domain/content.ts`: seis secciones fijas (título + descripción de tarjeta) + `Article`/`Intro`/`Content`; `Sección` de Notion → sección (Teorías y Detrás de cámaras → La saga); `Home` → portada. Sin categorías |
-| Extracción | ✅ | `scripts/notion-pull.ts` antes de `next build` (`pnpm build`): filas `Publicado` → Markdown vía `GET /pages/{id}/markdown` → normalizado (`src/infrastructure/notion/markdown.ts`) → imágenes WebP ≤ 1600 px sin EXIF en `public/content/<id>/` → `data/content/content.json`. Sin `NOTION_TOKEN` usa el JSON versionado |
+| Extracción | ✅ | `scripts/notion-pull.ts` antes de `next build` (`pnpm build`): filas `Publicado` → Markdown vía `GET /pages/{id}/markdown` → normalizado (`src/infrastructure/notion/markdown.ts`) → imágenes WebP ≤ 1200 px sin EXIF en `public/content/<id>/` → `data/content/content.json`. Sin `NOTION_TOKEN` usa el JSON versionado |
 | Webhook | ✅ | `POST /api/notion/webhook`: firma HMAC verificada con el SDK, consulta el estado de la página y dispara el Deploy Hook solo si afecta a lo publicado (`publishDecision.ts`) |
 | Rutas | ✅ | Portada con bienvenida de Notion en HTML del servidor; `/[section]` con intro de Notion (o descripción corta) y carrusel; `/[section]/[article]` con figuras, citas, anterior/siguiente |
 | SEO | ✅ | `pageMetadata()` (canonical, hreflang es + x-default, OG, Twitter, robots), JSON-LD WebSite/Person/BreadcrumbList/Article, `sitemap.ts` con lastModified e imágenes, `robots.ts` (seo-facts §3.3), OG images generadas (portada y secciones) |

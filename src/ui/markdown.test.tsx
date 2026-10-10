@@ -29,11 +29,11 @@ describe("Markdown", () => {
   });
 
   it("una imagen sola se convierte en <figure> con dimensiones, carga diferida y pie", () => {
-    const images = [{ src: "/content/p/1.webp", width: 1600, height: 1000, alt: "Alpha" }];
+    const images = [{ src: "/content/p/1.webp", width: 1200, height: 1000, alt: "Alpha" }];
     const { container } = render(<Markdown source={"Antes\n\n![Alpha](/content/p/1.webp)\n\nTexto ![icono](/content/p/2.webp) inline"} images={images} />);
     const fig = container.querySelector("figure")!;
     const img = fig.querySelector("img")!;
-    expect(img.getAttribute("width")).toBe("1600");
+    expect(img.getAttribute("width")).toBe("1200");
     expect(img.getAttribute("height")).toBe("1000");
     expect(img.getAttribute("loading")).toBe("lazy");
     expect(fig.querySelector("figcaption")?.textContent).toBe("Alpha");
