@@ -20,7 +20,7 @@ describe("storeImage", () => {
       .toBuffer();
     const out = join(dir, "a", "1.webp");
     const meta = await storeImage(big, out);
-    expect(meta).toEqual({ width: MAX_WIDTH, height: 1000 });
+    expect(meta).toEqual({ width: MAX_WIDTH, height: Math.round((2500 * MAX_WIDTH) / 4000) });
     const stored = await sharp(await readFile(out)).metadata();
     expect(stored.format).toBe("webp");
     expect(stored.width).toBe(MAX_WIDTH);
