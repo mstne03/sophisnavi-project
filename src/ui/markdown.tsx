@@ -1,4 +1,4 @@
-import type { ComponentProps } from "react";
+import type { ComponentProps, CSSProperties } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeSanitize from "rehype-sanitize";
 import type { ImageMeta } from "@/domain/content";
@@ -71,8 +71,10 @@ function Figure({ src, alt, meta, inline }: { src: string; alt: string; meta?: I
   // eslint-disable-next-line @next/next/no-img-element -- ya son WebP ≤ 1200 px generados en el build; next/image no aporta nada aquí
   const img = <img {...attrs} alt={alt || meta?.alt || ""} />;
   if (inline) return img;
+  // Proporción para el CSS: fija el ancho de imagen y pie antes de descargarla, y así limita su altura sin colapsar la caja.
+  const style = meta && ({ "--ar": meta.width / meta.height } as CSSProperties);
   return (
-    <figure>
+    <figure style={style}>
       {img}
       {alt && <figcaption>{alt}</figcaption>}
     </figure>
