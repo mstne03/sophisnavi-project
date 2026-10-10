@@ -31,6 +31,21 @@ Otros cambios: arreglado el fake de `experience.test.tsx` (faltaba `time()` tras
 
 **Siguiente sesión (S3):** 0.7 reducido (portada rastreable) y después Supabase 1.0–1.2 (esquema, RLS, `SupabaseContentRepository` implementando el mismo puerto, seed desde el JSON). El panel de demo se convierte en el real en 1.3–1.5.
 
+## S4 (2026-10-09/10) · Notion en producción y portada definitiva
+
+Ocho PR fusionadas con squash: #14 Notion como CMS (+ `.env.example`, checks obligatorios restaurados), #15 pestañas y
+bienvenida sobre el fondo 3D, imágenes contenidas y en cuadrícula, frases de sección de Sofi, #16 imágenes que el script
+borraba antes del build y `.env.local` en `content:pull`, #17 «Quién soy» como vista aparte con historial, #18 copy de la
+portada, #19/#20 título «Kaltxì!», #21 deslizamiento horizontal entre Inicio y «Quién soy».
+
+Configuración manual completada: conexión interna de Notion (API Token, solo lectura, acceso solo a «Web Sophisnavi»),
+`NOTION_TOKEN`, Deploy Hook, suscripción de webhook verificada y `NOTION_WEBHOOK_SECRET`. Publicar y despublicar probado de
+punta a punta en producción. Detalle y tabla de infraestructura en `docs/handoff-S5.md`.
+
+Nota de nomenclatura: Notion llama ahora **conexiones** a las integraciones internas y las distingue de los *personal access
+tokens* (que actúan como el usuario y no admiten webhooks). ADR-0007 y este documento usan «integración interna» con ese
+significado.
+
 ## S3 (2026-10-09) · Notion como CMS (ADR-0007)
 
 Marc decidió que Sofi publique desde Notion y que todo sea automático por webhook. Sustituye la fase 1 (Supabase). Entregado en `feat/notion-cms`:

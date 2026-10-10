@@ -31,7 +31,7 @@ estático con SEO completo (canonical, Open Graph, JSON-LD, hreflang, sitemap).
    hook; el límite es de 60 disparos por hora.
 4. **Si Notion falla, el build falla** y Vercel conserva el despliegue anterior. Nunca se publica una web a medias.
 
-Variables (solo servidor): `NOTION_TOKEN` (integración interna de solo lectura, compartida únicamente con la base de datos),
+Variables (solo servidor): `NOTION_TOKEN` (integración interna de solo lectura, compartida únicamente con la base de datos; en el portal de Notion se llama «conexión» de tipo API Token, no un *personal access token*),
 `NOTION_WEBHOOK_SECRET`, `VERCEL_DEPLOY_HOOK_URL`. Ver `.env.example`.
 
 ## Consequences
