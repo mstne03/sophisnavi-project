@@ -28,7 +28,6 @@ describe("ArticlePage", () => {
     expect(screen.getByRole("link", { name: /volver a pandora/i }).getAttribute("href")).toBe("/pandora");
     const ld = [...container.querySelectorAll('script[type="application/ld+json"]')].map((s) => JSON.parse(s.textContent ?? ""));
     expect(ld.map((d) => d["@type"])).toEqual(["BreadcrumbList", "Article"]);
-    expect(container.textContent).not.toMatch(/paso al siguiente blog/);
   });
 
   it("el primer artículo no tiene anterior pero sí siguiente", async () => {

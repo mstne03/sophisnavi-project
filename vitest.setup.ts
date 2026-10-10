@@ -1,6 +1,13 @@
 import { cleanup } from "@testing-library/react";
 import { MotionGlobalConfig } from "motion/react";
-import { afterEach } from "vitest";
+import { afterEach, vi } from "vitest";
+
+// La raíz de composición sirve el contenido de prueba en vez del snapshot de Notion (ver src/test/content.fixture.ts).
+vi.mock("@/app/content", async () => {
+  const { createContentRepository } = await import("@/infrastructure/content/staticContent");
+  const { contentFixture } = await import("@/test/content.fixture");
+  return { content: createContentRepository(contentFixture) };
+});
 
 // Animaciones instantáneas: los tests comprueban estados, no transiciones.
 MotionGlobalConfig.skipAnimations = true;

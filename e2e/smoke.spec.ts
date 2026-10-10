@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { SECTIONS, type Article, type Content } from "../src/domain/content";
 import { expect, test } from "./fixtures";
 
 // Flujo crítico 1: la portada carga, la intro se puede saltar y el menú enlaza a una sección.
@@ -18,26 +20,45 @@ test("ruta desconocida devuelve 404", async ({ page }) => {
   expect(res?.status()).toBe(404);
 });
 
-// Flujo crítico 3: sección → artículo de Notion con imágenes propias → siguiente/anterior.
+// Flujos 3–5: el E2E corre contra el build real, así que los artículos salen del mismo snapshot de Notion que el build.
+// Nada de slugs a mano: Sofi publica y retira artículos sin tocar el código, y la suite no debe enterarse.
+const content = JSON.parse(readFileSync("data/content/content.json", "utf8")) as Content;
+const url = (a: Article) => `/${a.sectionSlug}/${a.slug}`;
+const inSection = (slug: string) => content.articles.filter((a) => a.sectionSlug === slug).sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+const pair = SECTIONS.map((s) => inSection(s.slug)).find((list) => list.length >= 2);
+const withImage = content.articles.find((a) => a.images.length > 0);
+const anyArticle = content.articles[0];
+
+// Flujo crítico 3: sección → primer artículo → siguiente/anterior.
 test("sección → artículo → siguiente", async ({ page }) => {
-  await page.goto("/pandora");
+  test.skip(!pair, "ninguna sección tiene dos artículos publicados");
+  const [first, second] = pair!;
+  await page.goto(`/${first.sectionSlug}`);
   await page.getByRole("list", { name: "Artículos de la sección" }).getByRole("link").first().click();
-  await expect(page).toHaveURL(/\/pandora\/el-mundo-de-avatar$/);
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("El mundo de AVATAR");
+  await expect(page).toHaveURL(new RegExp(`${url(first)}$`));
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(first.title);
   await page.getByRole("link", { name: /siguiente/i }).click();
-  await expect(page).toHaveURL(/\/pandora\/la-ciencia-real-detras-de-avatar$/);
+  await expect(page).toHaveURL(new RegExp(`${url(second)}$`));
+  await expect(page.getByRole("link", { name: /anterior/i })).toHaveAttribute("href", url(first));
+});
+
+// Flujo crítico 3b: las imágenes propias de un artículo se sirven y cargan.
+test("las imágenes de un artículo cargan", async ({ page }) => {
+  test.skip(!withImage, "ningún artículo publicado tiene imágenes");
+  await page.goto(url(withImage!));
   const img = page.locator("figure img").first();
+  // loading="lazy": la imagen no se descarga hasta acercarse al viewport, así que se lleva a pantalla y se espera a que cargue.
+  await img.scrollIntoViewIfNeeded();
   await expect(img).toBeVisible();
-  expect(await img.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(0);
-  await expect(page.getByRole("link", { name: /anterior/i })).toHaveAttribute("href", "/pandora/el-mundo-de-avatar");
+  await expect.poll(() => img.evaluate((el: HTMLImageElement) => (el.complete ? el.naturalWidth : 0))).toBeGreaterThan(0);
 });
 
 // Flujo crítico 4: el HTML crudo (sin JS) trae el contenido, los metadatos y los datos estructurados.
 test("el HTML del servidor trae artículo, canonical, Open Graph y JSON-LD", async ({ request }) => {
-  const html = await (await request.get("/pandora/la-ciencia-real-detras-de-avatar")).text();
+  test.skip(!anyArticle, "no hay artículos publicados");
+  const html = await (await request.get(url(anyArticle))).text();
   expect(html).toContain("<h1");
-  expect(html).toContain("ALPHA CENTAURI");
-  expect(html).toContain('rel="canonical" href="https://www.sophisnavi.com/pandora/la-ciencia-real-detras-de-avatar"');
+  expect(html).toContain(`rel="canonical" href="https://www.sophisnavi.com${url(anyArticle)}"`);
   expect(html).toContain('property="og:type" content="article"');
   expect(html).toMatch(/hreflang="x-default"/i); // Next emite el atributo como hrefLang; HTML no distingue mayúsculas
   expect(html).toContain('"@type":"Article"');
@@ -46,8 +67,8 @@ test("el HTML del servidor trae artículo, canonical, Open Graph y JSON-LD", asy
 // Flujo crítico 5: sitemap y robots se generan desde el contenido.
 test("sitemap.xml y robots.txt", async ({ request }) => {
   const sitemap = await (await request.get("/sitemap.xml")).text();
-  expect(sitemap).toContain("<loc>https://www.sophisnavi.com/pandora/la-ciencia-real-detras-de-avatar</loc>");
-  expect(sitemap).toContain("<loc>https://www.sophisnavi.com/vida-fan</loc>");
+  for (const s of SECTIONS) expect(sitemap).toContain(`<loc>https://www.sophisnavi.com/${s.slug}</loc>`);
+  for (const a of content.articles) expect(sitemap).toContain(`<loc>https://www.sophisnavi.com${url(a)}</loc>`);
   const robots = await (await request.get("/robots.txt")).text();
   expect(robots).toContain("Sitemap: https://www.sophisnavi.com/sitemap.xml");
   expect(robots).toMatch(/User-Agent: GPTBot[\s\S]*Disallow: \//);
