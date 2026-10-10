@@ -22,6 +22,33 @@ html {
 .home-no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+/* Barra fina como la de móvil: solo el indicador redondeado, sin fondo ni flechas. Chromium y Safari usan los
+   pseudo-elementos; Firefox, las propiedades estándar. Estas solo se aplican sin ::-webkit-scrollbar porque desde
+   Chrome 121 anulan los pseudo-elementos y volvería la barra clásica con flechas. */
+.thin-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+.thin-scrollbar::-webkit-scrollbar-track,
+.thin-scrollbar::-webkit-scrollbar-corner {
+  background: transparent;
+}
+.thin-scrollbar::-webkit-scrollbar-button {
+  display: none;
+}
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  background: rgb(255 255 255 / 0.3);
+}
+.thin-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgb(255 255 255 / 0.5);
+}
+@supports not selector(::-webkit-scrollbar) {
+  .thin-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(255 255 255 / 0.3) transparent;
+  }
+}
 
 body {
   background: #02040a;
