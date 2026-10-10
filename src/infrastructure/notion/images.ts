@@ -2,7 +2,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import sharp from "sharp";
 
-export const MAX_WIDTH = 1600;
+export const MAX_WIDTH = 1200;
 
 // Guarda una imagen como WebP, redimensionada a MAX_WIDTH como máximo y sin metadatos (EXIF puede llevar GPS).
 export async function storeImage(bytes: Uint8Array, outFile: string): Promise<{ width: number; height: number }> {
