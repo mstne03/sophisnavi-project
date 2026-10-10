@@ -11,7 +11,8 @@ const pages = [content.home, ...Object.values(content.intros), ...content.articl
 
 describe("snapshot de contenido", () => {
   it("toda imagen referenciada existe en public/", () => {
-    const missing = pages.flatMap((p) => p.images.map((i) => i.src)).filter((src) => !existsSync(join("public", src)));
+    const srcs = pages.flatMap((p) => [...p.images.map((i) => i.src), ...(p.videos ?? []).map((v) => v.thumbnail.src)]);
+    const missing = srcs.filter((src) => !existsSync(join("public", src)));
     expect(missing, "imágenes sin commitear: ejecuta `pnpm content:pull` con NOTION_TOKEN y commitea public/content").toEqual([]);
   });
 

@@ -57,7 +57,11 @@ export const sectionForNotionName = (name: string | null | undefined): Section |
 
 export type ImageMeta = { src: string; width: number; height: number; alt: string };
 
-export type Intro = { id: string; body: string; updatedAt: string; images: ImageMeta[] };
+// Vídeo enlazado desde Notion (bookmark) con su vista previa descargada en el build: la web no pide nada a la plataforma.
+export type VideoMeta = { url: string; title: string; author: string; thumbnail: ImageMeta };
+
+// `videos` es opcional: los snapshots anteriores no lo tienen.
+export type Intro = { id: string; body: string; updatedAt: string; images: ImageMeta[]; videos?: VideoMeta[] };
 
 export type Article = {
   id: string;
@@ -69,6 +73,7 @@ export type Article = {
   createdAt: string; // ISO; fija el orden del carrusel y anterior/siguiente
   updatedAt: string; // ISO; lastModified del sitemap
   images: ImageMeta[];
+  videos?: VideoMeta[];
 };
 
 export type Content = {

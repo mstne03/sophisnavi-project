@@ -60,6 +60,14 @@ describe("createNotionGateway", () => {
     expect(await createNotionGateway("tok", upload).getFileUrl("b5")).toBeUndefined();
   });
 
+  it("resuelve la URL de un bookmark y undefined en cualquier otro bloque", async () => {
+    const bookmark = sdk({ block: vi.fn().mockResolvedValue({ type: "bookmark", bookmark: { url: "https://www.tiktok.com/@a/video/1", caption: [] } }) });
+    expect(await createNotionGateway("tok", bookmark).getBookmarkUrl("b1")).toBe("https://www.tiktok.com/@a/video/1");
+    expect(await createNotionGateway("tok", sdk()).getBookmarkUrl("b2")).toBeUndefined();
+    const partial = sdk({ block: vi.fn().mockResolvedValue({ object: "block", id: "b3" }) });
+    expect(await createNotionGateway("tok", partial).getBookmarkUrl("b3")).toBeUndefined();
+  });
+
   it("devuelve el estado de la página, null si es parcial o no existe, y propaga otros errores", async () => {
     expect(await createNotionGateway("tok", sdk()).getPageState("a")).toEqual({ inTrash: false, status: "Publicado", statusPropertyId: "O2dmOw" });
     expect(await createNotionGateway("tok", sdk({ retrieve: vi.fn().mockResolvedValue({ object: "page", id: "p" }) })).getPageState("p")).toBeNull();

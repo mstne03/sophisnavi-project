@@ -35,6 +35,11 @@ async function main() {
       if (!res.ok) throw new Error(`Descarga fallida (${res.status}): ${url.split("?")[0]}`);
       return new Uint8Array(await res.arrayBuffer());
     },
+    fetchJson: async (url) => {
+      const res = await fetch(url, { signal: AbortSignal.timeout(10_000) });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    },
     storeImage,
     log: (m) => console.log(`notion-pull: ${m}`),
   });

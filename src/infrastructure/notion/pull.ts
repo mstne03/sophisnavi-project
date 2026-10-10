@@ -1,15 +1,17 @@
 import { join } from "node:path";
 import { PUBLISHED } from "@/application/content/publishDecision";
-import { excerpt, type Article, type Content, type ImageMeta, type Intro } from "@/domain/content";
+import { excerpt, type Article, type Content, type ImageMeta, type Intro, type VideoMeta } from "@/domain/content";
 import type { NotionGateway } from "./gateway";
-import { extractImageRefs, normalizeNotionMarkdown, rewriteImages } from "./markdown";
+import { extractBookmarkIds, extractImageRefs, normalizeNotionMarkdown, rewriteBookmarks, rewriteImages } from "./markdown";
 import type { NotionPage } from "./mapPage";
+import { canonicalTikTokUrl, parseOEmbed, tiktokOEmbedUrl } from "./tiktok";
 
 export type PullDeps = {
   gateway: NotionGateway;
   dataSourceId: string;
   publicDir: string; // carpeta `public/`; las imágenes van a public/content/<pageId>/<n>.webp
   fetchBytes: (url: string) => Promise<Uint8Array>;
+  fetchJson: (url: string) => Promise<unknown>;
   storeImage: (bytes: Uint8Array, outFile: string) => Promise<{ width: number; height: number }>;
   now?: () => Date;
   log?: (msg: string) => void;
@@ -33,9 +35,9 @@ export async function pullContent(deps: PullDeps): Promise<Content> {
       log(`· «${page.title}» sin Tipo o Sección válidos: se omite`);
       continue;
     }
-    const { body, images } = await pageBody(deps, page);
+    const { body, images, videos } = await pageBody(deps, page);
     if (page.kind === "intro") {
-      const intro: Intro = { id: page.id, body, updatedAt: page.updatedAt, images };
+      const intro: Intro = { id: page.id, body, updatedAt: page.updatedAt, images, ...(videos.length ? { videos } : {}) };
       if (page.section === "home") content.home = intro;
       else content.intros[page.section] = intro;
       continue;
@@ -60,13 +62,14 @@ export async function pullContent(deps: PullDeps): Promise<Content> {
       createdAt: page.createdAt,
       updatedAt: page.updatedAt,
       images,
+      ...(videos.length ? { videos } : {}),
     };
     content.articles.push(article);
   }
   return content;
 }
 
-async function pageBody(deps: PullDeps, page: NotionPage): Promise<{ body: string; images: ImageMeta[] }> {
+async function pageBody(deps: PullDeps, page: NotionPage): Promise<{ body: string; images: ImageMeta[]; videos: VideoMeta[] }> {
   const raw = await deps.gateway.getPageMarkdown(page.id);
   const local = new Map<string, string>();
   const images: ImageMeta[] = [];
@@ -83,5 +86,38 @@ async function pageBody(deps: PullDeps, page: NotionPage): Promise<{ body: strin
     local.set(ref, src);
     images.push({ src, width, height, alt: alt || page.title });
   }
-  return { body: normalizeNotionMarkdown(rewriteImages(raw, local)), images };
+  const { links, videos } = await pageBookmarks(deps, page, raw);
+  return { body: normalizeNotionMarkdown(rewriteBookmarks(rewriteImages(raw, local), links)), images, videos };
+}
+
+// Cada bookmark pasa a ser un enlace en su propio párrafo. Si es un vídeo de TikTok, además se guarda su vista previa
+// (oEmbed + miniatura descargada: la URL de la miniatura caduca). Si la vista previa falla, queda el enlace y el build
+// sigue: no es contenido crítico.
+async function pageBookmarks(deps: PullDeps, page: NotionPage, raw: string): Promise<{ links: Map<string, string>; videos: VideoMeta[] }> {
+  const links = new Map<string, string>();
+  const videos: VideoMeta[] = [];
+  for (const id of extractBookmarkIds(raw)) {
+    const url = await deps.gateway.getBookmarkUrl(id);
+    if (!url || !/^https?:\/\//.test(url)) {
+      deps.log?.(`· bookmark no resuelto en «${page.title}»: ${id}`);
+      continue;
+    }
+    const video = canonicalTikTokUrl(url);
+    if (!video) {
+      // Paréntesis escapados a mano (encodeURIComponent no los toca): uno sin escapar cerraría el enlace de Markdown.
+      links.set(id, `[${new URL(url).hostname}](${url.replace(/\(/g, "%28").replace(/\)/g, "%29")})`);
+      continue;
+    }
+    links.set(id, `[Ver el vídeo en TikTok](${video})`);
+    try {
+      const o = parseOEmbed(await deps.fetchJson(tiktokOEmbedUrl(video)));
+      if (!o) throw new Error("respuesta de oEmbed no válida");
+      const src = `/content/${page.id}/video-${videos.length + 1}.webp`;
+      const { width, height } = await deps.storeImage(await deps.fetchBytes(o.thumbnailUrl), join(deps.publicDir, src));
+      videos.push({ url: video, title: o.title, author: o.author, thumbnail: { src, width, height, alt: o.title || page.title } });
+    } catch (e) {
+      deps.log?.(`· vista previa de TikTok no disponible en «${page.title}» (${(e as Error).message}): queda el enlace`);
+    }
+  }
+  return { links, videos };
 }

@@ -78,6 +78,23 @@ describe("Markdown", () => {
     expect(rows).toEqual(["img / Texto", "Texto / img / lista", "img / Texto"]);
   });
 
+  it("un párrafo que solo enlaza a un vídeo con vista previa se pinta como tarjeta; sin vista previa, queda el enlace", () => {
+    const url = "https://www.tiktok.com/@sophisnavi/video/1";
+    const videos = [{ url, title: "Ciencia real", author: "Sofi", thumbnail: { src: "/content/p/video-1.webp", width: 576, height: 1024, alt: "Ciencia real" } }];
+    const source = `¡Mira mi vídeo!\n\n[Ver el vídeo en TikTok](${url})\n\n[Ver el vídeo en TikTok](https://www.tiktok.com/@sophisnavi/video/2)\n\nTexto con [enlace](${url}) dentro`;
+    const { container } = render(<Markdown source={source} videos={videos} />);
+    const cards = container.querySelectorAll("a.video-card");
+    expect(cards).toHaveLength(1);
+    expect(cards[0].getAttribute("href")).toBe(url);
+    expect(cards[0].getAttribute("target")).toBe("_blank");
+    expect(cards[0].getAttribute("rel")).toBe("noopener noreferrer");
+    expect(cards[0].querySelector("img")?.getAttribute("src")).toBe("/content/p/video-1.webp");
+    expect(cards[0].textContent).toContain("Ciencia real");
+    expect(cards[0].closest("p")).toBeNull(); // nunca un bloque dentro de <p>
+    // Sin vista previa (vídeo 2) y dentro de una frase, siguen siendo enlaces normales.
+    expect([...container.querySelectorAll("p a")].map((a) => a.textContent)).toEqual(["Ver el vídeo en TikTok", "enlace"]);
+  });
+
   it("un enlace sin destino no lleva atributos externos", () => {
     const { container } = render(<Markdown source={"[sin destino]()"} />);
     expect(container.querySelector("a")?.getAttribute("target")).toBeNull();
