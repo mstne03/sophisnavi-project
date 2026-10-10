@@ -36,6 +36,7 @@ describe("Markdown", () => {
     expect(img.getAttribute("width")).toBe("1200");
     expect(img.getAttribute("height")).toBe("1000");
     expect(img.getAttribute("loading")).toBe("lazy");
+    expect(fig.style.getPropertyValue("--ar")).toBe(String(1200 / 1000)); // el CSS acota la altura con esta proporción
     expect(fig.querySelector("figcaption")?.textContent).toBe("Alpha");
     expect(container.querySelectorAll("figure")).toHaveLength(1);
     expect(container.querySelectorAll("p img")).toHaveLength(1);

@@ -87,16 +87,22 @@ body {
 .prose-sophis blockquote p:first-child {
   margin-top: 0;
 }
-/* Imágenes: anchura contenida y uniforme (nunca a sangre), centradas. */
+/* Imágenes: anchura contenida y uniforme (nunca a sangre), centradas, y alto acotado. El ancho (de imagen y pie) es el
+   menor entre la columna y el que da la altura máxima con la proporción --ar que pone Figure: así las verticales no
+   ocupan toda la pantalla y la caja existe antes de cargar (lazy, sin saltos). Sin --ar cae a toda la columna. */
 .prose-sophis figure {
+  --img-max-h: min(70vh, 36rem);
+  --img-w: min(100%, var(--img-max-h) * var(--ar, 100));
   margin-top: 1.6em;
   margin-inline: auto;
   max-width: 36rem;
 }
 .prose-sophis figure img {
   display: block;
-  width: 100%;
+  width: var(--img-w);
   height: auto;
+  max-height: var(--img-max-h);
+  margin-inline: auto;
   border-radius: 0.75rem;
 }
 .prose-sophis p img {
@@ -107,6 +113,8 @@ body {
   vertical-align: middle;
 }
 .prose-sophis figcaption {
+  width: var(--img-w);
+  margin-inline: auto;
   margin-top: 0.5em;
   font-size: 0.8rem;
   color: rgb(255 255 255 / 0.55);
@@ -119,10 +127,12 @@ body {
   margin-top: 1.6em;
 }
 .prose-sophis .img-grid figure {
+  --img-w: 100%;
   margin: 0;
   max-width: none;
 }
 .prose-sophis .img-grid figure img {
+  max-height: none;
   aspect-ratio: 4 / 3;
   object-fit: cover;
 }
