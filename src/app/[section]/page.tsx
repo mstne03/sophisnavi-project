@@ -34,7 +34,7 @@ export default async function SectionPage({ params }: PageProps<"/[section]">) {
         <p className="text-xs uppercase tracking-[0.4em] text-cyan-200">Sección</p>
         <h1 className="mt-3 font-display text-5xl sm:text-7xl">{s.title}</h1>
         {s.intro ? (
-          <Markdown source={s.intro.body} images={s.intro.images} className="prose-sophis mt-8" />
+          <Markdown source={s.intro.body} images={s.intro.images} videos={s.intro.videos} className="prose-sophis mt-8" />
         ) : (
           <p className="prose-sophis mt-8">{s.description}</p>
         )}

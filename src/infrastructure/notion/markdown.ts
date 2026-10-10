@@ -25,6 +25,19 @@ export function rewriteImages(md: string, local: ReadonlyMap<string, string>): s
   });
 }
 
+// El endpoint de Markdown no convierte los bookmarks: los da como <unknown url="…#<id del bloque>" alt="bookmark"/>,
+// con la URL del propio bloque en Notion (la del enlace hay que pedirla a la API de bloques).
+const BOOKMARK = /<unknown\s+url="[^"#]*#([0-9a-f]{32})"\s+alt="bookmark"\s*\/>/gi;
+
+export function extractBookmarkIds(md: string): string[] {
+  return [...new Set([...md.matchAll(BOOKMARK)].map((m) => m[1]))];
+}
+
+// Sustituye cada bookmark por su Markdown ya resuelto (un enlace); los no resueltos se eliminan, como hasta ahora.
+export function rewriteBookmarks(md: string, resolved: ReadonlyMap<string, string>): string {
+  return md.replace(BOOKMARK, (_, id: string) => resolved.get(id) ?? "");
+}
+
 const HEADING = /^(\s*)(#{1,6})\s+(.*)$/;
 const LIST_ITEM = /^\s*([-*]|\d+\.)\s+/;
 

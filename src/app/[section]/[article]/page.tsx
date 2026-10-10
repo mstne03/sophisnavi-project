@@ -60,7 +60,7 @@ export default async function ArticlePage({ params }: PageProps<"/[section]/[art
           )}
         </p>
 
-        <Markdown source={a.body} images={a.images} className="prose-sophis mt-10" />
+        <Markdown source={a.body} images={a.images} videos={a.videos} className="prose-sophis mt-10" />
 
         <ArticleNav sectionSlug={s.slug} prev={v.prev} next={v.next} />
 

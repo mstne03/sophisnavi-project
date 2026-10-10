@@ -1,7 +1,8 @@
 import type { ComponentProps, CSSProperties } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeSanitize from "rehype-sanitize";
-import type { ImageMeta } from "@/domain/content";
+import type { ImageMeta, VideoMeta } from "@/domain/content";
+import { VideoCard } from "./video-card";
 
 // Subconjunto estructural de mdast: basta para agrupar párrafos que solo contienen una imagen.
 type MdNode = { type: string; children?: MdNode[] };
@@ -31,6 +32,11 @@ const onlyImages = (n: HNode) => {
   const kids = n.children ?? [];
   const imgs = kids.filter(isImg);
   return imgs.length > 0 && kids.every((c) => isImg(c) || (c.type === "text" && !c.value?.trim())) ? imgs : [];
+};
+// Párrafo que solo contiene un enlace (más espacios): su destino. Es como llegan los bookmarks de Notion.
+const onlyLink = (n: HNode) => {
+  const kids = (n.children ?? []).filter((c) => !(c.type === "text" && !c.value?.trim()));
+  return kids.length === 1 && kids[0].tagName === "a" ? String(kids[0].properties?.href ?? "") : undefined;
 };
 const isText = (n?: HNode) => !!n && (["ul", "ol", "blockquote"].includes(n.tagName ?? "") || (n.tagName === "p" && onlyImages(n).length === 0));
 
@@ -71,9 +77,11 @@ export function rehypeVerticalRows(bySrc: Map<string, ImageMeta>) {
 
 // Markdown → HTML semántico, en el servidor, sanitizado: el contenido de Notion es entrada no confiable
 // (sin HTML crudo; un enlace externo nunca abre con acceso al opener).
-export function Markdown({ source, images = [], className }: { source: string; images?: ImageMeta[]; className?: string }) {
+type MarkdownProps = { source: string; images?: ImageMeta[]; videos?: VideoMeta[]; className?: string };
+export function Markdown({ source, images = [], videos = [], className }: MarkdownProps) {
   if (source.trim() === "") return <div className={className} />;
   const bydSrc = new Map(images.map((i) => [i.src, i]));
+  const byUrl = new Map(videos.map((v) => [v.url, v]));
   return (
     <div className={className}>
       <ReactMarkdown
@@ -90,7 +98,10 @@ export function Markdown({ source, images = [], className }: { source: string; i
           },
           // Un párrafo que solo contiene imágenes no puede ser <p> (HTML válido: <figure> no cabe en <p>):
           // una imagen → <figure>; varias seguidas → cuadrícula de <figure>.
+          // Un párrafo que solo enlaza a un vídeo con vista previa se pinta como tarjeta (si no la hay, queda el enlace).
           p: ({ node, children, ...rest }) => {
+            const video = node && byUrl.get(onlyLink(node as HNode) ?? "");
+            if (video) return <VideoCard video={video} />;
             const imgs = node ? onlyImages(node as HNode) : [];
             if (imgs.length === 0) return <p {...rest}>{children}</p>;
             const figures = imgs.map((img, i) => {

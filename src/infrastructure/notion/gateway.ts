@@ -7,6 +7,7 @@ export interface NotionGateway {
   listPages(dataSourceId: string): Promise<NotionPage[]>;
   getPageMarkdown(pageId: string): Promise<string>;
   getFileUrl(blockId: string): Promise<string | undefined>;
+  getBookmarkUrl(blockId: string): Promise<string | undefined>;
   getPageState(pageId: string): Promise<PageState>;
 }
 
@@ -44,6 +45,11 @@ export function createNotionGateway(token: string, notion: NotionSdk = new Clien
       const media = block.type === "image" ? block.image : block.type === "file" ? block.file : undefined;
       if (!media) return undefined;
       return media.type === "file" ? media.file.url : media.type === "external" ? media.external.url : undefined;
+    },
+    // El endpoint de Markdown no convierte los bookmarks: solo da el id del bloque y la URL hay que pedirla aparte.
+    async getBookmarkUrl(blockId) {
+      const block = await notion.blocks.retrieve({ block_id: blockId });
+      return "type" in block && block.type === "bookmark" ? block.bookmark.url : undefined;
     },
     async getPageState(pageId) {
       try {

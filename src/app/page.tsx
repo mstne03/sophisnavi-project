@@ -24,7 +24,7 @@ export default async function Home() {
               <h2 id="bienvenida" className="font-display text-3xl text-cyan-100 sm:text-4xl">
                 Kaltxì!
               </h2>
-              <Markdown source={home.body} images={home.images} className="prose-sophis mt-6" />
+              <Markdown source={home.body} images={home.images} videos={home.videos} className="prose-sophis mt-6" />
             </div>
           </section>
         )
