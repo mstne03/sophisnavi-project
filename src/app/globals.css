@@ -166,10 +166,11 @@ body {
     padding-bottom: 2em;
   }
 }
-/* Varias imágenes seguidas: cuadrícula horizontal con celdas del mismo formato. */
+/* Varias imágenes seguidas: cuadrícula de dos columnas con celdas del mismo formato (una en pantallas estrechas). Dos
+   columnas fijas, no auto-fit, para que la regla de la última impar sea siempre correcta aunque cambie --img-max-w. */
 .prose-sophis .img-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.75rem;
   max-width: var(--img-max-w);
   margin-top: 1.6em;
@@ -184,6 +185,18 @@ body {
   max-height: none;
   aspect-ratio: 4 / 3;
   object-fit: cover;
+}
+@media (min-width: 30rem) {
+  .prose-sophis .img-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  /* Número impar: la última ocupa el ancho de las dos y conserva su proporción (sin recorte: puede ser cualquier imagen). */
+  .prose-sophis .img-grid figure:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+  .prose-sophis .img-grid figure:last-child:nth-child(odd) img {
+    aspect-ratio: auto;
+  }
 }
 .prose-sophis hr {
   margin-top: 2em;
