@@ -57,14 +57,17 @@ describe("Experience", () => {
     // Según el estado de la visita (módulo), la intro puede estar ya hecha; si no, se salta.
     screen.queryByRole("button", { name: "Saltar intro" })?.click();
     await screen.findByRole("navigation", { name: "Menú principal" });
-    // Antes de abrirla, el texto existe para los bots pero oculto, y no hay panel #quien-soy
-    expect(screen.getByText("Kaltxì, soy Sofi").closest("[hidden]")).not.toBeNull();
-    expect(document.getElementById("quien-soy")).toBeNull();
+    // Las dos vistas conviven en la pista: la que no se ve queda inert (ni foco ni clics)
+    const panel = document.getElementById("quien-soy")!;
+    expect(panel.textContent).toContain("Kaltxì, soy Sofi");
+    expect(panel.hasAttribute("inert")).toBe(true);
+    const menuPane = screen.getByRole("navigation", { name: "Menú principal" }).closest("[inert]");
+    expect(menuPane).toBeNull();
 
     fireEvent.click(screen.getByRole("link", { name: "Quién soy" }));
     expect(window.location.hash).toBe("#quien-soy");
-    const panel = document.getElementById("quien-soy")!;
-    expect(panel.textContent).toContain("Kaltxì, soy Sofi");
+    expect(panel.hasAttribute("inert")).toBe(false);
+    expect(screen.getByRole("navigation", { name: "Menú principal" }).closest("[inert]")).not.toBeNull();
     expect(screen.getByRole("link", { name: "Quién soy" }).getAttribute("aria-current")).toBe("page");
 
     history.back(); // jsdom no dispara popstate por sí solo
@@ -77,6 +80,6 @@ describe("Experience", () => {
     history.replaceState(null, "", "/#quien-soy");
     render(<Experience sections={[]} about={<p>Kaltxì</p>} />);
     screen.queryByRole("button", { name: "Saltar intro" })?.click();
-    await vi.waitFor(() => expect(document.getElementById("quien-soy")).not.toBeNull());
+    await vi.waitFor(() => expect(document.getElementById("quien-soy")!.hasAttribute("inert")).toBe(false));
   });
 });

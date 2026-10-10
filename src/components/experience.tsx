@@ -153,37 +153,31 @@ export function Experience({ sections, about }: { sections: MenuSection[]; about
             </motion.button>
           </motion.div>
         ) : (
-          // Con «Quién soy» abierto el menú se desvanece (queda el árbol) y no recibe foco ni clics (inert).
+          // Pista horizontal: Inicio a la izquierda, «Quién soy» a la derecha. La pestaña desliza la pista
+          // (sin fundidos); cada vista tiene su propio scroll vertical y la que no se ve queda inert.
           <motion.div
             key="menu"
-            inert={view === "about" || undefined}
-            animate={{ opacity: view === "about" ? 0 : 1 }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute inset-y-0 left-0 flex w-[200%]"
+            initial={false}
+            animate={{ x: view === "about" ? "-50%" : "0%" }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
-            <MainMenu sections={sections} animateIn={!returning} />
+            <div className="home-no-scrollbar h-full w-1/2 overflow-x-hidden overflow-y-auto" inert={view === "about" || undefined}>
+              <MainMenu sections={sections} animateIn={!returning} />
+            </div>
+            <div
+              id={ABOUT_ID}
+              className="home-no-scrollbar relative z-10 h-full w-1/2 overflow-x-hidden overflow-y-auto"
+              inert={view === "inicio" || undefined}
+            >
+              {about}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
       {phase === "menu" && <HomeNav view={view} onSelect={select} />}
-
-      {/* «Quién soy»: encima del menú, con su propio scroll; el fondo 3D (fijo) sigue detrás. */}
-      <AnimatePresence>
-        {about && phase === "menu" && view === "about" && (
-          <motion.div
-            key="about"
-            id={ABOUT_ID}
-            className="home-no-scrollbar fixed inset-0 z-10 overflow-y-auto"
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 40 }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          >
-            {about}
-          </motion.div>
-        )}
-      </AnimatePresence>
-      {/* Sin JS (y para los bots) la bienvenida sigue en el HTML, pero no ocupa sitio ni se alcanza por scroll. */}
-      {about && !(phase === "menu" && view === "about") && <div hidden>{about}</div>}
+      {/* Durante la intro la bienvenida sigue en el HTML (bots, sin JS), oculta. */}
+      {about && phase === "intro" && <div hidden>{about}</div>}
     </main>
   );
 }
