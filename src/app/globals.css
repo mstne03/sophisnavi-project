@@ -31,6 +31,10 @@ body {
 
 /* Texto largo de secciones y páginas (Markdown del seed). */
 .prose-sophis {
+  /* Tamaño de las imágenes en toda la web: un único sitio para ajustarlo. */
+  --img-max-w: 30rem;
+  --img-max-h: min(60vh, 30rem);
+  --img-side-w: 16rem;
   color: rgb(255 255 255 / 0.85);
   line-height: 1.75;
 }
@@ -91,11 +95,10 @@ body {
    menor entre la columna y el que da la altura máxima con la proporción --ar que pone Figure: así las verticales no
    ocupan toda la pantalla y la caja existe antes de cargar (lazy, sin saltos). Sin --ar cae a toda la columna. */
 .prose-sophis figure {
-  --img-max-h: min(70vh, 36rem);
   --img-w: min(100%, var(--img-max-h) * var(--ar, 100));
   margin-top: 1.6em;
   margin-inline: auto;
-  max-width: 36rem;
+  max-width: var(--img-max-w);
 }
 .prose-sophis figure img {
   display: block;
@@ -119,12 +122,58 @@ body {
   font-size: 0.8rem;
   color: rgb(255 255 255 / 0.55);
 }
+/* Vertical + el bloque de texto que la rodea: fila de dos columnas con los centros alineados; el lado lo decide
+   rehypeVerticalRows (data-side). El HTML va en orden de lectura (antes, imagen, después) y las áreas lo colocan: la
+   imagen ocupa las cuatro filas y las dos 1fr de los extremos absorben la diferencia de altura, así que el texto (antes
+   + después) queda centrado como un solo bloque. Solo con columna ancha: en móvil se apila en orden. */
+@media (min-width: 40rem) {
+  .prose-sophis .media-row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: 1fr auto auto 1fr;
+    grid-template-areas: "img ." "img before" "img after" "img .";
+    column-gap: 1.75em;
+    margin-top: 1.6em;
+  }
+  .prose-sophis .media-row[data-side="right"] {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: ". img" "before img" "after img" ". img";
+  }
+  .prose-sophis .media-row > figure {
+    --img-w: 100%;
+    grid-area: img;
+    align-self: center;
+    position: relative;
+    width: min(var(--img-side-w), var(--img-max-h) * var(--ar, 1));
+    max-width: none;
+    margin: 0;
+  }
+  .prose-sophis .media-before {
+    grid-area: before;
+  }
+  .prose-sophis .media-after {
+    grid-area: after;
+  }
+  .prose-sophis :is(.media-before, figure:first-child + .media-after) > :first-child {
+    margin-top: 0;
+  }
+  /* El pie sale del flujo para centrar la imagen (no imagen + pie) con el texto; la fila le reserva el hueco debajo. */
+  .prose-sophis .media-row > figure figcaption {
+    position: absolute;
+    top: 100%;
+  }
+  .prose-sophis .media-row:has(figcaption) {
+    padding-bottom: 2em;
+  }
+}
 /* Varias imágenes seguidas: cuadrícula horizontal con celdas del mismo formato. */
 .prose-sophis .img-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
   gap: 0.75rem;
+  max-width: var(--img-max-w);
   margin-top: 1.6em;
+  margin-inline: auto;
 }
 .prose-sophis .img-grid figure {
   --img-w: 100%;
