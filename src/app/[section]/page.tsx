@@ -45,7 +45,7 @@ export default async function SectionPage({ params }: PageProps<"/[section]">) {
         ) : (
           // Carrusel con desplazamiento horizontal y ajuste en todos los tamaños; en pantallas anchas caben dos cards y
           // asoma la siguiente, así se ve que hay más.
-          <ul aria-label="Artículos de la sección" className="mt-4 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4">
+          <ul aria-label="Artículos de la sección" className="thin-scrollbar mt-4 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4">
             {articles.map((a) => (
               <li key={a.slug} className="w-[80%] shrink-0 snap-start sm:w-[45%]">
                 <ArticleCard article={a} />
