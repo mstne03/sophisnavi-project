@@ -25,7 +25,7 @@ export function MainMenu({ sections, animateIn = true }: { sections: MenuSection
         <p className="text-xs font-medium uppercase tracking-[0.4em] text-cyan-200">Eywa ngahu</p>
         <h1 className="mt-3 font-display text-5xl text-white sm:text-7xl">Sophisnavi</h1>
         <p className="mt-4 max-w-md text-base leading-relaxed text-white/85">
-          Tu puerta a Pandora: su mundo, sus pueblos y su lengua.
+          Un viaje al corazón de AVATAR: descubre las historias que se esconden tras los detalles
         </p>
       </motion.header>
 
