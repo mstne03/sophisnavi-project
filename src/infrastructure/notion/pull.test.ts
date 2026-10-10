@@ -36,7 +36,7 @@ function deps(rows: NotionPage[], markdown: Record<string, string> = {}): PullDe
     fetchBytes: async (url) => new TextEncoder().encode(url),
     storeImage: async (bytes, out) => {
       stored.push(`${new TextDecoder().decode(bytes)} -> ${out.replace(/\\/g, "/")}`);
-      return { width: 1600, height: 900 };
+      return { width: 1200, height: 900 };
     },
     now: () => new Date("2026-10-09T10:00:00.000Z"),
     log: (m) => logs.push(m),
@@ -76,8 +76,8 @@ describe("pullContent", () => {
     const a = c.articles[0];
     expect(a.description).toBe("Desc propia");
     expect(a.images).toEqual([
-      { src: "/content/id-ciencia/1.webp", width: 1600, height: 900, alt: "Alpha" },
-      { src: "/content/id-ciencia/2.webp", width: 1600, height: 900, alt: "Externa" },
+      { src: "/content/id-ciencia/1.webp", width: 1200, height: 900, alt: "Alpha" },
+      { src: "/content/id-ciencia/2.webp", width: 1200, height: 900, alt: "Externa" },
     ]);
     expect(d.stored).toEqual(["https://s3/firmada.jpg -> /pub/content/id-ciencia/1.webp", "https://ext/img.png -> /pub/content/id-ciencia/2.webp"]);
     expect(a.body).toBe("Intro.\n\n![Alpha](/content/id-ciencia/1.webp)\n\n![Externa](/content/id-ciencia/2.webp)\n\n> ❗\n> Ojo");
