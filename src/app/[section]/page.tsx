@@ -43,10 +43,11 @@ export default async function SectionPage({ params }: PageProps<"/[section]">) {
         {articles.length === 0 ? (
           <p className="mt-4 text-white/70">Todavía no hay artículos publicados en esta sección.</p>
         ) : (
-          // Carrusel: desplazamiento horizontal con ajuste; en pantallas anchas, cuadrícula.
-          <ul aria-label="Artículos de la sección" className="mt-4 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 sm:grid sm:grid-cols-2 sm:overflow-visible">
+          // Carrusel con desplazamiento horizontal y ajuste en todos los tamaños; en pantallas anchas caben dos cards y
+          // asoma la siguiente, así se ve que hay más.
+          <ul aria-label="Artículos de la sección" className="mt-4 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4">
             {articles.map((a) => (
-              <li key={a.slug} className="w-[80%] shrink-0 snap-start sm:w-auto">
+              <li key={a.slug} className="w-[80%] shrink-0 snap-start sm:w-[45%]">
                 <ArticleCard article={a} />
               </li>
             ))}
