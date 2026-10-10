@@ -61,6 +61,23 @@ describe("Markdown", () => {
     expect(container.querySelectorAll("p")).toHaveLength(2); // nunca <figure> dentro de <p>
   });
 
+  it("una vertical con texto debajo va en una fila junto a ese texto: la primera a la derecha y luego alternando", () => {
+    const v = (n: number) => ({ src: `/content/p/v${n}.webp`, width: 600, height: 900, alt: "" });
+    const images = [v(1), v(2), v(3), v(4), v(5), { src: "/content/p/h.webp", width: 900, height: 600, alt: "" }];
+    const img = (s: string) => `![](/content/p/${s}.webp)`;
+    const source = [img("v1"), "Texto", img("h"), "Texto", img("v2"), "- lista", img("v3"), "## Título", img("v4"), "Texto", img("v5"), img("v1")].join("\n\n");
+    const { container } = render(<Markdown source={source} images={images} />);
+    const sides = [...container.querySelectorAll("figure")].map((f) => `${f.querySelector("img")!.getAttribute("src")!.slice(11, -5)}:${f.closest<HTMLElement>(".media-row")?.dataset.side ?? "-"}`);
+    // v3 (debajo un título) y la cuadrícula final no van en fila; la horizontal tampoco. v4 alterna respecto a v2, no a v3.
+    expect(sides).toEqual(["v1:right", "h:-", "v2:left", "v3:-", "v4:right", "v5:-", "v1:-"]);
+    // El texto de la fila es el bloque contiguo a la imagen, antes y después, hasta el siguiente bloque que no es texto.
+    // En orden de lectura: texto anterior, imagen («img»), texto posterior.
+    const rows = [...container.querySelectorAll(".media-row")].map((r) =>
+      [...r.children].map((c) => (c.tagName === "FIGURE" ? "img" : [...c.children].map((b) => b.textContent?.trim()).join("|"))).join(" / "),
+    );
+    expect(rows).toEqual(["img / Texto", "Texto / img / lista", "img / Texto"]);
+  });
+
   it("un enlace sin destino no lleva atributos externos", () => {
     const { container } = render(<Markdown source={"[sin destino]()"} />);
     expect(container.querySelector("a")?.getAttribute("target")).toBeNull();
