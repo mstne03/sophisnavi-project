@@ -1,7 +1,7 @@
 # Textos de las imágenes de vista previa (`opengraph-image`, paso 0.9)
 
 > **Estado: BORRADOR pendiente de la aprobación de Sofi.**
-> Una imagen de 1200×630 por ruta e idioma, generada en el build con `ImageResponse` de `next/og` y la fuente Marcellus local. Este documento fija **solo el texto** que va dentro de cada imagen y su texto alternativo; el diseño visual se decide en el paso 0.9.
+> Una imagen de 1200×630 por ruta e idioma, generada en el build con `ImageResponse` de `next/og` y la fuente Marcellus local (`src/ui/fonts/`, SIL OFL). Este documento fija **solo el texto** que va dentro de cada imagen y su texto alternativo; el diseño visual se decide en el paso 0.9.
 
 ## Reglas de redacción
 
