@@ -21,7 +21,7 @@ export const SECTIONS: readonly Section[] = [
   {
     slug: "personajes",
     title: "Personajes",
-    description: "Conoce más a fondo a tus personajes favoritos, desde sus personalidades y habilidades hasta detalles que probablemente no sabías.",
+    description: "Conoce más a fondo a tus personajes favoritos a través de análisis y descubre detalles que probablemente no sabías.",
     notionNames: ["Personajes"],
   },
   {
