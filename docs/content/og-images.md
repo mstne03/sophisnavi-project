@@ -12,7 +12,7 @@
 | `brand` | Pie fijo | `sophisnavi.com` | Igual en todas las imágenes; sin `www` para que se lea como marca |
 | `alt` | `openGraph.images[].alt` y `twitter.images[].alt` | ≤ 125 caracteres, describe lo que se ve, no repite el título de la página | Lectores de pantalla y accesibilidad de Twitter/X |
 
-El `alt` describe la imagen como objeto ("Tarjeta con el texto…") porque la imagen **es** texto sobre fondo; no describe la página. Si en el diseño final se añade una ilustración (por ejemplo, el Árbol de las Almas de la intro), se añade al `alt` al final: "…sobre una silueta del Árbol de las Almas".
+El `alt` describe la imagen como objeto ("Tarjeta con el texto…") porque la imagen **es** texto sobre fondo; no describe la página. Desde la PR de marca, la tarjeta lleva a la derecha el árbol del logo (sin fondo, `src/ui/og-tree.png`): el `alt` puede terminar en "…junto al árbol morado del logo".
 
 ---
 
