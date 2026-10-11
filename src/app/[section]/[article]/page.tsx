@@ -8,7 +8,7 @@ import { EntryTabs } from "@/ui/entry-tabs";
 import { formatDate } from "@/ui/format";
 import { JsonLd } from "@/ui/json-ld";
 import { Markdown } from "@/ui/markdown";
-import { SiteHeader } from "@/ui/site-header";
+import { Tagline, TopBar } from "@/ui/top-bar";
 import { content } from "../../content";
 
 export const dynamicParams = false;
@@ -48,8 +48,8 @@ export default async function ArticlePage({ params }: PageProps<"/[section]/[art
     <main className="min-h-dvh w-full bg-[radial-gradient(ellipse_at_50%_100%,#1a0b2e,#02040a_70%)] px-6 pb-24 text-white">
       <JsonLd data={breadcrumbJsonLd([{ name: "Inicio", path: "/" }, { name: s.title, path: `/${s.slug}` }, { name: a.title, path }])} />
       <JsonLd data={articleJsonLd({ title: a.title, description: a.description, path, publishedAt: a.createdAt, updatedAt: a.updatedAt, section: s.title, image: a.images[0]?.src })} />
-      <article className="mx-auto w-full max-w-3xl">
-        <SiteHeader />
+      <TopBar right={<Tagline />} />
+      <article className="mx-auto w-full max-w-3xl pt-28">
         <p className="text-xs uppercase tracking-[0.4em] text-cyan-200">
           <Link href={`/${s.slug}`} className="hover:underline">
             {s.title}

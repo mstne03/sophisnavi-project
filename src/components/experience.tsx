@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "re
 import { AnimatePresence, motion } from "motion/react";
 import type { TreeScene } from "@/ui/tree-scene/renderer";
 import { ABOUT_ID } from "./home-anchors";
+import { TopBar } from "@/ui/top-bar";
 import { HomeNav, type HomeView } from "./home-nav";
 import { MainMenu, type MenuSection } from "./main-menu";
 
@@ -175,7 +176,8 @@ export function Experience({ sections, about }: { sections: MenuSection[]; about
           </motion.div>
         )}
       </AnimatePresence>
-      {phase === "menu" && <HomeNav view={view} onSelect={select} />}
+      {/* Barra superior: la marca siempre (también durante la intro); las pestañas solo tras la intro. */}
+      <TopBar width="wide" right={phase === "menu" ? <HomeNav view={view} onSelect={select} /> : undefined} />
       {/* Durante la intro la bienvenida sigue en el HTML (bots, sin JS), oculta. */}
       {about && phase === "intro" && <div hidden>{about}</div>}
     </main>
