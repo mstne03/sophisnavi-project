@@ -14,6 +14,7 @@ function deps(status: string | null = "Publicado"): WebhookDeps & { deployed: nu
     logs: [] as string[],
     deploy: async () => {
       d.deployed += 1;
+      return true;
     },
     log: (m: string) => d.logs.push(m),
   };
@@ -61,6 +62,14 @@ describe("handleNotionWebhook", () => {
     expect((await handleNotionWebhook(body, sig, gone)).body.deployed).toBe(true);
   });
 
+  it("si el Deploy Hook está saturado responde 200 sin desplegar, para que Notion no pause la suscripción", async () => {
+    const d = { ...deps("Publicado"), deploy: async () => false };
+    const body = event("page.content_updated");
+    const sig = await signWebhookPayload({ body, verificationToken: TOKEN });
+    expect(await handleNotionWebhook(body, sig, d)).toEqual({ status: 200, body: { ok: true, deployed: false, reason: "deploy hook rate limited" } });
+    expect(d.logs.at(-1)).toContain("saturado");
+  });
+
   it("rechaza un JSON firmado que no tiene forma de evento", async () => {
     const body = JSON.stringify({ hola: 1 });
     const sig = await signWebhookPayload({ body, verificationToken: TOKEN });
@@ -72,9 +81,11 @@ describe("triggerDeployHook", () => {
   it("hace POST a la URL y falla si no está configurada o Vercel responde error", async () => {
     const fetchMock = vi.fn(async () => new Response("", { status: 201 }));
     vi.stubGlobal("fetch", fetchMock);
-    await triggerDeployHook("https://api.vercel.com/v1/integrations/deploy/x/y");
+    expect(await triggerDeployHook("https://api.vercel.com/v1/integrations/deploy/x/y")).toBe(true);
     expect(fetchMock).toHaveBeenCalledWith("https://api.vercel.com/v1/integrations/deploy/x/y", { method: "POST" });
     await expect(triggerDeployHook(undefined)).rejects.toThrow(/no configurada/);
+    vi.stubGlobal("fetch", async () => new Response("", { status: 429 }));
+    expect(await triggerDeployHook("https://x")).toBe(false); // saturado: no es un error, lo decide quien llama
     vi.stubGlobal("fetch", async () => new Response("", { status: 500 }));
     await expect(triggerDeployHook("https://x")).rejects.toThrow(/500/);
     vi.unstubAllGlobals();

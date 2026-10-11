@@ -30,9 +30,15 @@ estático con SEO completo (canonical, Open Graph, JSON-LD, hreflang, sitemap).
    (`src/application/content/publishDecision.ts`), llama al Deploy Hook de Vercel. Vercel cancela builds repetidos del mismo
    hook; el límite es de 60 disparos por hora.
 4. **Si Notion falla, el build falla** y Vercel conserva el despliegue anterior. Nunca se publica una web a medias.
+5. **Red de seguridad diaria.** Un evento se puede perder: el Deploy Hook responde 429 en una ráfaga de ediciones, Notion
+   pausa una suscripción que recibe errores, o el aviso llega cuando ya hay un build leyendo una versión anterior. Pasó el
+   2026-10-11 con «Los Sully»: producción se quedó con la entrada de Tuktirey a medio escribir. Por eso el webhook responde
+   200 ante un 429 del hook (no es un error de la suscripción) y un cron de Vercel (`vercel.json`) llama cada día a
+   `GET /api/notion/sync`, que compara `last_edited_time` de las filas con el `generatedAt` del snapshot desplegado y solo
+   si hay cambios que afectan a lo publicado relanza el build. Variable: `CRON_SECRET`.
 
 Variables (solo servidor): `NOTION_TOKEN` (integración interna de solo lectura, compartida únicamente con la base de datos; en el portal de Notion se llama «conexión» de tipo API Token, no un *personal access token*),
-`NOTION_WEBHOOK_SECRET`, `VERCEL_DEPLOY_HOOK_URL`. Ver `.env.example`.
+`NOTION_WEBHOOK_SECRET`, `VERCEL_DEPLOY_HOOK_URL`, `CRON_SECRET`. Ver `.env.example`.
 
 ## Consequences
 

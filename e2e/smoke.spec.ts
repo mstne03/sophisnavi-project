@@ -99,3 +99,10 @@ test("el webhook de Notion rechaza peticiones sin firma", async ({ request }) =>
   expect([401, 503]).toContain(res.status());
   expect(await res.json()).toMatchObject({ ok: false });
 });
+
+// Flujo crítico 7: la sincronización programada nunca lanza un build sin el secreto del cron.
+test("la sincronización con Notion exige el secreto del cron", async ({ request }) => {
+  const res = await request.get("/api/notion/sync", { headers: { authorization: "Bearer incorrecto" } });
+  expect([401, 503]).toContain(res.status());
+  expect(await res.json()).toMatchObject({ ok: false });
+});
