@@ -1,7 +1,7 @@
 # Textos de las imágenes de vista previa (`opengraph-image`, paso 0.9)
 
 > **Estado: BORRADOR pendiente de la aprobación de Sofi.**
-> Una imagen de 1200×630 por ruta e idioma, generada en el build con `ImageResponse` de `next/og` y la fuente Marcellus local. Este documento fija **solo el texto** que va dentro de cada imagen y su texto alternativo; el diseño visual se decide en el paso 0.9.
+> Una imagen de 1200×630 por ruta e idioma, generada en el build con `ImageResponse` de `next/og` y la fuente Marcellus local (`src/ui/fonts/`, SIL OFL). Este documento fija **solo el texto** que va dentro de cada imagen y su texto alternativo; el diseño visual se decide en el paso 0.9.
 
 ## Reglas de redacción
 
@@ -12,7 +12,7 @@
 | `brand` | Pie fijo | `sophisnavi.com` | Igual en todas las imágenes; sin `www` para que se lea como marca |
 | `alt` | `openGraph.images[].alt` y `twitter.images[].alt` | ≤ 125 caracteres, describe lo que se ve, no repite el título de la página | Lectores de pantalla y accesibilidad de Twitter/X |
 
-El `alt` describe la imagen como objeto ("Tarjeta con el texto…") porque la imagen **es** texto sobre fondo; no describe la página. Si en el diseño final se añade una ilustración (por ejemplo, el Árbol de las Almas de la intro), se añade al `alt` al final: "…sobre una silueta del Árbol de las Almas".
+El `alt` describe la imagen como objeto ("Tarjeta con el texto…") porque la imagen **es** texto sobre fondo; no describe la página. Desde la PR de marca, la tarjeta lleva a la derecha el árbol del logo (sin fondo, `src/ui/og-tree.png`): el `alt` puede terminar en "…junto al árbol morado del logo".
 
 ---
 
