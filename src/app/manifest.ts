@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Sophisnavi Project",
+    name: "Sophisnavi",
     short_name: "Sophisnavi",
-    description: "Sophisnavi Project",
+    description: "Todo sobre Avatar en español, por Sofi (@sophisnavi).",
     start_url: "/",
     display: "standalone",
     background_color: "#02040a",

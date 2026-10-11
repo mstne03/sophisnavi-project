@@ -20,11 +20,18 @@ describe("RootLayout", () => {
     expect(html).toContain("<p>hola</p>");
   });
 
-  it("exporta plantilla de título, metadataBase, icono de Apple y color de tema", () => {
+  it("exporta plantilla de título, metadataBase y color de tema; los iconos van por convención de fichero", () => {
     expect(metadata.title).toEqual({ default: "Sophisnavi", template: "%s · Sophisnavi" });
     expect(String(metadata.metadataBase)).toBe("https://www.sophisnavi.com/");
-    expect(metadata.icons).toEqual({ apple: "/icon-192x192.png" });
+    expect(metadata.icons).toBeUndefined(); // favicon.ico, icon.png y apple-icon.png en src/app/
     expect(viewport.themeColor).toBe("#02040a");
+  });
+
+  it("el logo de la marca y los iconos existen junto al layout y en public/", async () => {
+    const { existsSync } = await import("node:fs");
+    for (const f of ["src/app/favicon.ico", "src/app/icon.png", "src/app/apple-icon.png", "public/logo.png", "public/icon-192x192.png", "public/icon-512x512.png"]) {
+      expect(existsSync(f), f).toBe(true);
+    }
   });
 
   it("inserta el JSON-LD de WebSite en el body", () => {
