@@ -32,3 +32,12 @@ export function shouldDeploy(event: WebhookEventLike, page: PageState): boolean 
       return false;
   }
 }
+
+// Red de seguridad del webhook: un evento se puede perder (Deploy Hook saturado, suscripción pausada por Notion, caída).
+// Una página está desfasada si se editó después del build desplegado y afecta a lo publicado: está publicada ahora, o
+// estaba en el snapshot (se despublicó, borró o movió). Los borradores que nunca se publicaron no cuentan.
+export type PageSummary = { id: string; status: string | null; inTrash: boolean; updatedAt: string };
+
+export function stalePages(pages: PageSummary[], builtAt: string, builtIds: ReadonlySet<string>): PageSummary[] {
+  return pages.filter((p) => p.updatedAt > builtAt && (p.status === PUBLISHED || builtIds.has(p.id)));
+}

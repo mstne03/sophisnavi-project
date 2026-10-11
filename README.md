@@ -6,6 +6,8 @@ Portal en español sobre Avatar de Sofi (@sophisnavi). Next 16, HTML estático, 
 
 1. Sofi escribe en la base de datos de Notion «Web Sophisnavi» y pone `Estado = Publicado`.
 2. Notion avisa a `POST /api/notion/webhook`; si el cambio afecta a lo publicado, se dispara un build en Vercel.
+   Red de seguridad: un cron diario (`GET /api/notion/sync`, `vercel.json`) compara Notion con el despliegue y relanza el
+   build si algún cambio se quedó sin publicar (hook saturado, evento perdido).
 3. El build ejecuta `scripts/notion-pull.ts` (descarga páginas e imágenes a `data/content/` y `public/content/`) y después `next build`.
 4. Páginas, `sitemap.xml`, `robots.txt` y las imágenes Open Graph se generan desde ese contenido.
 

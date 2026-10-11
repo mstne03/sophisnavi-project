@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { shouldDeploy, type PageState } from "./publishDecision";
+import { shouldDeploy, stalePages, type PageState, type PageSummary } from "./publishDecision";
 
 const ev = (type: string, updated_properties?: string[]) => ({ type, entity: { id: "p1", type: "page" }, data: { updated_properties } });
 const published: PageState = { inTrash: false, status: "Publicado", statusPropertyId: "O2dmOw" };
@@ -40,5 +40,27 @@ describe("shouldDeploy", () => {
   it("ignora bloqueos y tipos desconocidos", () => {
     expect(shouldDeploy(ev("page.locked"), published)).toBe(false);
     expect(shouldDeploy(ev("comment.created"), published)).toBe(false);
+  });
+});
+
+// Protege: la red de seguridad solo redespliega por cambios posteriores al build que tocan lo publicado.
+describe("stalePages", () => {
+  const builtAt = "2026-10-11T14:30:00.000Z";
+  const page = (id: string, updatedAt: string, status: string | null = "Publicado", inTrash = false): PageSummary => ({ id, updatedAt, status, inTrash });
+
+  it("detecta publicadas editadas tras el build y páginas del snapshot que se despublicaron o borraron", () => {
+    const pages = [
+      page("vieja", "2026-10-11T14:00:00.000Z"),
+      page("sully", "2026-10-11T14:56:00.000Z"),
+      page("retirada", "2026-10-11T15:00:00.000Z", "En proceso"),
+      page("papelera", "2026-10-11T15:00:00.000Z", null, true),
+      page("borrador", "2026-10-11T15:00:00.000Z", "En proceso"),
+    ];
+    const stale = stalePages(pages, builtAt, new Set(["vieja", "sully", "retirada", "papelera"]));
+    expect(stale.map((p) => p.id)).toEqual(["sully", "retirada", "papelera"]);
+  });
+
+  it("sin cambios posteriores al build no hay nada desfasado", () => {
+    expect(stalePages([page("a", builtAt)], builtAt, new Set(["a"]))).toEqual([]);
   });
 });
