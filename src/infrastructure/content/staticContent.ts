@@ -26,5 +26,8 @@ export function createContentRepository(content: Content): ContentRepository {
       if (i < 0) return undefined;
       return { article: list[i], prev: link(list[i - 1]), next: link(list[i + 1]) };
     },
+    async snapshotAt() {
+      return content.generatedAt;
+    },
   };
 }

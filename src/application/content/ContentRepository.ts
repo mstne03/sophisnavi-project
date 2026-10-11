@@ -10,4 +10,5 @@ export interface ContentRepository {
   getHome(): Promise<Intro | undefined>;
   listArticles(sectionSlug?: SectionSlug): Promise<Article[]>;
   getArticle(sectionSlug: string, slug: string): Promise<ArticleView | undefined>;
+  snapshotAt(): Promise<string>; // ISO: cuándo se leyó Notion para este despliegue
 }
