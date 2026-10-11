@@ -62,6 +62,10 @@ test("el HTML del servidor trae artículo, canonical, Open Graph y JSON-LD", asy
   expect(html).toContain('property="og:type" content="article"');
   expect(html).toMatch(/hreflang="x-default"/i); // Next emite el atributo como hrefLang; HTML no distingue mayúsculas
   expect(html).toContain('"@type":"Article"');
+  // Favicon e icono de Apple por convención de fichero: son los que enseñan las pestañas y los resultados de Google.
+  expect(html).toMatch(/<link rel="icon" href="\/favicon\.ico[^"]*"/);
+  expect(html).toMatch(/<link rel="icon" href="\/icon\.png[^"]*"[^>]*sizes="512x512"/);
+  expect(html).toMatch(/<link rel="apple-touch-icon" href="\/apple-icon\.png[^"]*"/);
 });
 
 // Flujo 4b (SOPHIE-3): en un artículo por entradas solo se ve el personaje elegido y el selector cambia de uno a otro.

@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   title: { default: SITE_NAME, template: `%s · ${SITE_NAME}` },
   description: "Todo sobre Avatar en español: Pandora, personajes, clanes, la saga, colección y vida fan, por Sofi (@sophisnavi).",
   appleWebApp: { capable: true, title: SITE_NAME, statusBarStyle: "black-translucent" },
-  icons: { apple: "/icon-192x192.png" },
+  // Iconos por convención de fichero (favicon.ico, icon.png, apple-icon.png junto a este layout): Next emite los <link>.
   formatDetection: { telephone: false },
 };
 
