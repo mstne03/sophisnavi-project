@@ -2,8 +2,9 @@
 
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, motion } from "motion/react";
+import { usePathname, useRouter } from "next/navigation";
 import type { TreeScene } from "@/ui/tree-scene/renderer";
-import { ABOUT_ID } from "./home-anchors";
+import { ABOUT_ID, ABOUT_PATH } from "./home-anchors";
 import { TopBar } from "@/ui/top-bar";
 import { HomeNav, type HomeView } from "./home-nav";
 import { MainMenu, type MenuSection } from "./main-menu";
@@ -15,8 +16,10 @@ const TITLE = "Sophisnavi";
 // así al volver desde una sección no se repite la intro ni se pierde el scroll.
 const visit = { introDone: false, sceneTime: 0, scrollY: 0 };
 
-// `about` es la bienvenida de Notion renderizada en el servidor: panel a pantalla completa con scroll propio.
-export function Experience({ sections, about }: { sections: MenuSection[]; about?: ReactNode }) {
+// Vive en el layout compartido de / y /quien-soy: al navegar entre las dos no se desmonta (ni la escena ni la pista),
+// así el cambio de ruta es el mismo deslizamiento de siempre. `about` es la bienvenida de Notion renderizada en el
+// servidor (panel a pantalla completa con scroll propio); `excerpt`, su primer párrafo, va en Inicio.
+export function Experience({ sections, about, excerpt }: { sections: MenuSection[]; about?: ReactNode; excerpt?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mainRef = useRef<HTMLElement>(null);
   const sceneRef = useRef<TreeScene | null>(null);
@@ -75,20 +78,28 @@ export function Experience({ sections, about }: { sections: MenuSection[]; about
 
   const skip = () => sceneRef.current?.skipIntro();
 
-  // Vista de la portada. Se lee del hash tras montar (no en el render inicial: el servidor no lo conoce)
-  // y se sincroniza con el historial: la pestaña hace pushState, el botón «atrás» dispara popstate.
-  const [view, setView] = useState<HomeView>("inicio");
-  useEffect(() => {
-    const fromHash = () => setView(window.location.hash === `#${ABOUT_ID}` ? "about" : "inicio");
-    fromHash();
-    window.addEventListener("popstate", fromHash);
-    return () => window.removeEventListener("popstate", fromHash);
-  }, []);
+  // Vista de la portada: sale de la ruta, que el servidor ya conoce (/quien-soy llega abierta desde el HTML) y el
+  // historial mantiene (atrás/adelante son navegaciones del router). Al pulsar, la vista cambia en el acto y la ruta
+  // la sigue: el deslizamiento no espera a que la navegación termine.
+  const router = useRouter();
+  const routeView: HomeView = usePathname() === ABOUT_PATH ? "about" : "inicio";
+  const [pending, setPending] = useState<HomeView | null>(null);
+  if (pending !== null && pending === routeView) setPending(null);
+  const view = pending ?? routeView;
   const select = (next: HomeView) => {
     if (next === view) return;
-    history.pushState(null, "", next === "about" ? `#${ABOUT_ID}` : window.location.pathname);
-    setView(next);
+    setPending(next);
+    router.push(next === "about" ? ABOUT_PATH : "/", { scroll: false });
   };
+  // Enlaces antiguos a /#quien-soy: el fragmento no llega al servidor, se pasa a la ruta en el cliente.
+  useEffect(() => {
+    if (window.location.hash === `#${ABOUT_ID}`) router.replace(ABOUT_PATH, { scroll: false });
+  }, [router]);
+
+  // La bienvenida completa solo entra en el DOM de /quien-soy o tras abrirla: en / la portada lleva el extracto y el
+  // texto no se duplica entre las dos URL. Una vez abierta se queda, para que el deslizamiento de vuelta la muestre.
+  const [aboutOpened, setAboutOpened] = useState(view === "about");
+  if (view === "about" && !aboutOpened) setAboutOpened(true);
 
   useEffect(() => {
     if (phase !== "intro") return;
@@ -164,22 +175,33 @@ export function Experience({ sections, about }: { sections: MenuSection[]; about
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
             <div className="home-no-scrollbar h-full w-1/2 overflow-x-hidden overflow-y-auto" inert={view === "about" || undefined}>
-              <MainMenu sections={sections} animateIn={!returning} />
+              <MainMenu sections={sections} animateIn={!returning} excerpt={excerpt} onAbout={() => select("about")} />
             </div>
             <div
               id={ABOUT_ID}
               className="home-no-scrollbar relative z-10 h-full w-1/2 overflow-x-hidden overflow-y-auto"
               inert={view === "inicio" || undefined}
             >
-              {about}
+              {aboutOpened && about}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
       {/* Barra superior: la marca siempre (también durante la intro); las pestañas solo tras la intro. */}
       <TopBar width="wide" right={phase === "menu" ? <HomeNav view={view} onSelect={select} /> : undefined} />
-      {/* Durante la intro la bienvenida sigue en el HTML (bots, sin JS), oculta. */}
-      {about && phase === "intro" && <div hidden>{about}</div>}
+      {/* Durante la intro el texto de cada ruta sigue en el HTML (bots, sin JS), oculto: la bienvenida en /quien-soy y el
+          extracto con su enlace en /. */}
+      {phase === "intro" && (
+        <div hidden>
+          {aboutOpened
+            ? about
+            : excerpt && (
+                <p>
+                  {excerpt} <a href={ABOUT_PATH}>Conoce mi historia</a>
+                </p>
+              )}
+        </div>
+      )}
     </main>
   );
 }

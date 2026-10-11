@@ -1,12 +1,12 @@
 "use client";
 
 import type { MouseEvent } from "react";
-import { ABOUT_ID } from "./home-anchors";
+import { ABOUT_PATH } from "./home-anchors";
 
 export type HomeView = "inicio" | "about";
 
-// Pestañas de la portada, en el hueco derecho de la barra superior (TopBar). Son la única forma de pasar de Inicio a
-// «Quién soy» y volver: no hay desplazamiento de página entre las dos vistas. El estado y el historial los lleva Experience.
+// Pestañas de la portada, en el hueco derecho de la barra superior (TopBar). Pasan de Inicio (/) a «Quién soy» (/quien-soy)
+// y vuelven sin desplazamiento de página: el estado y la navegación los lleva Experience. Sin JS son enlaces normales.
 export function HomeNav({ view, onSelect }: { view: HomeView; onSelect: (view: HomeView) => void }) {
   const tab = (target: HomeView, href: string, label: string) => {
     const on = view === target;
@@ -31,7 +31,7 @@ export function HomeNav({ view, onSelect }: { view: HomeView; onSelect: (view: H
   return (
     <nav aria-label="Portada" className="flex gap-1 rounded-full border border-white/10 bg-[rgba(2,4,10,0.45)] p-1 backdrop-blur-md">
       {tab("inicio", "/", "Inicio")}
-      {tab("about", `#${ABOUT_ID}`, "Quién soy")}
+      {tab("about", ABOUT_PATH, "Quién soy")}
     </nav>
   );
 }

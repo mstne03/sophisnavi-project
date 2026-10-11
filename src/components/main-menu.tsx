@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import type { MouseEvent } from "react";
 import { motion, type Variants } from "motion/react";
+import { ABOUT_PATH } from "./home-anchors";
 
 const list: Variants = {
   show: { transition: { staggerChildren: 0.08, delayChildren: 0.3 } },
@@ -13,7 +15,19 @@ const item: Variants = {
 
 export type MenuSection = { slug: string; title: string; description: string };
 
-export function MainMenu({ sections, animateIn = true }: { sections: MenuSection[]; animateIn?: boolean }) {
+type MainMenuProps = {
+  sections: MenuSection[];
+  animateIn?: boolean;
+  excerpt?: string; // primer párrafo de «Quién soy»: la portada lo presenta y enlaza al texto completo
+  onAbout?: () => void; // abre «Quién soy» deslizando la pista, como la pestaña
+};
+
+export function MainMenu({ sections, animateIn = true, excerpt, onAbout }: MainMenuProps) {
+  const openAbout = (e: MouseEvent<HTMLAnchorElement>) => {
+    if (!onAbout) return;
+    e.preventDefault();
+    onAbout();
+  };
   return (
     <motion.div
       className="relative z-10 mx-auto flex min-h-dvh w-full max-w-6xl flex-col px-6 pt-20 pb-10 [text-shadow:0_1px_14px_rgba(2,4,10,0.9)] sm:px-10 sm:pt-24 sm:pb-14"
@@ -27,6 +41,18 @@ export function MainMenu({ sections, animateIn = true }: { sections: MenuSection
         <p className="mt-4 max-w-md text-base leading-relaxed text-white/85">
           Un viaje al corazón de AVATAR: descubre las historias que se esconden tras los detalles
         </p>
+        {excerpt && (
+          <p className="mt-6 max-w-md text-sm leading-relaxed text-white/75">
+            {excerpt}{" "}
+            <a
+              href={ABOUT_PATH}
+              onClick={openAbout}
+              className="whitespace-nowrap text-fuchsia-200 underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-cyan-300"
+            >
+              Conoce mi historia →
+            </a>
+          </p>
+        )}
       </motion.header>
 
       <nav aria-label="Menú principal" className="mt-16 sm:mt-auto sm:pt-16">

@@ -7,6 +7,7 @@ describe("sitemap", () => {
     const entries = await sitemap();
     const urls = entries.map((e) => e.url);
     expect(urls[0]).toBe("https://www.sophisnavi.com");
+    expect(urls[1]).toBe("https://www.sophisnavi.com/quien-soy");
     expect(urls).toContain("https://www.sophisnavi.com/pandora");
     expect(urls).toContain("https://www.sophisnavi.com/vida-fan");
     expect(urls).toContain("https://www.sophisnavi.com/pandora/la-ciencia-real-detras-de-avatar");
@@ -18,6 +19,7 @@ describe("sitemap", () => {
     const ciencia = entries.find((e) => e.url.endsWith("/la-ciencia-real-detras-de-avatar"))!;
     expect(String(ciencia.lastModified)).toMatch(/^\d{4}-\d{2}-\d{2}T/);
     expect(ciencia.images?.length).toBeGreaterThanOrEqual(1);
+    expect(String(entries[1].lastModified)).toMatch(/^\d{4}-\d{2}-\d{2}T/); // «Quién soy»: la de la bienvenida
     const saga = entries.find((e) => e.url.endsWith("/saga"))!;
     expect(saga.lastModified).toBeUndefined();
   });

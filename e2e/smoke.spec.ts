@@ -14,6 +14,36 @@ test("portada → saltar intro → sección", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Pandora");
 });
 
+// Flujo crítico 1b: «Quién soy» es la ruta /quien-soy, pero se llega deslizando desde Inicio sin recargar: la escena 3D
+// (el mismo <canvas>) sigue ahí, y «atrás» vuelve a Inicio.
+test("portada → pestaña Quién soy → /quien-soy → atrás", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Saltar intro" }).click();
+  const top = page.getByRole("navigation", { name: "Portada" });
+  await expect(top).toBeVisible();
+  await page.locator("canvas").evaluate((c) => c.setAttribute("data-e2e", "same"));
+  await top.getByRole("link", { name: "Quién soy" }).click();
+  await expect(page).toHaveURL(/\/quien-soy$/);
+  await expect(page.getByRole("heading", { level: 2, name: "Kaltxì!" })).toBeInViewport();
+  await expect(page.locator('canvas[data-e2e="same"]')).toHaveCount(1); // navegación en cliente: ni recarga ni remonte
+  await expect(page).toHaveTitle("Quién soy · Sophisnavi");
+  await page.goBack();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(top.getByRole("link", { name: "Inicio" })).toHaveAttribute("aria-current", "page");
+  await expect(page.getByRole("navigation", { name: "Menú principal" })).toBeInViewport();
+});
+
+// Flujo crítico 1c: cada URL trae su texto en el HTML del servidor; la bienvenida completa solo en /quien-soy.
+test("el HTML de /quien-soy trae la bienvenida y sus datos estructurados; / solo el extracto", async ({ request }) => {
+  const about = await (await request.get("/quien-soy")).text();
+  expect(about).toContain('id="bienvenida"');
+  expect(about).toContain('rel="canonical" href="https://www.sophisnavi.com/quien-soy"');
+  expect(about).toContain('"@type":"ProfilePage"');
+  const home = await (await request.get("/")).text();
+  expect(home).not.toContain('id="bienvenida"');
+  expect(home).toContain('href="/quien-soy"');
+});
+
 // Flujo crítico 2: una ruta desconocida devuelve 404.
 test("ruta desconocida devuelve 404", async ({ page }) => {
   const res = await page.goto("/no-existe");
@@ -86,6 +116,7 @@ test("artículo por entradas: selector de personajes", async ({ page }) => {
 // Flujo crítico 5: sitemap y robots se generan desde el contenido.
 test("sitemap.xml y robots.txt", async ({ request }) => {
   const sitemap = await (await request.get("/sitemap.xml")).text();
+  expect(sitemap).toContain("<loc>https://www.sophisnavi.com/quien-soy</loc>");
   for (const s of SECTIONS) expect(sitemap).toContain(`<loc>https://www.sophisnavi.com/${s.slug}</loc>`);
   for (const a of content.articles) expect(sitemap).toContain(`<loc>https://www.sophisnavi.com${url(a)}</loc>`);
   const robots = await (await request.get("/robots.txt")).text();

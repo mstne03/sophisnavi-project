@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { SITE_URL } from "@/application/seo/metadata";
+import { AUTHOR_PATH, SITE_URL } from "@/application/seo/metadata";
 import { content } from "./content";
 
 // Se genera en el build desde el contenido: cada publicación en Notion lo actualiza (ADR-0007).
@@ -10,6 +10,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const latest = (dates: string[]) => dates.reduce<string | undefined>((max, d) => (max === undefined || d > max ? d : max), undefined);
   const entries: MetadataRoute.Sitemap = [
     { url: SITE_URL, lastModified: latest([home?.updatedAt ?? "", ...articles.map((a) => a.updatedAt)].filter(Boolean)), changeFrequency: "weekly", priority: 1 },
+    { url: `${SITE_URL}${AUTHOR_PATH}`, lastModified: home?.updatedAt, changeFrequency: "monthly", priority: 0.7 },
   ];
   for (const s of sections) {
     const own = await content.getSection(s.slug);

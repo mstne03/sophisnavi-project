@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { articleJsonLd, breadcrumbJsonLd, pageMetadata, SITE_URL, websiteJsonLd } from "./metadata";
+import { articleJsonLd, breadcrumbJsonLd, pageMetadata, profilePageJsonLd, SITE_URL, websiteJsonLd } from "./metadata";
 
 // Protege: canonical, hreflang (es + x-default), Open Graph completo, Twitter y robots salen de una sola función.
 describe("pageMetadata", () => {
@@ -37,5 +37,16 @@ describe("JSON-LD", () => {
     const a = articleJsonLd({ title: "t", description: "d", path: "/pandora/x", publishedAt: "p", updatedAt: "u", section: "Pandora", image: "/content/x/1.webp" });
     expect(a).toMatchObject({ "@type": "Article", datePublished: "p", dateModified: "u", image: [`${SITE_URL}/content/x/1.webp`] });
     expect(articleJsonLd({ title: "t", description: "d", path: "/p/x", publishedAt: "p", updatedAt: "u", section: "P" })).not.toHaveProperty("image");
+  });
+
+  it("la Person apunta a /quien-soy, que es una ProfilePage con ella como entidad principal", () => {
+    expect(websiteJsonLd().author.url).toBe(`${SITE_URL}/quien-soy`);
+    expect(profilePageJsonLd({ name: "Quién soy", updatedAt: "u" })).toMatchObject({
+      "@type": "ProfilePage",
+      url: `${SITE_URL}/quien-soy`,
+      dateModified: "u",
+      mainEntity: { "@type": "Person", name: "Sofi" },
+    });
+    expect(profilePageJsonLd({ name: "Quién soy" })).not.toHaveProperty("dateModified");
   });
 });
