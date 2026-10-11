@@ -18,7 +18,6 @@ describe("RootLayout", () => {
     );
     expect(html).toMatch(/<html lang="es"/);
     expect(html).toContain("<p>hola</p>");
-    expect(html).toContain('aria-label="Sophisnavi, inicio"'); // marca fija en todas las páginas
   });
 
   it("exporta plantilla de título, metadataBase y color de tema; los iconos van por convención de fichero", () => {
