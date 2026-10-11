@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { excerpt, HOME_NOTION_NAME, isSlug, SECTIONS, sectionForNotionName, slugify } from "./content";
+import { entryLabel, excerpt, hasEntryToggle, HOME_NOTION_NAME, isSlug, SECTIONS, sectionForNotionName, slugify, splitEntries } from "./content";
 
 // Protege: las seis secciones son fijas y cada valor de la columna «Sección» de Notion cae en una sola.
 describe("SECTIONS", () => {
@@ -41,5 +41,36 @@ describe("excerpt", () => {
   it("devuelve el párrafo entero si cabe y cadena vacía si no hay texto", () => {
     expect(excerpt("Corto.")).toBe("Corto.");
     expect(excerpt("# Solo título\n\n- lista")).toBe("");
+  });
+});
+
+describe("splitEntries", () => {
+  const md = "Intro **común**.\n\n> Cita\n\n## JAKE SULLY: DE PROTAGONISTA A MCGUFFIN\n\nTexto de Jake.\n\n### Detalle\n\nMás.\n\n## LO’AK: EL GENERADOR DE PROBLEMAS\n\nTexto de Lo’ak.\n\n## Spider\n\nTexto de Spider.";
+
+  it("separa la intro y una entrada por título de nivel 2, con nombre e id para el selector", () => {
+    const { intro, entries } = splitEntries(md);
+    expect(intro).toBe("Intro **común**.\n\n> Cita");
+    expect(entries.map((e) => e.label)).toEqual(["Jake Sully", "Lo’ak", "Spider"]);
+    expect(entries.map((e) => e.id)).toEqual(["jake-sully", "loak", "spider"]);
+    expect(entries[0].body).toBe("## JAKE SULLY: DE PROTAGONISTA A MCGUFFIN\n\nTexto de Jake.\n\n### Detalle\n\nMás."); // el h3 no corta
+    expect(entries[2].body).toBe("## Spider\n\nTexto de Spider.");
+  });
+
+  it("sin títulos de nivel 2 todo es intro; si empieza por título no hay intro", () => {
+    expect(splitEntries("Solo texto.\n\n### h3")).toEqual({ intro: "Solo texto.\n\n### h3", entries: [] });
+    const { intro, entries } = splitEntries("## Kiri\n\nTexto.");
+    expect(intro).toBe("");
+    expect(entries).toHaveLength(1);
+  });
+
+  it("entryLabel pasa a mayúscula inicial solo los nombres escritos todo en mayúsculas y quita énfasis", () => {
+    expect(entryLabel("NEYTIRI: EL SIGNIFICADO DE LA VIDA")).toBe("Neytiri");
+    expect(entryLabel("**Miles Quaritch**: el villano")).toBe("Miles Quaritch");
+    expect(entryLabel("Tuk")).toBe("Tuk");
+  });
+
+  it("hasEntryToggle solo acepta los artículos de la lista", () => {
+    expect(hasEntryToggle("los-sully")).toBe(true);
+    expect(hasEntryToggle("la-flora-de-pandora")).toBe(false);
   });
 });
