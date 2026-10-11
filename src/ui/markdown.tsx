@@ -75,6 +75,55 @@ export function rehypeVerticalRows(bySrc: Map<string, ImageMeta>) {
   };
 }
 
+// Una imagen que ocupa su propia línea dentro de un párrafo o de un elemento de lista es un bloque de Notion (las viñetas
+// de cómic de los callouts «¿Sabías…?» van anidadas bajo un ítem): el Markdown la pega al texto como continuación y llegaría
+// como <img> en línea a toda la columna y con toda su altura (SOPHIE-4). Se saca a su propio párrafo para que el render la
+// pinte como <figure>, con pie y tamaño acotado, igual que el resto. Un icono dentro de una frase sigue en línea.
+const isBlank = (n: HNode) => n.type === "text" && !n.value?.trim();
+const breaksBefore = (n?: HNode) => !n || (n.type === "text" && /\n\s*$/.test(n.value ?? ""));
+const breaksAfter = (n?: HNode) => !n || (n.type === "text" && /^\s*\n/.test(n.value ?? ""));
+export function rehypeOwnLineImages() {
+  const visit = (node: HNode) => {
+    if (!node.children) return;
+    const out: HNode[] = [];
+    for (const child of node.children) {
+      visit(child);
+      const kids = child.children ?? [];
+      const ownLine = (i: number) => isImg(kids[i]) && breaksBefore(kids[i - 1]) && breaksAfter(kids[i + 1]);
+      if (child.type !== "element" || !["p", "li"].includes(child.tagName ?? "") || !kids.some((_, i) => ownLine(i))) {
+        out.push(child);
+        continue;
+      }
+      // Rachas alternas de texto e imágenes: cada racha de imágenes pasa a un <p> propio; el texto de un <li> se queda
+      // suelto (lista compacta) y el de un <p> se reparte en varios <p>.
+      const parts: HNode[] = [];
+      let run: HNode[] = [];
+      let runIsImg = false;
+      const flush = () => {
+        if (run.length && !run.every(isBlank)) parts.push(...(runIsImg || child.tagName === "p" ? [el("p", {}, run)] : run));
+        run = [];
+      };
+      for (let i = 0; i < kids.length; i++) {
+        const k = kids[i];
+        if (ownLine(i) !== runIsImg && !(runIsImg && isBlank(k))) {
+          flush();
+          runIsImg = !runIsImg;
+        }
+        if (!(runIsImg && isBlank(k))) run.push(k); // el salto entre dos imágenes seguidas sobra
+      }
+      flush();
+      if (child.tagName === "li") {
+        child.children = parts;
+        out.push(child);
+      } else {
+        out.push(...parts);
+      }
+    }
+    node.children = out;
+  };
+  return visit;
+}
+
 // Markdown → HTML semántico, en el servidor, sanitizado: el contenido de Notion es entrada no confiable
 // (sin HTML crudo; un enlace externo nunca abre con acceso al opener).
 type MarkdownProps = { source: string; images?: ImageMeta[]; videos?: VideoMeta[]; className?: string };
@@ -86,7 +135,7 @@ export function Markdown({ source, images = [], videos = [], className }: Markdo
     <div className={className}>
       <ReactMarkdown
         remarkPlugins={[remarkGroupImages]}
-        rehypePlugins={[rehypeSanitize, [rehypeVerticalRows, bydSrc]]} // tras sanitizar: las filas son nuestras
+        rehypePlugins={[rehypeSanitize, rehypeOwnLineImages, [rehypeVerticalRows, bydSrc]]} // tras sanitizar: lo demás es nuestro
         components={{
           a: ({ href, children }) => {
             const external = /^https?:\/\//.test(href ?? "");

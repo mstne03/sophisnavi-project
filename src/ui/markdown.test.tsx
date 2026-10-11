@@ -15,6 +15,38 @@ describe("Markdown", () => {
     expect(container.querySelector("blockquote")?.textContent).toContain("Ojo");
   });
 
+  it("una imagen en su propia línea dentro de un ítem de lista (viñeta de un callout) pasa a <figure> acotada con pie", () => {
+    const images = [{ src: "/content/p/comic.webp", width: 800, height: 1400, alt: "" }];
+    const md = "> ❓\n> **¿SABÍAS?**\n> - Uno.\n> - Dos con **énfasis**.\n> ![Viñeta](/content/p/comic.webp)\n> - Tres.";
+    const { container } = render(<Markdown source={md} images={images} />);
+    expect(container.querySelector("li > img")).toBeNull();
+    const fig = container.querySelector<HTMLElement>("blockquote li figure")!;
+    expect(fig.querySelector("img")?.getAttribute("height")).toBe("1400");
+    expect(fig.style.getPropertyValue("--ar")).toBe(String(800 / 1400));
+    expect(fig.querySelector("figcaption")?.textContent).toBe("Viñeta");
+    const items = [...container.querySelectorAll("li")];
+    expect(items.map((li) => li.firstChild?.textContent?.trim())).toEqual(["Uno.", "Dos con", "Tres."]);
+    expect(items[1].querySelector("p")).toBeNull(); // la lista sigue compacta: el texto del ítem no se envuelve en <p>
+  });
+
+  it("dos imágenes seguidas en su línea dentro de un ítem van en cuadrícula; una en medio de una frase sigue en línea", () => {
+    const md = "- Texto ![icono](/content/p/i.webp) en línea.\n- Dos:\n![a](/content/p/a.webp)\n![b](/content/p/b.webp)\ny sigue.";
+    const { container } = render(<Markdown source={md} />);
+    const [first, second] = [...container.querySelectorAll("li")];
+    expect(first.querySelector("figure")).toBeNull();
+    expect(first.querySelector("img")).toBeTruthy();
+    expect(second.querySelector(".img-grid figure img")).toBeTruthy();
+    expect(second.querySelectorAll("figure")).toHaveLength(2);
+    expect(second.textContent).toContain("y sigue.");
+  });
+
+  it("una imagen en su propia línea dentro de un párrafo de cita parte el párrafo y se pinta como <figure>", () => {
+    const { container } = render(<Markdown source={"> Antes\n> ![Foto](/content/p/f.webp)\n> Después"} />);
+    const bq = container.querySelector("blockquote")!;
+    expect([...bq.children].map((c) => c.tagName)).toEqual(["P", "FIGURE", "P"]);
+    expect(bq.querySelector("p img")).toBeNull();
+  });
+
   it("elimina HTML crudo y scripts", () => {
     const { container } = render(<Markdown source={'Texto <script>alert(1)</script> <img src=x onerror="alert(1)"> fin'} />);
     expect(container.querySelector("script")).toBeNull();
