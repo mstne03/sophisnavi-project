@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Marcellus } from "next/font/google";
 import { SITE_NAME, SITE_URL, websiteJsonLd } from "@/application/seo/metadata";
+import { BrandMark } from "@/ui/brand-mark";
 import { JsonLd } from "@/ui/json-ld";
 import { ServiceWorkerRegister } from "./sw-register";
 import "./globals.css";
@@ -43,6 +44,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         <JsonLd data={websiteJsonLd()} />
         <ServiceWorkerRegister />
+        <BrandMark />
         {children}
       </body>
     </html>
