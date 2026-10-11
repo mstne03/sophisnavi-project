@@ -118,6 +118,17 @@ body {
 .prose-sophis blockquote p:first-child {
   margin-top: 0;
 }
+/* Imágenes dentro de un callout (viñetas de cómic y capturas de los «¿Sabías…?»): son apoyo del texto, no protagonistas,
+   así que su tope de alto y ancho es menor que el de las figuras del cuerpo (SOPHIE-4). */
+.prose-sophis blockquote {
+  --img-max-w: 22rem;
+  --img-max-h: min(45vh, 18rem);
+}
+.prose-sophis li figure,
+.prose-sophis li .img-grid {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
 /* Imágenes: anchura contenida y uniforme (nunca a sangre), centradas, y alto acotado. El ancho (de imagen y pie) es el
    menor entre la columna y el que da la altura máxima con la proporción --ar que pone Figure: así las verticales no
    ocupan toda la pantalla y la caja existe antes de cargar (lazy, sin saltos). Sin --ar cae a toda la columna. */
