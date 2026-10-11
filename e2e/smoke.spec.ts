@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { SECTIONS, type Article, type Content } from "../src/domain/content";
+import { hasEntryToggle, SECTIONS, splitEntries, type Article, type Content } from "../src/domain/content";
 import { expect, test } from "./fixtures";
 
 // Flujo crítico 1: la portada carga, la intro se puede saltar y el menú enlaza a una sección.
@@ -62,6 +62,21 @@ test("el HTML del servidor trae artículo, canonical, Open Graph y JSON-LD", asy
   expect(html).toContain('property="og:type" content="article"');
   expect(html).toMatch(/hreflang="x-default"/i); // Next emite el atributo como hrefLang; HTML no distingue mayúsculas
   expect(html).toContain('"@type":"Article"');
+});
+
+// Flujo 4b (SOPHIE-3): en un artículo por entradas solo se ve el personaje elegido y el selector cambia de uno a otro.
+const toggled = content.articles.find((a) => hasEntryToggle(a.slug) && splitEntries(a.body).entries.length > 1);
+test("artículo por entradas: selector de personajes", async ({ page }) => {
+  test.skip(!toggled, "no hay ningún artículo por entradas publicado en el snapshot");
+  const [first, second] = splitEntries(toggled!.body).entries;
+  await page.goto(url(toggled!));
+  const tabs = page.getByRole("tablist");
+  await expect(tabs.getByRole("tab", { name: first.label })).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByRole("tabpanel")).toHaveCount(1); // los ocultos no cuentan
+  await tabs.getByRole("tab", { name: second.label }).click();
+  await expect(page.getByRole("tabpanel")).toHaveCount(1);
+  await expect(page.getByRole("tabpanel").getByRole("heading", { level: 2 }).first()).toContainText(second.label, { ignoreCase: true });
+  await expect(page).toHaveURL(new RegExp(`#${second.id}$`));
 });
 
 // Flujo crítico 5: sitemap y robots se generan desde el contenido.

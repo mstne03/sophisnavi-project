@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { articleJsonLd, breadcrumbJsonLd, pageMetadata, SITE_URL } from "@/application/seo/metadata";
+import { hasEntryToggle, splitEntries } from "@/domain/content";
 import { ArticleNav } from "@/ui/article-nav";
+import { EntryTabs } from "@/ui/entry-tabs";
 import { formatDate } from "@/ui/format";
 import { JsonLd } from "@/ui/json-ld";
 import { Markdown } from "@/ui/markdown";
@@ -38,6 +40,9 @@ export default async function ArticlePage({ params }: PageProps<"/[section]/[art
   if (!s || !v) notFound();
   const a = v.article;
   const path = `/${s.slug}/${a.slug}`;
+  // Artículo por entradas (SOPHIE-3): intro común y un selector con una entrada por título. Con menos de dos, se lee seguido.
+  const split = hasEntryToggle(a.slug) ? splitEntries(a.body) : undefined;
+  const entries = split && split.entries.length > 1 ? split.entries : undefined;
 
   return (
     <main className="min-h-dvh w-full bg-[radial-gradient(ellipse_at_50%_100%,#1a0b2e,#02040a_70%)] px-6 pb-24 text-white">
@@ -60,7 +65,20 @@ export default async function ArticlePage({ params }: PageProps<"/[section]/[art
           )}
         </p>
 
-        <Markdown source={a.body} images={a.images} videos={a.videos} className="prose-sophis mt-10" />
+        {entries ? (
+          <>
+            <Markdown source={split!.intro} images={a.images} videos={a.videos} className="prose-sophis mt-10" />
+            <EntryTabs
+              label={s.title}
+              tabs={entries.map(({ id, label }) => ({ id, label }))}
+              panels={entries.map((e) => (
+                <Markdown key={e.id} source={e.body} images={a.images} videos={a.videos} className="prose-sophis" />
+              ))}
+            />
+          </>
+        ) : (
+          <Markdown source={a.body} images={a.images} videos={a.videos} className="prose-sophis mt-10" />
+        )}
 
         <ArticleNav sectionSlug={s.slug} prev={v.prev} next={v.next} />
 

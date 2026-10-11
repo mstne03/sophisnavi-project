@@ -36,6 +36,19 @@ describe("ArticlePage", () => {
     expect(screen.getByRole("link", { name: /siguiente/i }).getAttribute("href")).toBe("/pandora/la-ciencia-real-detras-de-avatar");
   });
 
+  it("un artículo por entradas muestra la intro, un selector con el nombre de cada personaje y solo la entrada elegida", async () => {
+    const { container } = render(await ArticlePage(props("personajes", "los-sully")));
+    expect(screen.getByText("La familia Sully.")).toBeTruthy();
+    expect(screen.getAllByRole("tab").map((t) => t.textContent)).toEqual(["Jake Sully", "Neytiri"]);
+    expect(screen.getAllByRole("tabpanel").map((p) => p.querySelector("h2")?.textContent)).toEqual(["JAKE SULLY: DE PROTAGONISTA A MCGUFFIN"]);
+    expect(container.querySelectorAll("h2")).toHaveLength(2); // la otra entrada sigue en el HTML, oculta
+  });
+
+  it("los demás artículos se leen seguidos, sin selector", async () => {
+    render(await ArticlePage(props("pandora", "la-ciencia-real-detras-de-avatar")));
+    expect(screen.queryByRole("tablist")).toBeNull();
+  });
+
   it("genera metadatos de artículo con fechas, canonical e imagen de portada", async () => {
     const m = await generateMetadata(props("pandora", "la-ciencia-real-detras-de-avatar"));
     expect(m.alternates?.canonical).toBe("https://www.sophisnavi.com/pandora/la-ciencia-real-detras-de-avatar");

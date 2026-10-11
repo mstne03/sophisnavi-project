@@ -95,6 +95,40 @@ export function slugify(text: string): string {
 
 export const isSlug = (s: string) => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(s);
 
+// Artículos que se leen entrada a entrada (SOPHIE-3): cada título de nivel 2 del cuerpo abre la entrada de un personaje
+// y la web muestra solo la elegida, con un selector con el nombre de cada uno. Lista explícita por slug: en otros
+// artículos Sofi usa títulos para estructurar el texto, no como entradas alternativas.
+export const TOGGLE_ARTICLE_SLUGS: readonly string[] = ["los-sully"];
+export const hasEntryToggle = (slug: string) => TOGGLE_ARTICLE_SLUGS.includes(slug);
+
+export type BodyEntry = { id: string; label: string; body: string }; // body incluye su título
+export type SplitBody = { intro: string; entries: BodyEntry[] };
+
+// Nombre para el selector: lo que va antes de los dos puntos del título («JAKE SULLY: DE PROTAGONISTA A MCGUFFIN» →
+// «Jake Sully»). Sofi escribe los títulos en mayúsculas; si todo el nombre lo está, se pasa a mayúscula inicial por palabra.
+export function entryLabel(heading: string): string {
+  const name = heading
+    .split(":")[0]
+    .replace(/[*_`]/g, "")
+    .trim();
+  if (name !== name.toUpperCase()) return name;
+  return name.toLowerCase().replace(/(^|\s)(\S)/g, (_, sp: string, c: string) => sp + c.toUpperCase());
+}
+
+// Parte el Markdown por los títulos de nivel 2: el texto anterior al primero es la introducción común y cada título
+// (con todo lo que le sigue hasta el próximo) es una entrada. Sin títulos de nivel 2 todo es introducción.
+export function splitEntries(markdown: string): SplitBody {
+  // Solo corta en títulos al inicio de línea; «### » no empieza por «## » en esa posición.
+  const [first, ...rest] = markdown.split(/\n(?=## )/);
+  const blocks = first.startsWith("## ") ? [first, ...rest] : rest;
+  const intro = first.startsWith("## ") ? "" : first.trim();
+  const entries = blocks.map((block) => {
+    const label = entryLabel(block.split("\n")[0].slice(3));
+    return { id: slugify(label), label, body: block.trim() };
+  });
+  return { intro, entries };
+}
+
 // Primer párrafo del Markdown, sin marcas, recortado a `max` sin partir palabras.
 export function excerpt(markdown: string, max = 155): string {
   const paragraph = markdown

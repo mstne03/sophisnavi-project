@@ -24,5 +24,13 @@ export const contentFixture: Content = {
       createdAt: "2026-01-02T00:00:00.000Z",
       images: [{ src: "/content/ciencia/1.webp", width: 1200, height: 800, alt: "Figura" }],
     }),
+    // Artículo por entradas (SOPHIE-3): un título de nivel 2 por personaje.
+    article({
+      slug: "los-sully",
+      title: "Los Sully",
+      sectionSlug: "personajes",
+      body: "La familia Sully.\n\n## JAKE SULLY: DE PROTAGONISTA A MCGUFFIN\n\nTexto de Jake.\n\n## NEYTIRI: EL SIGNIFICADO DE LA VIDA\n\nTexto de Neytiri.",
+      createdAt: "2026-01-03T00:00:00.000Z",
+    }),
   ],
 };
