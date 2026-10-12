@@ -21,12 +21,12 @@ export type PageMeta = {
   type?: "website" | "article";
   publishedAt?: string;
   updatedAt?: string;
-  image?: { url: string; alt: string };
+  image?: { url: string; alt: string; width?: number; height?: number }; // sin medidas: tarjeta OG de 1200×630
 };
 
 export function pageMetadata(m: PageMeta) {
   const url = `${SITE_URL}${m.path === "/" ? "" : m.path}`;
-  const image = m.image ?? { url: `${url}/opengraph-image`, alt: `${m.title} · ${SITE_NAME}` };
+  const image = m.image ?? { url: `${url}/opengraph-image`, alt: m.path === "/" ? SITE_NAME : `${m.title} · ${SITE_NAME}` };
   return {
     // El layout añade « · Sophisnavi» con su plantilla; la portada se queda solo con la marca.
     title: m.path === "/" ? { absolute: SITE_NAME } : m.title,
@@ -43,7 +43,7 @@ export function pageMetadata(m: PageMeta) {
       url,
       title: m.title,
       description: m.description,
-      images: [{ url: image.url, width: 1200, height: 630, alt: image.alt }],
+      images: [{ url: image.url, width: image.width ?? 1200, height: image.height ?? 630, alt: image.alt }],
       ...(m.type === "article" ? { publishedTime: m.publishedAt, modifiedTime: m.updatedAt, authors: [AUTHOR.name] } : {}),
     },
     twitter: { card: "summary_large_image" as const, title: m.title, description: m.description, images: [image.url] },

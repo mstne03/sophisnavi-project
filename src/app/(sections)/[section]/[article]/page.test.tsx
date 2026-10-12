@@ -52,10 +52,21 @@ describe("ArticlePage", () => {
     expect(screen.queryByRole("tablist")).toBeNull();
   });
 
+  it("sin portada usa la tarjeta de su sección en Open Graph y en el JSON-LD", async () => {
+    const m = await generateMetadata(props("personajes", "los-sully"));
+    expect(m.openGraph?.images).toEqual([
+      { url: "https://www.sophisnavi.com/personajes/opengraph-image", width: 1200, height: 630, alt: "Personajes · Sophisnavi" },
+    ]);
+    const { container } = render(await ArticlePage(props("personajes", "los-sully")));
+    const ld = [...container.querySelectorAll('script[type="application/ld+json"]')].map((x) => JSON.parse(x.textContent ?? ""));
+    expect(ld.find((d) => d["@type"] === "Article").image).toEqual(["https://www.sophisnavi.com/personajes/opengraph-image"]);
+  });
+
   it("genera metadatos de artículo con fechas, canonical e imagen de portada", async () => {
     const m = await generateMetadata(props("pandora", "la-ciencia-real-detras-de-avatar"));
     expect(m.alternates?.canonical).toBe("https://www.sophisnavi.com/pandora/la-ciencia-real-detras-de-avatar");
     expect(m.openGraph).toMatchObject({ type: "article" });
+    expect(m.openGraph?.images).toEqual([{ url: "https://www.sophisnavi.com/content/ciencia/1.webp", width: 1200, height: 800, alt: "Figura" }]);
     expect(await generateMetadata(props("pandora", "nope"))).toEqual({});
   });
 
