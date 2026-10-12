@@ -42,6 +42,17 @@ test("el HTML de /quien-soy trae la bienvenida y sus datos estructurados; / solo
   const home = await (await request.get("/")).text();
   expect(home).not.toContain('id="bienvenida"');
   expect(home).toContain('href="/quien-soy"');
+  for (const s of SECTIONS) expect(home).toContain(`href="/${s.slug}"`); // el menú va en el HTML, no solo tras la intro
+  expect(home).toMatch(/<h1[^>]*>Sophisnavi<\/h1>/);
+});
+
+// Flujo crítico 1d: sin JS no hay intro que termine; la portada enseña el menú y se puede navegar.
+test("sin JavaScript la portada muestra el menú y enlaza a las secciones", async ({ browser }) => {
+  const page = await (await browser.newContext({ javaScriptEnabled: false })).newPage();
+  await page.goto("/");
+  await expect(page.getByRole("button", { name: "Saltar intro" })).toBeHidden();
+  await page.getByRole("navigation", { name: "Menú principal" }).locator('a[href="/pandora"]').click();
+  await expect(page).toHaveURL(/\/pandora$/);
 });
 
 // Flujo crítico 2: una ruta desconocida devuelve 404.

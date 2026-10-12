@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import HomeLayout from "./layout";
 
@@ -23,5 +24,13 @@ describe("HomeLayout", () => {
     expect(heading.closest("section")?.className).not.toMatch(/bg-/); // sin fondo propio: el árbol 3D sigue detrás
     expect(screen.getByText(/Soy Sofi/, { selector: "section p" })).toBeTruthy(); // cuerpo de Notion
     expect(screen.getByText("página")).toBeTruthy();
+  });
+
+  // Protege: sin JS la intro nunca termina; el <noscript> la quita y muestra la pista que ya viene en el HTML.
+  it("sin JS quita la intro y muestra la pista", async () => {
+    // En el cliente React no pinta el contenido de <noscript>: se mira el HTML del servidor.
+    const css = renderToStaticMarkup(await HomeLayout({ children: null, params: Promise.resolve({}) }));
+    expect(css).toContain("[data-home-intro]{display:none}");
+    expect(css).toContain("[data-home-track]{opacity:1!important}");
   });
 });

@@ -3,6 +3,10 @@ import { Experience } from "@/components/experience";
 import { Markdown } from "@/ui/markdown";
 import { content } from "../content";
 
+// Las entradas animadas del menú llegan del servidor con su estado inicial en `style` (transparentes, desplazadas).
+const NO_JS_STYLE =
+  "[data-home-intro]{display:none}[data-home-track]{opacity:1!important}[data-home-track] [style]{opacity:1!important;filter:none!important;transform:none!important}";
+
 // Layout compartido de / y /quien-soy: Experience (árbol 3D, intro y pista Inicio ↔ «Quién soy») vive aquí y no se
 // desmonta al navegar entre las dos rutas, así el cambio de URL conserva el deslizamiento. Las páginas solo aportan
 // sus metadatos y datos estructurados.
@@ -28,6 +32,10 @@ export default async function HomeLayout({ children }: LayoutProps<"/">) {
           )
         }
       />
+      {/* Sin JS no hay intro que termine: se quita y la pista (menú o bienvenida, ya en el HTML) se ve tal cual. */}
+      <noscript>
+        <style>{NO_JS_STYLE}</style>
+      </noscript>
       {children}
     </>
   );

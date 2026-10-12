@@ -5,8 +5,9 @@ import type { MouseEvent } from "react";
 import { motion, type Variants } from "motion/react";
 import { ABOUT_PATH } from "./home-anchors";
 
+// `custom` es el retraso extra de la entrada: tras la intro espera a que esta se desvanezca.
 const list: Variants = {
-  show: { transition: { staggerChildren: 0.08, delayChildren: 0.3 } },
+  show: (delay: number) => ({ transition: { staggerChildren: 0.08, delayChildren: 0.3 + delay } }),
 };
 const item: Variants = {
   hidden: { opacity: 0, y: 24, filter: "blur(8px)" },
@@ -18,11 +19,13 @@ export type MenuSection = { slug: string; title: string; description: string };
 type MainMenuProps = {
   sections: MenuSection[];
   animateIn?: boolean;
+  // false mientras la intro tapa el menú: ya está en el HTML (buscadores, sin JS) pero espera para entrar animado.
+  revealed?: boolean;
   excerpt?: string; // primer párrafo de «Quién soy»: la portada lo presenta y enlaza al texto completo
   onAbout?: () => void; // abre «Quién soy» deslizando la pista, como la pestaña
 };
 
-export function MainMenu({ sections, animateIn = true, excerpt, onAbout }: MainMenuProps) {
+export function MainMenu({ sections, animateIn = true, revealed = true, excerpt, onAbout }: MainMenuProps) {
   const openAbout = (e: MouseEvent<HTMLAnchorElement>) => {
     if (!onAbout) return;
     e.preventDefault();
@@ -32,7 +35,8 @@ export function MainMenu({ sections, animateIn = true, excerpt, onAbout }: MainM
     <motion.div
       className="relative z-10 mx-auto flex min-h-dvh w-full max-w-6xl flex-col px-6 pt-20 pb-10 [text-shadow:0_1px_14px_rgba(2,4,10,0.9)] sm:px-10 sm:pt-24 sm:pb-14"
       initial={animateIn ? "hidden" : false}
-      animate="show"
+      animate={revealed ? "show" : "hidden"}
+      custom={animateIn ? 0.8 : 0}
       variants={list}
     >
       <motion.header variants={item}>

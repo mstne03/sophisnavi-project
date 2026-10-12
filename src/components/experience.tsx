@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { usePathname, useRouter } from "next/navigation";
 import type { TreeScene } from "@/ui/tree-scene/renderer";
@@ -11,6 +11,8 @@ import { MainMenu, type MenuSection } from "./main-menu";
 
 const SEEN_KEY = "sophisnavi:intro-seen";
 const TITLE = "Sophisnavi";
+
+const noSubscribe = () => () => {};
 
 // Estado de la visita: sobrevive a las navegaciones en cliente (se reinicia al recargar),
 // así al volver desde una sección no se repite la intro ni se pierde el scroll.
@@ -77,6 +79,8 @@ export function Experience({ sections, about, excerpt }: { sections: MenuSection
   }, [returning]);
 
   const skip = () => sceneRef.current?.skipIntro();
+  // true solo en el cliente ya hidratado: el HTML del servidor no lleva la pista inert, así sin JS se puede usar.
+  const hydrated = useSyncExternalStore(noSubscribe, () => true, () => false);
 
   // Vista de la portada: sale de la ruta, que el servidor ya conoce (/quien-soy llega abierta desde el HTML) y el
   // historial mantiene (atrás/adelante son navegaciones del router). Al pulsar, la vista cambia en el acto y la ruta
@@ -123,15 +127,49 @@ export function Experience({ sections, about, excerpt }: { sections: MenuSection
         className={`pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_at_50%_40%,rgba(2,4,10,0.45),rgba(2,4,10,0.85))] transition-opacity duration-[1500ms] ${phase === "menu" ? "opacity-100" : "opacity-0"}`}
       />
 
-      <AnimatePresence mode="wait">
-        {phase === "intro" ? (
+      {/* Pista horizontal: Inicio a la izquierda, «Quién soy» a la derecha. Siempre en el HTML del servidor (el menú con
+          los enlaces a las secciones en /, la bienvenida en /quien-soy): la intro es solo una capa encima. Mientras dura,
+          la pista queda transparente e inert; al terminar aparece cuando la intro ya se ha desvanecido y el menú entra
+          con su animación. La pestaña desliza la pista (sin fundidos); cada vista tiene su propio scroll vertical y la
+          que no se ve queda inert. Sin JS, el <noscript> del layout la muestra y quita la intro. */}
+      <motion.div
+        data-home-track
+        className={`absolute inset-y-0 left-0 flex w-[200%] transition-opacity ${phase === "menu" ? "opacity-100 delay-700 duration-300" : "opacity-0 duration-0"}`}
+        inert={(hydrated && phase === "intro") || undefined}
+        initial={false}
+        animate={{ x: view === "about" ? "-50%" : "0%" }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <div className="home-no-scrollbar h-full w-1/2 overflow-x-hidden overflow-y-auto" inert={view === "about" || undefined}>
+          <MainMenu
+            sections={sections}
+            animateIn={!returning}
+            revealed={phase === "menu"}
+            excerpt={excerpt}
+            onAbout={() => select("about")}
+          />
+        </div>
+        <div
+          id={ABOUT_ID}
+          className="home-no-scrollbar relative z-10 h-full w-1/2 overflow-x-hidden overflow-y-auto"
+          inert={view === "inicio" || undefined}
+        >
+          {aboutOpened && about}
+        </div>
+      </motion.div>
+
+      <AnimatePresence>
+        {phase === "intro" && (
           <motion.div
             key="intro"
+            data-home-intro
             className="fixed inset-0 z-10 flex cursor-pointer flex-col items-center justify-end pb-[18vh]"
             onClick={skip}
             exit={{ opacity: 0, filter: "blur(10px)", transition: { duration: 0.8 } }}
           >
-            <h1 aria-label={TITLE} className="font-display text-5xl tracking-[0.2em] text-white sm:text-7xl">
+            {/* El h1 de la página es el del menú (ya en el HTML); el título de la intro es decorativo y se lee una vez. */}
+            <p className="font-display text-5xl tracking-[0.2em] text-white sm:text-7xl">
+              <span className="sr-only">{TITLE}</span>
               {TITLE.split("").map((ch, i) => (
                 <motion.span
                   key={i}
@@ -144,7 +182,7 @@ export function Experience({ sections, about, excerpt }: { sections: MenuSection
                   {ch}
                 </motion.span>
               ))}
-            </h1>
+            </p>
             <motion.p
               className="mt-4 text-xs uppercase tracking-[0.5em] text-cyan-200"
               initial={{ opacity: 0 }}
@@ -164,44 +202,10 @@ export function Experience({ sections, about, excerpt }: { sections: MenuSection
               Saltar intro
             </motion.button>
           </motion.div>
-        ) : (
-          // Pista horizontal: Inicio a la izquierda, «Quién soy» a la derecha. La pestaña desliza la pista
-          // (sin fundidos); cada vista tiene su propio scroll vertical y la que no se ve queda inert.
-          <motion.div
-            key="menu"
-            className="absolute inset-y-0 left-0 flex w-[200%]"
-            initial={false}
-            animate={{ x: view === "about" ? "-50%" : "0%" }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <div className="home-no-scrollbar h-full w-1/2 overflow-x-hidden overflow-y-auto" inert={view === "about" || undefined}>
-              <MainMenu sections={sections} animateIn={!returning} excerpt={excerpt} onAbout={() => select("about")} />
-            </div>
-            <div
-              id={ABOUT_ID}
-              className="home-no-scrollbar relative z-10 h-full w-1/2 overflow-x-hidden overflow-y-auto"
-              inert={view === "inicio" || undefined}
-            >
-              {aboutOpened && about}
-            </div>
-          </motion.div>
         )}
       </AnimatePresence>
       {/* Barra superior: la marca siempre (también durante la intro); las pestañas solo tras la intro. */}
       <TopBar width="wide" right={phase === "menu" ? <HomeNav view={view} onSelect={select} /> : undefined} />
-      {/* Durante la intro el texto de cada ruta sigue en el HTML (bots, sin JS), oculto: la bienvenida en /quien-soy y el
-          extracto con su enlace en /. */}
-      {phase === "intro" && (
-        <div hidden>
-          {aboutOpened
-            ? about
-            : excerpt && (
-                <p>
-                  {excerpt} <a href={ABOUT_PATH}>Conoce mi historia</a>
-                </p>
-              )}
-        </div>
-      )}
     </main>
   );
 }
