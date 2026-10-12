@@ -1,5 +1,6 @@
 import { Experience } from "@/components/experience";
 import { Markdown } from "@/ui/markdown";
+import { PAGE_CONTAINER, READING } from "@/ui/page-container";
 import { content } from "../content";
 
 // Las entradas animadas del menú llegan del servidor con su estado inicial en `style` (transparentes, desplazadas).
@@ -19,12 +20,14 @@ export default async function HomeLayout({ children }: LayoutProps<"/">) {
         // Experience solo lo pinta en /quien-soy (o tras abrirlo), sin duplicarlo en /.
         about={
           home && (
-            <section aria-labelledby="bienvenida" className="min-h-full px-6 pt-24 pb-24 text-white">
-              <div className="mx-auto w-full max-w-3xl">
-                <h2 id="bienvenida" className="font-display text-3xl text-cyan-100 sm:text-4xl">
-                  Kaltxì!
-                </h2>
-                <Markdown source={home.body} images={home.images} videos={home.videos} className="prose-sophis mt-6" />
+            <section aria-labelledby="bienvenida" className="min-h-full pt-24 pb-24 text-white">
+              <div className={PAGE_CONTAINER}>
+                <div className={READING}>
+                  <h2 id="bienvenida" className="font-display text-3xl text-cyan-100 sm:text-4xl">
+                    Kaltxì!
+                  </h2>
+                  <Markdown source={home.body} images={home.images} videos={home.videos} className="prose-sophis mt-6" />
+                </div>
               </div>
             </section>
           )
