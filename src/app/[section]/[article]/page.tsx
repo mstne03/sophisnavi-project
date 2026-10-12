@@ -8,7 +8,8 @@ import { EntryTabs } from "@/ui/entry-tabs";
 import { formatDate } from "@/ui/format";
 import { JsonLd } from "@/ui/json-ld";
 import { Markdown } from "@/ui/markdown";
-import { Tagline, TopBar } from "@/ui/top-bar";
+import { SectionNav } from "@/ui/section-nav";
+import { TopBar } from "@/ui/top-bar";
 import { content } from "../../content";
 
 export const dynamicParams = false;
@@ -36,7 +37,7 @@ export async function generateMetadata({ params }: PageProps<"/[section]/[articl
 
 export default async function ArticlePage({ params }: PageProps<"/[section]/[article]">) {
   const { section, article } = await params;
-  const [s, v] = await Promise.all([content.getSection(section), content.getArticle(section, article)]);
+  const [s, v, sections] = await Promise.all([content.getSection(section), content.getArticle(section, article), content.listSections()]);
   if (!s || !v) notFound();
   const a = v.article;
   const path = `/${s.slug}/${a.slug}`;
@@ -48,7 +49,7 @@ export default async function ArticlePage({ params }: PageProps<"/[section]/[art
     <main className="min-h-dvh w-full bg-[radial-gradient(ellipse_at_50%_100%,#1a0b2e,#02040a_70%)] px-6 pb-24 text-white">
       <JsonLd data={breadcrumbJsonLd([{ name: "Inicio", path: "/" }, { name: s.title, path: `/${s.slug}` }, { name: a.title, path }])} />
       <JsonLd data={articleJsonLd({ title: a.title, description: a.description, path, publishedAt: a.createdAt, updatedAt: a.updatedAt, section: s.title, image: a.images[0]?.src })} />
-      <TopBar right={<Tagline />} />
+      <TopBar right={<SectionNav sections={sections} current={s.slug} onSectionPage={false} />} />
       <article className="mx-auto w-full max-w-3xl pt-28">
         <p className="text-xs uppercase tracking-[0.4em] text-cyan-200">
           <Link href={`/${s.slug}`} className="hover:underline">
