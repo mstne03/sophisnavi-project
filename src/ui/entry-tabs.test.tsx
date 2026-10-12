@@ -60,8 +60,9 @@ describe("EntryTabs", () => {
   });
 
   it("al final de cada entrada salvo la última enlaza a la siguiente: la elige, sube al selector y enfoca su pestaña", () => {
-    const scrollIntoView = vi.fn();
-    Element.prototype.scrollIntoView = scrollIntoView; // jsdom no lo implementa
+    // El salto se hace con la entrada nueva ya pintada (si no, al pasar a una más corta se perdía uno de cada dos).
+    const shownWhenScrolling: (string | null | undefined)[] = [];
+    const scrollTo = vi.spyOn(window, "scrollTo").mockImplementation(() => shownWhenScrolling.push(...visible()));
     render(<EntryTabs label="Personajes" tabs={tabs} panels={panels} nextLabel="Siguiente personaje" />);
     const next = screen.getByRole("link", { name: "Siguiente personaje: Neytiri" });
     expect(next.getAttribute("href")).toBe("#neytiri"); // sin JS sigue siendo un enlace a la entrada
@@ -70,16 +71,28 @@ describe("EntryTabs", () => {
     expect(visible()).toEqual(["Texto de Neytiri"]);
     expect(window.location.hash).toBe("#neytiri");
     expect(document.activeElement).toBe(screen.getByRole("tab", { name: "Neytiri" }));
-    expect(scrollIntoView).toHaveBeenCalledWith({ block: "start" });
-    expect(scrollIntoView.mock.contexts[0]).toBe(screen.getByRole("tablist"));
+    expect(scrollTo).toHaveBeenCalledTimes(1);
+    expect(scrollTo).toHaveBeenCalledWith({ top: expect.any(Number), behavior: "instant" });
+    expect(shownWhenScrolling).toEqual(["Texto de Neytiri"]);
 
     fireEvent.click(screen.getByRole("link", { name: "Siguiente personaje: Kiri" }));
     expect(visible()).toEqual(["Texto de Kiri"]);
     expect(screen.queryByRole("link", { name: /^Siguiente personaje/ })).toBeNull(); // la última no tiene siguiente
+    expect(scrollTo).toHaveBeenCalledTimes(2); // en cada clic, no uno de cada dos
+    scrollTo.mockRestore();
+  });
+
+  it("cambiar de pestaña desde el selector no desplaza la página", () => {
+    const scrollTo = vi.spyOn(window, "scrollTo").mockImplementation(() => {});
+    render(<EntryTabs label="Personajes" tabs={tabs} panels={panels} />);
+    fireEvent.click(screen.getByRole("tab", { name: "Kiri" }));
+    expect(visible()).toEqual(["Texto de Kiri"]);
+    expect(scrollTo).not.toHaveBeenCalled();
+    scrollTo.mockRestore();
   });
 
   it("al final de cada entrada salvo la primera enlaza a la anterior, con el mismo comportamiento", () => {
-    Element.prototype.scrollIntoView = vi.fn();
+    const scrollTo = vi.spyOn(window, "scrollTo").mockImplementation(() => {});
     window.history.replaceState(null, "", "#kiri");
     render(<EntryTabs label="Personajes" tabs={tabs} panels={panels} prevLabel="Personaje anterior" nextLabel="Siguiente personaje" />);
     expect(screen.queryByRole("link", { name: /^Siguiente personaje/ })).toBeNull();
@@ -95,5 +108,7 @@ describe("EntryTabs", () => {
     ]);
     fireEvent.click(screen.getByRole("link", { name: "Personaje anterior: Jake Sully" }));
     expect(screen.queryByRole("link", { name: /^Personaje anterior/ })).toBeNull(); // la primera no tiene anterior
+    expect(scrollTo).toHaveBeenCalledTimes(2);
+    scrollTo.mockRestore();
   });
 });

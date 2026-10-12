@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useSyncExternalStore, type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
+import { useLayoutEffect, useRef, useSyncExternalStore, type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
 
 export type EntryTab = { id: string; label: string };
 
@@ -51,13 +51,25 @@ export function EntryTabs({
     document.getElementById(`tab-${next.id}`)?.focus();
   };
 
+  // Los enlaces de pie piden subir al selector, pero el salto se hace después de pintar la entrada nueva. Lanzado antes
+  // (y suave), el cambio de entrada llegaba con el desplazamiento en curso: al pasar a una más corta el navegador
+  // recorta el scroll al nuevo final de página y puede cancelarlo, y en algunos clics la página se quedaba abajo. Ya
+  // con la entrada nueva en el DOM, se calcula la posición exacta y se salta sin animación, que nada interrumpe; el
+  // contenido cambia de golpe igualmente.
+  const jumpToList = useRef(false);
   const goTo = (e: MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
+    jumpToList.current = true;
     select(id);
-    document.getElementById(`tab-${id}`)?.focus({ preventScroll: true });
-    // scroll-behavior de html decide si es suave (y lo quita con prefers-reduced-motion).
-    listRef.current?.scrollIntoView({ block: "start" });
   };
+  useLayoutEffect(() => {
+    const list = listRef.current;
+    if (!jumpToList.current || !list) return;
+    jumpToList.current = false;
+    document.getElementById(`tab-${selected}`)?.focus({ preventScroll: true });
+    const margin = parseFloat(getComputedStyle(list).scrollMarginTop) || 0; // scroll-mt: bajo la barra superior
+    window.scrollTo({ top: list.getBoundingClientRect().top + window.scrollY - margin, behavior: "instant" });
+  }, [selected]);
 
   return (
     <>
