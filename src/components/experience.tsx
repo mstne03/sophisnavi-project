@@ -115,7 +115,7 @@ export function Experience({ sections, about }: { sections: MenuSection[]; about
   }, [phase]);
 
   return (
-    <main ref={mainRef} className="home-no-scrollbar relative h-dvh overflow-x-hidden overflow-y-auto bg-[#02040a] text-white">
+    <main ref={mainRef} className="no-scrollbar relative h-dvh overflow-x-hidden overflow-y-auto bg-[#02040a] text-white">
       <canvas
         ref={canvasRef}
         aria-hidden
@@ -140,12 +140,12 @@ export function Experience({ sections, about }: { sections: MenuSection[]; about
         animate={{ x: view === "about" ? "-50%" : "0%" }}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       >
-        <div className="home-no-scrollbar h-full w-1/2 overflow-x-hidden overflow-y-auto" inert={view === "about" || undefined}>
+        <div className="no-scrollbar h-full w-1/2 overflow-x-hidden overflow-y-auto" inert={view === "about" || undefined}>
           <MainMenu sections={sections} animateIn={!returning} revealed={phase === "menu"} />
         </div>
         <div
           id={ABOUT_ID}
-          className="home-no-scrollbar relative z-10 h-full w-1/2 overflow-x-hidden overflow-y-auto"
+          className="no-scrollbar relative z-10 h-full w-1/2 overflow-x-hidden overflow-y-auto"
           inert={view === "inicio" || undefined}
         >
           {aboutOpened && about}
