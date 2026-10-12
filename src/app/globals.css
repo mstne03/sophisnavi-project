@@ -15,11 +15,16 @@ html {
     scroll-behavior: auto;
   }
 }
-/* Portada: se navega con las pestañas (Inicio / Quién soy); sus contenedores no muestran barra de desplazamiento. */
-.home-no-scrollbar {
+/* Sin barra de desplazamiento vertical en toda la web: se sigue desplazando con rueda, táctil y teclado, solo no se
+   pinta la barra. `html` cubre secciones y artículos (scroll de la página); la portada desplaza sus propios
+   contenedores (Experience), que llevan .no-scrollbar. El carrusel de artículos mantiene su barra fina (.thin-scrollbar):
+   en escritorio es la pista de que hay más cards y la forma de moverlo con el ratón. */
+html,
+.no-scrollbar {
   scrollbar-width: none;
 }
-.home-no-scrollbar::-webkit-scrollbar {
+html::-webkit-scrollbar,
+.no-scrollbar::-webkit-scrollbar {
   display: none;
 }
 /* Barra fina como la de móvil: solo el indicador redondeado, sin fondo ni flechas. Chromium y Safari usan los
