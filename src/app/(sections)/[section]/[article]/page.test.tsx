@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import ArticlePage, { dynamicParams, generateMetadata, generateStaticParams } from "./page";
 
@@ -28,10 +28,6 @@ describe("ArticlePage", () => {
     expect(screen.getByRole("link", { name: /volver a pandora/i }).getAttribute("href")).toBe("/pandora");
     const ld = [...container.querySelectorAll('script[type="application/ld+json"]')].map((s) => JSON.parse(s.textContent ?? ""));
     expect(ld.map((d) => d["@type"])).toEqual(["BreadcrumbList", "Article"]);
-    // Barra superior: navegación entre las seis secciones con la del artículo marcada
-    const nav = screen.getAllByRole("navigation", { name: "Secciones", hidden: true })[0];
-    expect(within(nav).getAllByRole("link", { hidden: true })).toHaveLength(6);
-    expect(within(nav).getByRole("link", { name: "Pandora", hidden: true }).getAttribute("aria-current")).toBe("true");
   });
 
   it("el primer artículo no tiene anterior pero sí siguiente", async () => {

@@ -200,7 +200,6 @@ export function Experience({ sections, about }: { sections: MenuSection[]; about
       </AnimatePresence>
       {/* Barra superior: la marca siempre (también durante la intro); las pestañas solo tras la intro. */}
       <TopBar
-        width="wide"
         right={
           // Las pestañas van siempre en el HTML (el enlace a /quien-soy es rastreable desde la portada), pero se ven y
           // se pueden usar solo tras la intro; sin JS el <noscript> del layout las muestra.

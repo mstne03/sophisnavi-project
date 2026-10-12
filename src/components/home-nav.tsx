@@ -1,37 +1,28 @@
 "use client";
 
-import type { MouseEvent } from "react";
+import { TopNav } from "@/ui/top-nav";
 import { ABOUT_PATH } from "./home-anchors";
 
 export type HomeView = "inicio" | "about";
 
-// Pestañas de la portada, en el hueco derecho de la barra superior (TopBar). Pasan de Inicio (/) a «Quién soy» (/quien-soy)
-// y vuelven sin desplazamiento de página: el estado y la navegación los lleva Experience. Sin JS son enlaces normales.
-export function HomeNav({ view, onSelect }: { view: HomeView; onSelect: (view: HomeView) => void }) {
-  const tab = (target: HomeView, href: string, label: string) => {
-    const on = view === target;
-    const click = (e: MouseEvent<HTMLAnchorElement>) => {
-      e.preventDefault();
-      onSelect(target);
-    };
-    return (
-      <a
-        href={href}
-        onClick={click}
-        aria-current={on ? "page" : undefined}
-        className={`rounded-full px-4 py-1.5 text-xs uppercase tracking-[0.3em] outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-cyan-300 ${
-          on ? "bg-white/15 text-white" : "text-white/60 hover:text-white"
-        }`}
-      >
-        {label}
-      </a>
-    );
-  };
+const ITEMS = [
+  { key: "inicio", href: "/", label: "Inicio" },
+  { key: "about", href: ABOUT_PATH, label: "Quién soy" },
+];
 
+// Pestañas de la portada, en el hueco derecho de la barra superior (TopBar), con la misma barra (TopNav) que la
+// navegación entre secciones. Pasan de Inicio (/) a «Quién soy» (/quien-soy) y vuelven sin desplazamiento de página:
+// el estado y la navegación los lleva Experience. Sin JS son enlaces normales.
+export function HomeNav({ view, onSelect }: { view: HomeView; onSelect: (view: HomeView) => void }) {
   return (
-    <nav aria-label="Portada" className="flex gap-1 rounded-full border border-white/10 bg-[rgba(2,4,10,0.45)] p-1 backdrop-blur-md">
-      {tab("inicio", "/", "Inicio")}
-      {tab("about", ABOUT_PATH, "Quién soy")}
-    </nav>
+    <TopNav
+      label="Portada"
+      items={ITEMS}
+      active={view}
+      onSelect={(key, e) => {
+        e.preventDefault();
+        onSelect(key as HomeView);
+      }}
+    />
   );
 }

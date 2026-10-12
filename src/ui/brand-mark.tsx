@@ -8,7 +8,7 @@ export function BrandMark() {
       href="/"
       scroll={false}
       aria-label="Sophisnavi, inicio"
-      className="flex items-center gap-2.5 rounded-full border border-white/10 bg-[rgba(2,4,10,0.45)] p-1.5 font-display text-base tracking-[0.15em] text-white/90 outline-none backdrop-blur-md transition-colors hover:text-white focus-visible:ring-2 focus-visible:ring-cyan-300 sm:pr-4"
+      className="flex h-11 items-center gap-2.5 rounded-full border border-white/10 bg-[rgba(2,4,10,0.45)] px-1.5 font-display text-base tracking-[0.15em] text-white/90 outline-none backdrop-blur-md transition-colors hover:text-white focus-visible:ring-2 focus-visible:ring-cyan-300 sm:pr-4"
     >
       {/* PNG estático de 256 px para pantallas retina; next/image no aporta nada aquí. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}

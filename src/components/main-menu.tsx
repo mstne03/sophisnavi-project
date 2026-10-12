@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { motion, type Variants } from "motion/react";
+import { PAGE_CONTAINER } from "@/ui/page-container";
 
 // `custom` es el retraso extra de la entrada: tras la intro espera a que esta se desvanezca.
 const list: Variants = {
@@ -24,7 +25,7 @@ type MainMenuProps = {
 export function MainMenu({ sections, animateIn = true, revealed = true }: MainMenuProps) {
   return (
     <motion.div
-      className="relative z-10 mx-auto flex min-h-dvh w-full max-w-6xl flex-col px-6 pt-20 pb-10 [text-shadow:0_1px_14px_rgba(2,4,10,0.9)] sm:px-10 sm:pt-24 sm:pb-14"
+      className={`${PAGE_CONTAINER} relative z-10 flex min-h-dvh flex-col pt-20 pb-10 [text-shadow:0_1px_14px_rgba(2,4,10,0.9)] sm:pt-24 sm:pb-14`}
       initial={animateIn ? "hidden" : false}
       animate={revealed ? "show" : "hidden"}
       custom={animateIn ? 0.8 : 0}

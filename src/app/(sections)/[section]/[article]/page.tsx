@@ -8,9 +8,8 @@ import { EntryTabs } from "@/ui/entry-tabs";
 import { formatDate } from "@/ui/format";
 import { JsonLd } from "@/ui/json-ld";
 import { Markdown } from "@/ui/markdown";
-import { SectionNav } from "@/ui/section-nav";
-import { TopBar } from "@/ui/top-bar";
-import { content } from "../../content";
+import { PAGE_CONTAINER, READING } from "@/ui/page-container";
+import { content } from "../../../content";
 
 export const dynamicParams = false;
 
@@ -37,7 +36,7 @@ export async function generateMetadata({ params }: PageProps<"/[section]/[articl
 
 export default async function ArticlePage({ params }: PageProps<"/[section]/[article]">) {
   const { section, article } = await params;
-  const [s, v, sections] = await Promise.all([content.getSection(section), content.getArticle(section, article), content.listSections()]);
+  const [s, v] = await Promise.all([content.getSection(section), content.getArticle(section, article)]);
   if (!s || !v) notFound();
   const a = v.article;
   const path = `/${s.slug}/${a.slug}`;
@@ -46,47 +45,48 @@ export default async function ArticlePage({ params }: PageProps<"/[section]/[art
   const entries = split && split.entries.length > 1 ? split.entries : undefined;
 
   return (
-    <main className="min-h-dvh w-full bg-[radial-gradient(ellipse_at_50%_100%,#1a0b2e,#02040a_70%)] px-6 pb-24 text-white">
+    <main className="min-h-dvh w-full bg-[radial-gradient(ellipse_at_50%_100%,#1a0b2e,#02040a_70%)] pb-24 text-white">
       <JsonLd data={breadcrumbJsonLd([{ name: "Inicio", path: "/" }, { name: s.title, path: `/${s.slug}` }, { name: a.title, path }])} />
       <JsonLd data={articleJsonLd({ title: a.title, description: a.description, path, publishedAt: a.createdAt, updatedAt: a.updatedAt, section: s.title, image: a.images[0]?.src })} />
-      <TopBar right={<SectionNav sections={sections} current={s.slug} onSectionPage={false} />} />
-      <article className="mx-auto w-full max-w-3xl pt-28">
-        <p className="text-xs uppercase tracking-[0.4em] text-cyan-200">
-          <Link href={`/${s.slug}`} className="hover:underline">
-            {s.title}
-          </Link>
-        </p>
-        <h1 className="mt-3 font-display text-4xl sm:text-6xl">{a.title}</h1>
-        <p className="mt-3 text-xs text-white/50">
-          Publicado el <time dateTime={a.createdAt}>{formatDate(a.createdAt)}</time>
-          {a.updatedAt.slice(0, 10) !== a.createdAt.slice(0, 10) && (
+      <div className={`${PAGE_CONTAINER} pt-28`}>
+        <article className={READING}>
+          <p className="text-xs uppercase tracking-[0.4em] text-cyan-200">
+            <Link href={`/${s.slug}`} className="hover:underline">
+              {s.title}
+            </Link>
+          </p>
+          <h1 className="mt-3 font-display text-4xl sm:text-6xl">{a.title}</h1>
+          <p className="mt-3 text-xs text-white/50">
+            Publicado el <time dateTime={a.createdAt}>{formatDate(a.createdAt)}</time>
+            {a.updatedAt.slice(0, 10) !== a.createdAt.slice(0, 10) && (
+              <>
+                {" · "}actualizado el <time dateTime={a.updatedAt}>{formatDate(a.updatedAt)}</time>
+              </>
+            )}
+          </p>
+
+          {entries ? (
             <>
-              {" · "}actualizado el <time dateTime={a.updatedAt}>{formatDate(a.updatedAt)}</time>
+              <Markdown source={split!.intro} images={a.images} videos={a.videos} className="prose-sophis mt-10" />
+              <EntryTabs
+                label={s.title}
+                tabs={entries.map(({ id, label }) => ({ id, label }))}
+                panels={entries.map((e) => (
+                  <Markdown key={e.id} source={e.body} images={a.images} videos={a.videos} className="prose-sophis" />
+                ))}
+              />
             </>
+          ) : (
+            <Markdown source={a.body} images={a.images} videos={a.videos} className="prose-sophis mt-10" />
           )}
-        </p>
 
-        {entries ? (
-          <>
-            <Markdown source={split!.intro} images={a.images} videos={a.videos} className="prose-sophis mt-10" />
-            <EntryTabs
-              label={s.title}
-              tabs={entries.map(({ id, label }) => ({ id, label }))}
-              panels={entries.map((e) => (
-                <Markdown key={e.id} source={e.body} images={a.images} videos={a.videos} className="prose-sophis" />
-              ))}
-            />
-          </>
-        ) : (
-          <Markdown source={a.body} images={a.images} videos={a.videos} className="prose-sophis mt-10" />
-        )}
+          <ArticleNav sectionSlug={s.slug} prev={v.prev} next={v.next} />
 
-        <ArticleNav sectionSlug={s.slug} prev={v.prev} next={v.next} />
-
-        <Link href={`/${s.slug}`} className="mt-16 inline-block text-fuchsia-200 underline-offset-4 hover:underline">
-          ← Volver a {s.title}
-        </Link>
-      </article>
+          <Link href={`/${s.slug}`} className="mt-16 inline-block text-fuchsia-200 underline-offset-4 hover:underline">
+            ← Volver a {s.title}
+          </Link>
+        </article>
+      </div>
     </main>
   );
 }
