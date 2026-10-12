@@ -38,27 +38,27 @@ export default async function SectionPage({ params }: PageProps<"/[section]">) {
           ) : (
             <p className="prose-sophis mt-8">{s.description}</p>
           )}
+
+          <h2 className="mt-14 font-display text-2xl text-cyan-100">Artículos</h2>
+          {articles.length === 0 ? (
+            <p className="mt-4 text-white/70">Todavía no hay artículos publicados en esta sección.</p>
+          ) : (
+            // Carrusel con desplazamiento horizontal y ajuste en todos los tamaños; en pantallas anchas caben dos cards y
+            // asoma la siguiente, así se ve que hay más.
+            <ul aria-label="Artículos de la sección" className="thin-scrollbar mt-4 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4">
+              {articles.map((a) => (
+                <li key={a.slug} className="w-[80%] shrink-0 snap-start sm:w-[45%]">
+                  <ArticleCard article={a} />
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {/* scroll={false}: la portada restaura ella misma el scroll que tenía el usuario */}
+          <Link href="/" scroll={false} className="mt-16 inline-block text-fuchsia-200 underline-offset-4 hover:underline">
+            ← Volver al inicio
+          </Link>
         </div>
-
-        <h2 className="mt-14 font-display text-2xl text-cyan-100">Artículos</h2>
-        {articles.length === 0 ? (
-          <p className="mt-4 text-white/70">Todavía no hay artículos publicados en esta sección.</p>
-        ) : (
-          // Carrusel a todo el ancho del contenedor, con desplazamiento horizontal y ajuste en todos los tamaños; en
-          // pantallas anchas caben dos o tres cards y asoma la siguiente, así se ve que hay más.
-          <ul aria-label="Artículos de la sección" className="thin-scrollbar mt-4 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4">
-            {articles.map((a) => (
-              <li key={a.slug} className="w-[80%] shrink-0 snap-start sm:w-[45%] lg:w-[31%]">
-                <ArticleCard article={a} />
-              </li>
-            ))}
-          </ul>
-        )}
-
-        {/* scroll={false}: la portada restaura ella misma el scroll que tenía el usuario */}
-        <Link href="/" scroll={false} className="mt-16 inline-block text-fuchsia-200 underline-offset-4 hover:underline">
-          ← Volver al inicio
-        </Link>
       </div>
     </main>
   );

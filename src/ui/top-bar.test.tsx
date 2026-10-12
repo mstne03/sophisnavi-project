@@ -3,8 +3,8 @@ import { describe, expect, it } from "vitest";
 import { PAGE_CONTAINER } from "./page-container";
 import { TopBar } from "./top-bar";
 
-// Protege: la barra es fija, lleva la marca a la izquierda y el hueco derecho opcional, y usa el mismo contenedor que el
-// contenido de todas las páginas (así la marca cae sobre su margen izquierdo).
+// Protege: la barra es fija, lleva la marca a la izquierda y el hueco derecho opcional, y usa el mismo contenedor ancho
+// en todas las páginas (así no se mueve al navegar).
 describe("TopBar", () => {
   it("es fija, con la marca y el contenido derecho en la misma fila", () => {
     const { container } = render(<TopBar right={<span>derecha</span>} />);
