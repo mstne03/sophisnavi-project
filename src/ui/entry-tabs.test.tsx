@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { EntryTabs } from "./entry-tabs";
 
 const tabs = [
@@ -8,7 +8,7 @@ const tabs = [
   { id: "kiri", label: "Kiri" },
 ];
 const panels = tabs.map((t) => <p key={t.id}>Texto de {t.label}</p>);
-const visible = () => screen.getAllByRole("tabpanel").map((p) => p.textContent);
+const visible = () => screen.getAllByRole("tabpanel").map((p) => p.firstElementChild?.textContent); // el contenido, sin el enlace a la siguiente
 
 // Protege: solo se ve la entrada elegida, el resto sigue en el HTML (oculto); la elección se refleja en el hash.
 describe("EntryTabs", () => {
@@ -57,5 +57,25 @@ describe("EntryTabs", () => {
     expect(visible()).toEqual(["Texto de Jake Sully"]);
     fireEvent.keyDown(first, { key: "Enter" });
     expect(visible()).toEqual(["Texto de Jake Sully"]);
+  });
+
+  it("al final de cada entrada salvo la última enlaza a la siguiente: la elige, sube al selector y enfoca su pestaña", () => {
+    const scrollIntoView = vi.fn();
+    Element.prototype.scrollIntoView = scrollIntoView; // jsdom no lo implementa
+    render(<EntryTabs label="Personajes" tabs={tabs} panels={panels} nextLabel="Siguiente personaje" />);
+    const next = screen.getByRole("link", { name: "Siguiente personaje: Neytiri" });
+    expect(next.getAttribute("href")).toBe("#neytiri"); // sin JS sigue siendo un enlace a la entrada
+    const ev = fireEvent.click(next);
+    expect(ev).toBe(false); // preventDefault: el cambio lo hace el selector
+    expect(visible()).toEqual(["Texto de Neytiri"]);
+    expect(window.location.hash).toBe("#neytiri");
+    expect(document.activeElement).toBe(screen.getByRole("tab", { name: "Neytiri" }));
+    expect(scrollIntoView).toHaveBeenCalledWith({ block: "start" });
+    expect(scrollIntoView.mock.contexts[0]).toBe(screen.getByRole("tablist"));
+
+    fireEvent.click(screen.getByRole("link", { name: "Siguiente personaje: Kiri" }));
+    expect(visible()).toEqual(["Texto de Kiri"]);
+    expect(screen.getAllByRole("tabpanel")[0].querySelector("a")).toBeNull(); // la última no tiene siguiente
+    expect(screen.getAllByRole("link", { hidden: true })).toHaveLength(2);
   });
 });

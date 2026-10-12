@@ -128,7 +128,7 @@ test("el HTML del servidor trae artículo, canonical, Open Graph y JSON-LD", asy
 });
 
 // Flujo 4b (SOPHIE-3): en un artículo por entradas solo se ve el personaje elegido y el selector cambia de uno a otro.
-const toggled = content.articles.find((a) => hasEntryToggle(a.slug) && splitEntries(a.body).entries.length > 1);
+const toggled = content.articles.find((a) => hasEntryToggle(a.sectionSlug) && splitEntries(a.body).entries.length > 1);
 test("artículo por entradas: selector de personajes", async ({ page }) => {
   test.skip(!toggled, "no hay ningún artículo por entradas publicado en el snapshot");
   const [first, second] = splitEntries(toggled!.body).entries;

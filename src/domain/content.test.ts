@@ -69,8 +69,8 @@ describe("splitEntries", () => {
     expect(entryLabel("Tuk")).toBe("Tuk");
   });
 
-  it("hasEntryToggle solo acepta los artículos de la lista", () => {
-    expect(hasEntryToggle("los-sully")).toBe(true);
-    expect(hasEntryToggle("la-flora-de-pandora")).toBe(false);
+  it("hasEntryToggle activa el selector en todos los artículos de Personajes y en ninguna otra sección", () => {
+    expect(hasEntryToggle("personajes")).toBe(true);
+    expect(hasEntryToggle("pandora")).toBe(false);
   });
 });

@@ -41,8 +41,9 @@ export default async function ArticlePage({ params }: PageProps<"/[section]/[art
   if (!s || !v) notFound();
   const a = v.article;
   const path = `/${s.slug}/${a.slug}`;
-  // Artículo por entradas (SOPHIE-3): intro común y un selector con una entrada por título. Con menos de dos, se lee seguido.
-  const split = hasEntryToggle(a.slug) ? splitEntries(a.body) : undefined;
+  // Artículo por entradas (SOPHIE-3, todos los de Personajes): intro común y un selector con una entrada por título. Con
+  // menos de dos, se lee seguido.
+  const split = hasEntryToggle(s.slug) ? splitEntries(a.body) : undefined;
   const entries = split && split.entries.length > 1 ? split.entries : undefined;
 
   return (
@@ -72,6 +73,7 @@ export default async function ArticlePage({ params }: PageProps<"/[section]/[art
               <Markdown source={split!.intro} images={a.images} videos={a.videos} className="prose-sophis mt-10" />
               <EntryTabs
                 label={s.title}
+              nextLabel="Siguiente personaje"
                 tabs={entries.map(({ id, label }) => ({ id, label }))}
                 panels={entries.map((e) => (
                   <Markdown key={e.id} source={e.body} images={a.images} videos={a.videos} className="prose-sophis" />
