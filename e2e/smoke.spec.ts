@@ -33,8 +33,8 @@ test("portada → pestaña Quién soy → /quien-soy → atrás", async ({ page 
   await expect(page.getByRole("navigation", { name: "Menú principal" })).toBeInViewport();
 });
 
-// Flujo crítico 1c: cada URL trae su texto en el HTML del servidor; la bienvenida completa solo en /quien-soy.
-test("el HTML de /quien-soy trae la bienvenida y sus datos estructurados; / solo el extracto", async ({ request }) => {
+// Flujo crítico 1c: cada URL trae su texto en el HTML del servidor; la bienvenida solo en /quien-soy.
+test("el HTML de /quien-soy trae la bienvenida y sus datos estructurados; / no", async ({ request }) => {
   const about = await (await request.get("/quien-soy")).text();
   expect(about).toContain('id="bienvenida"');
   expect(about).toContain('rel="canonical" href="https://www.sophisnavi.com/quien-soy"');

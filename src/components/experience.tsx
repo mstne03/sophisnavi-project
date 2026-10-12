@@ -20,8 +20,8 @@ const visit = { introDone: false, sceneTime: 0, scrollY: 0 };
 
 // Vive en el layout compartido de / y /quien-soy: al navegar entre las dos no se desmonta (ni la escena ni la pista),
 // así el cambio de ruta es el mismo deslizamiento de siempre. `about` es la bienvenida de Notion renderizada en el
-// servidor (panel a pantalla completa con scroll propio); `excerpt`, su primer párrafo, va en Inicio.
-export function Experience({ sections, about, excerpt }: { sections: MenuSection[]; about?: ReactNode; excerpt?: string }) {
+// servidor (panel a pantalla completa con scroll propio).
+export function Experience({ sections, about }: { sections: MenuSection[]; about?: ReactNode }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mainRef = useRef<HTMLElement>(null);
   const sceneRef = useRef<TreeScene | null>(null);
@@ -100,7 +100,7 @@ export function Experience({ sections, about, excerpt }: { sections: MenuSection
     if (window.location.hash === `#${ABOUT_ID}`) router.replace(ABOUT_PATH, { scroll: false });
   }, [router]);
 
-  // La bienvenida completa solo entra en el DOM de /quien-soy o tras abrirla: en / la portada lleva el extracto y el
+  // La bienvenida completa solo entra en el DOM de /quien-soy o tras abrirla: en / no va y el
   // texto no se duplica entre las dos URL. Una vez abierta se queda, para que el deslizamiento de vuelta la muestre.
   const [aboutOpened, setAboutOpened] = useState(view === "about");
   if (view === "about" && !aboutOpened) setAboutOpened(true);
@@ -141,13 +141,7 @@ export function Experience({ sections, about, excerpt }: { sections: MenuSection
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       >
         <div className="home-no-scrollbar h-full w-1/2 overflow-x-hidden overflow-y-auto" inert={view === "about" || undefined}>
-          <MainMenu
-            sections={sections}
-            animateIn={!returning}
-            revealed={phase === "menu"}
-            excerpt={excerpt}
-            onAbout={() => select("about")}
-          />
+          <MainMenu sections={sections} animateIn={!returning} revealed={phase === "menu"} />
         </div>
         <div
           id={ABOUT_ID}
@@ -205,7 +199,20 @@ export function Experience({ sections, about, excerpt }: { sections: MenuSection
         )}
       </AnimatePresence>
       {/* Barra superior: la marca siempre (también durante la intro); las pestañas solo tras la intro. */}
-      <TopBar width="wide" right={phase === "menu" ? <HomeNav view={view} onSelect={select} /> : undefined} />
+      <TopBar
+        width="wide"
+        right={
+          // Las pestañas van siempre en el HTML (el enlace a /quien-soy es rastreable desde la portada), pero se ven y
+          // se pueden usar solo tras la intro; sin JS el <noscript> del layout las muestra.
+          <div
+            data-home-tabs
+            className={`transition-opacity ${phase === "menu" ? "opacity-100 delay-700 duration-300" : "opacity-0 duration-0"}`}
+            inert={(hydrated && phase === "intro") || undefined}
+          >
+            <HomeNav view={view} onSelect={select} />
+          </div>
+        }
+      />
     </main>
   );
 }

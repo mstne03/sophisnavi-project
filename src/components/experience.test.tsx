@@ -28,14 +28,14 @@ describe("Experience", () => {
     createTreeScene.mockReset().mockImplementation((_c, o) => fakeScene(o));
   });
 
-  // Protege (SEO): el HTML del servidor trae el menú con sus enlaces y el extracto, y no trae la pista inert (sin JS se
+  // Protege (SEO): el HTML del servidor trae el menú con sus enlaces y las pestañas, y no trae la pista inert (sin JS se
   // puede usar). Primer test del fichero: la intro aún no se ha hecho en esta visita.
-  it("en el HTML del servidor van el h1, los enlaces a las secciones y el extracto, sin inert ni la bienvenida", () => {
-    const html = renderToString(<Experience sections={SECTIONS} about={<p>Kaltxì</p>} excerpt="Soy Sofi" />);
+  it("en el HTML del servidor van el h1, los enlaces a las secciones y las pestañas, sin inert ni la bienvenida", () => {
+    const html = renderToString(<Experience sections={SECTIONS} about={<p>Kaltxì</p>} />);
     expect(html).toMatch(/<h1[^>]*>Sophisnavi<\/h1>/);
     expect(html).toContain('href="/pandora"');
-    expect(html).toContain("Soy Sofi");
-    expect(html).toContain('href="/quien-soy"');
+    expect(html).toContain('href="/quien-soy"'); // pestaña «Quién soy»: enlace rastreable desde la portada
+    expect(html).not.toContain("Conoce mi historia"); // sin fragmento de bienvenida en Inicio
     expect(html).toContain("Saltar intro");
     expect(html).not.toMatch(/data-home-track[^>]*inert|inert[^>]*data-home-track/);
     expect(html).not.toContain("Kaltxì"); // en / la bienvenida completa no va
@@ -49,15 +49,19 @@ describe("Experience", () => {
   });
 
   it("durante la intro el menú ya está en el DOM pero inert; al pulsar Saltar intro se libera, recordándolo en la sesión", async () => {
-    render(<Experience sections={SECTIONS} excerpt="Soy Sofi" />);
+    render(<Experience sections={SECTIONS} />);
     expect(screen.getByRole("navigation", { name: "Menú principal" })).toBeTruthy();
     expect(track().hasAttribute("inert")).toBe(true); // tras hidratar: ni foco ni clics bajo la intro
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1); // el título de la intro no es otro h1
-    expect(screen.queryByRole("navigation", { name: "Portada" })).toBeNull();
+    // Las pestañas ya están en el DOM pero transparentes e inert hasta que termina la intro
+    const tabs = document.querySelector("[data-home-tabs]")!;
+    expect(tabs.hasAttribute("inert")).toBe(true);
+    expect(tabs.className).toContain("opacity-0");
     await vi.waitFor(() => expect(createTreeScene).toHaveBeenCalled());
     fireEvent.click(screen.getByRole("button", { name: "Saltar intro" }));
     await menuShown();
-    expect(screen.getByRole("navigation", { name: "Portada" })).toBeTruthy(); // pestañas solo tras la intro
+    expect(tabs.hasAttribute("inert")).toBe(false); // pestañas usables solo tras la intro
+    expect(tabs.className).toContain("opacity-100");
     expect(sessionStorage.getItem("sophisnavi:intro-seen")).toBe("1");
   });
 
@@ -86,15 +90,14 @@ describe("Experience", () => {
   // Protege: «Quién soy» es la ruta /quien-soy; la pestaña desliza en el acto (sin esperar a la navegación) y la vista
   // sigue a la ruta, así «atrás» la cierra. La bienvenida completa no está en el DOM de / hasta que se abre.
   it("abre «Quién soy» desde la pestaña navegando a /quien-soy, y vuelve a Inicio cuando la ruta vuelve a /", async () => {
-    const { rerender } = render(<Experience sections={[]} about={<p>Kaltxì, soy Sofi</p>} excerpt="Soy Sofi" />);
+    const { rerender } = render(<Experience sections={[]} about={<p>Kaltxì, soy Sofi</p>} />);
     // Según el estado de la visita (módulo), la intro puede estar ya hecha; si no, se salta.
     screen.queryByRole("button", { name: "Saltar intro" })?.click();
     await menuShown();
     // Las dos vistas conviven en la pista: la que no se ve queda inert (ni foco ni clics)
     const panel = document.getElementById("quien-soy")!;
     expect(panel.hasAttribute("inert")).toBe(true);
-    expect(panel.textContent).toBe(""); // en / solo va el extracto: el texto no se duplica entre URL
-    expect(screen.getByText(/Soy Sofi/)).toBeTruthy();
+    expect(panel.textContent).toBe(""); // en / no va la bienvenida: el texto no se duplica entre URL
     expect(screen.getByRole("navigation", { name: "Menú principal" }).closest("[inert]")).toBeNull();
 
     fireEvent.click(screen.getByRole("link", { name: "Quién soy" }));
@@ -105,18 +108,14 @@ describe("Experience", () => {
     expect(screen.getByRole("link", { name: "Quién soy" }).getAttribute("aria-current")).toBe("page");
 
     nav.pathname = "/quien-soy"; // la navegación llega
-    rerender(<Experience sections={[]} about={<p>Kaltxì, soy Sofi</p>} excerpt="Soy Sofi" />);
+    rerender(<Experience sections={[]} about={<p>Kaltxì, soy Sofi</p>} />);
     expect(panel.hasAttribute("inert")).toBe(false);
 
     nav.pathname = "/"; // botón atrás
-    rerender(<Experience sections={[]} about={<p>Kaltxì, soy Sofi</p>} excerpt="Soy Sofi" />);
+    rerender(<Experience sections={[]} about={<p>Kaltxì, soy Sofi</p>} />);
     expect(screen.getByRole("link", { name: "Inicio" }).getAttribute("aria-current")).toBe("page");
     expect(panel.hasAttribute("inert")).toBe(true);
     expect(panel.textContent).toContain("Kaltxì, soy Sofi"); // se queda montada para el deslizamiento de vuelta
-
-    fireEvent.click(screen.getByRole("link", { name: "Conoce mi historia →" })); // el extracto también la abre
-    expect(nav.router.push).toHaveBeenLastCalledWith("/quien-soy", { scroll: false });
-    expect(panel.hasAttribute("inert")).toBe(false);
   });
 
   it("en /quien-soy llega con «Quién soy» abierta y la bienvenida en el HTML desde el primer render", async () => {

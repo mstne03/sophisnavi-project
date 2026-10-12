@@ -1,11 +1,10 @@
-import { excerpt } from "@/domain/content";
 import { Experience } from "@/components/experience";
 import { Markdown } from "@/ui/markdown";
 import { content } from "../content";
 
 // Las entradas animadas del menú llegan del servidor con su estado inicial en `style` (transparentes, desplazadas).
 const NO_JS_STYLE =
-  "[data-home-intro]{display:none}[data-home-track]{opacity:1!important}[data-home-track] [style]{opacity:1!important;filter:none!important;transform:none!important}";
+  "[data-home-intro]{display:none}[data-home-track],[data-home-tabs]{opacity:1!important}[data-home-track] [style]{opacity:1!important;filter:none!important;transform:none!important}";
 
 // Layout compartido de / y /quien-soy: Experience (árbol 3D, intro y pista Inicio ↔ «Quién soy») vive aquí y no se
 // desmonta al navegar entre las dos rutas, así el cambio de URL conserva el deslizamiento. Las páginas solo aportan
@@ -16,9 +15,8 @@ export default async function HomeLayout({ children }: LayoutProps<"/">) {
     <>
       <Experience
         sections={sections.map(({ slug, title, description }) => ({ slug, title, description }))}
-        excerpt={home ? excerpt(home.body) : undefined}
         // Texto de bienvenida (fila Home · Introducción de Notion): HTML del servidor, lo leen los bots sin JS.
-        // Experience solo lo pinta en /quien-soy (o tras abrirlo); en / va el extracto.
+        // Experience solo lo pinta en /quien-soy (o tras abrirlo), sin duplicarlo en /.
         about={
           home && (
             <section aria-labelledby="bienvenida" className="min-h-full px-6 pt-24 pb-24 text-white">
