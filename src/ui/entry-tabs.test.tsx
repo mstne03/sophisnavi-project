@@ -75,7 +75,25 @@ describe("EntryTabs", () => {
 
     fireEvent.click(screen.getByRole("link", { name: "Siguiente personaje: Kiri" }));
     expect(visible()).toEqual(["Texto de Kiri"]);
-    expect(screen.getAllByRole("tabpanel")[0].querySelector("a")).toBeNull(); // la última no tiene siguiente
-    expect(screen.getAllByRole("link", { hidden: true })).toHaveLength(2);
+    expect(screen.queryByRole("link", { name: /^Siguiente personaje/ })).toBeNull(); // la última no tiene siguiente
+  });
+
+  it("al final de cada entrada salvo la primera enlaza a la anterior, con el mismo comportamiento", () => {
+    Element.prototype.scrollIntoView = vi.fn();
+    window.history.replaceState(null, "", "#kiri");
+    render(<EntryTabs label="Personajes" tabs={tabs} panels={panels} prevLabel="Personaje anterior" nextLabel="Siguiente personaje" />);
+    expect(screen.queryByRole("link", { name: /^Siguiente personaje/ })).toBeNull();
+    const prev = screen.getByRole("link", { name: "Personaje anterior: Neytiri" });
+    expect(prev.getAttribute("href")).toBe("#neytiri");
+    expect(fireEvent.click(prev)).toBe(false);
+    expect(visible()).toEqual(["Texto de Neytiri"]);
+    expect(document.activeElement).toBe(screen.getByRole("tab", { name: "Neytiri" }));
+    // En medio, las dos: anterior a la izquierda (primero en el DOM) y siguiente a la derecha.
+    expect(screen.getAllByRole("link").map((a) => a.getAttribute("aria-label"))).toEqual([
+      "Personaje anterior: Jake Sully",
+      "Siguiente personaje: Kiri",
+    ]);
+    fireEvent.click(screen.getByRole("link", { name: "Personaje anterior: Jake Sully" }));
+    expect(screen.queryByRole("link", { name: /^Personaje anterior/ })).toBeNull(); // la primera no tiene anterior
   });
 });

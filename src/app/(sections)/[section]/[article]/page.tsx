@@ -73,6 +73,7 @@ export default async function ArticlePage({ params }: PageProps<"/[section]/[art
               <Markdown source={split!.intro} images={a.images} videos={a.videos} className="prose-sophis mt-10" />
               <EntryTabs
                 label={s.title}
+              prevLabel="Personaje anterior"
               nextLabel="Siguiente personaje"
                 tabs={entries.map(({ id, label }) => ({ id, label }))}
                 panels={entries.map((e) => (

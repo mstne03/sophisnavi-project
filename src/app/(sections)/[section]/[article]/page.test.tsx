@@ -44,6 +44,7 @@ describe("ArticlePage", () => {
     expect(screen.getAllByRole("tabpanel").map((p) => p.querySelector("h2")?.textContent)).toEqual(["JAKE SULLY: DE PROTAGONISTA A MCGUFFIN"]);
     expect(container.querySelectorAll("h2")).toHaveLength(2); // la otra entrada sigue en el HTML, oculta
     expect(screen.getByRole("link", { name: "Siguiente personaje: Neytiri" }).getAttribute("href")).toBe("#neytiri");
+    expect(screen.getByRole("link", { name: "Personaje anterior: Jake Sully", hidden: true }).getAttribute("href")).toBe("#jake-sully"); // en la entrada oculta
   });
 
   it("los demás artículos se leen seguidos, sin selector", async () => {
