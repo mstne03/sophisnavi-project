@@ -24,6 +24,9 @@ describe("SectionPage", () => {
     const links = within(list).getAllByRole("link").map((a) => a.getAttribute("href"));
     expect(links).toEqual(["/pandora/el-mundo-de-avatar", "/pandora/la-ciencia-real-detras-de-avatar"]);
     expect(screen.getByRole("link", { name: /volver/i }).getAttribute("href")).toBe("/");
+    const nav = screen.getAllByRole("navigation", { name: "Secciones", hidden: true })[0];
+    expect(within(nav).getAllByRole("link", { hidden: true })).toHaveLength(6);
+    expect(within(nav).getByRole("link", { name: "Pandora", hidden: true }).getAttribute("aria-current")).toBe("page");
   });
 
   it("sin intro de Notion muestra la descripción corta; sin artículos lo indica", async () => {

@@ -5,7 +5,8 @@ import { breadcrumbJsonLd, pageMetadata } from "@/application/seo/metadata";
 import { ArticleCard } from "@/ui/article-card";
 import { JsonLd } from "@/ui/json-ld";
 import { Markdown } from "@/ui/markdown";
-import { Tagline, TopBar } from "@/ui/top-bar";
+import { SectionNav } from "@/ui/section-nav";
+import { TopBar } from "@/ui/top-bar";
 import { content } from "../content";
 
 export const dynamicParams = false;
@@ -24,12 +25,12 @@ export default async function SectionPage({ params }: PageProps<"/[section]">) {
   const { section } = await params;
   const s = await content.getSection(section);
   if (!s) notFound();
-  const articles = await content.listArticles(s.slug);
+  const [articles, sections] = await Promise.all([content.listArticles(s.slug), content.listSections()]);
 
   return (
     <main className="min-h-dvh w-full bg-[radial-gradient(ellipse_at_50%_100%,#1a0b2e,#02040a_70%)] px-6 pb-24 text-white">
       <JsonLd data={breadcrumbJsonLd([{ name: "Inicio", path: "/" }, { name: s.title, path: `/${s.slug}` }])} />
-      <TopBar right={<Tagline />} />
+      <TopBar right={<SectionNav sections={sections} current={s.slug} />} />
       <div className="mx-auto w-full max-w-3xl pt-28">
         <p className="text-xs uppercase tracking-[0.4em] text-cyan-200">Sección</p>
         <h1 className="mt-3 font-display text-5xl sm:text-7xl">{s.title}</h1>

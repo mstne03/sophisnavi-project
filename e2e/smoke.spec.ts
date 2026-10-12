@@ -55,6 +55,24 @@ test("sin JavaScript la portada muestra el menú y enlaza a las secciones", asyn
   await expect(page).toHaveURL(/\/pandora$/);
 });
 
+// Flujo crítico 1e: en secciones y artículos la barra superior navega entre secciones. En móvil es un menú hamburguesa
+// desplegable con la sección actual marcada; en escritorio, una barra de enlaces.
+test("navegación entre secciones desde la barra superior", async ({ page, isMobile }) => {
+  await page.goto("/pandora");
+  if (isMobile) {
+    const button = page.getByLabel("Menú de secciones");
+    await expect(button).toBeVisible();
+    await button.click();
+  }
+  const nav = page.getByRole("navigation", { name: "Secciones" });
+  await expect(nav).toHaveCount(1); // solo la variante de este tamaño es visible
+  await expect(nav.getByRole("link", { name: "Pandora" })).toHaveAttribute("aria-current", "page");
+  await nav.getByRole("link", { name: "Clanes y culturas" }).click();
+  await expect(page).toHaveURL(/\/clanes$/);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Clanes y culturas");
+  if (isMobile) await expect(page.getByRole("navigation", { name: "Secciones" })).toHaveCount(0); // se cierra al elegir
+});
+
 // Flujo crítico 2: una ruta desconocida devuelve 404.
 test("ruta desconocida devuelve 404", async ({ page }) => {
   const res = await page.goto("/no-existe");
