@@ -14,18 +14,21 @@ const subscribe = (onChange: () => void) => {
 };
 const readHash = () => decodeURIComponent(window.location.hash.slice(1));
 
-// Al final de cada entrada (salvo la última) un enlace discreto lleva a la siguiente: la elige, sube al selector y le da
-// el foco a su pestaña, así el lector de pantalla anuncia el cambio y el teclado sigue en el sitio esperado. Es un enlace
-// al hash de la entrada: sin JS o con clic secundario sigue apuntando a ella.
+// Al final de cada entrada, enlaces discretos a la anterior (a la izquierda, salvo en la primera) y a la siguiente (a la
+// derecha, salvo en la última). Cada uno elige su entrada, sube al selector y le da el foco a su pestaña, así el lector
+// de pantalla anuncia el cambio y el teclado sigue en el sitio esperado. Son enlaces al hash de la entrada: sin JS o con
+// clic secundario siguen apuntando a ella.
 export function EntryTabs({
   label,
   tabs,
   panels,
+  prevLabel = "Anterior",
   nextLabel = "Siguiente",
 }: {
   label: string;
   tabs: EntryTab[];
   panels: ReactNode[];
+  prevLabel?: string;
   nextLabel?: string;
 }) {
   const hash = useSyncExternalStore(subscribe, readHash, () => "");
@@ -82,31 +85,61 @@ export function EntryTabs({
         })}
       </div>
       {tabs.map((t, i) => {
+        const prev = tabs[i - 1];
         const next = tabs[i + 1];
         return (
           <div key={t.id} role="tabpanel" id={`panel-${t.id}`} aria-labelledby={`tab-${t.id}`} hidden={t.id !== selected}>
             {panels[i]}
-            {next && (
-              <div className="mt-12 flex justify-end border-t border-white/10 pt-6">
-                <a
-                  href={`#${next.id}`}
-                  aria-label={`${nextLabel}: ${next.label}`}
-                  onClick={(e) => goTo(e, next.id)}
-                  className="group flex flex-col items-end rounded-lg text-right outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-4 focus-visible:ring-offset-[#02040a]"
-                >
-                  <span className="text-xs uppercase tracking-[0.3em] text-cyan-200/80">{nextLabel}</span>
-                  <span className="mt-1 font-display text-xl text-white/85 transition-colors group-hover:text-white">
-                    {next.label}{" "}
-                    <span aria-hidden className="inline-block text-fuchsia-200 transition-transform duration-300 group-hover:translate-x-1">
-                      →
-                    </span>
-                  </span>
-                </a>
+            {(prev || next) && (
+              <div className="mt-12 flex items-start justify-between gap-6 border-t border-white/10 pt-6">
+                {prev && <EntryStep entry={prev} label={prevLabel} direction="prev" onClick={(e) => goTo(e, prev.id)} />}
+                {next && <EntryStep entry={next} label={nextLabel} direction="next" onClick={(e) => goTo(e, next.id)} />}
               </div>
             )}
           </div>
         );
       })}
     </>
+  );
+}
+
+// Enlace de paso a otra entrada: etiqueta pequeña («Personaje anterior») y el nombre con su flecha, alineado hacia
+// donde lleva. aria-label con el texto visible completo («Personaje anterior: Jake Sully»).
+function EntryStep({
+  entry,
+  label,
+  direction,
+  onClick,
+}: {
+  entry: EntryTab;
+  label: string;
+  direction: "prev" | "next";
+  onClick: (e: MouseEvent<HTMLAnchorElement>) => void;
+}) {
+  const isNext = direction === "next";
+  return (
+    <a
+      href={`#${entry.id}`}
+      aria-label={`${label}: ${entry.label}`}
+      onClick={onClick}
+      className={`group flex flex-col rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-4 focus-visible:ring-offset-[#02040a] ${
+        isNext ? "ml-auto items-end text-right" : "items-start"
+      }`}
+    >
+      <span className="text-xs uppercase tracking-[0.3em] text-cyan-200/80">{label}</span>
+      <span className="mt-1 font-display text-xl text-white/85 transition-colors group-hover:text-white">
+        {!isNext && (
+          <span aria-hidden className="mr-1 inline-block text-fuchsia-200 transition-transform duration-300 group-hover:-translate-x-1">
+            ←
+          </span>
+        )}
+        {entry.label}
+        {isNext && (
+          <span aria-hidden className="ml-1 inline-block text-fuchsia-200 transition-transform duration-300 group-hover:translate-x-1">
+            →
+          </span>
+        )}
+      </span>
+    </a>
   );
 }
