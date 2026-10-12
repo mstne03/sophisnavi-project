@@ -95,11 +95,11 @@ export function slugify(text: string): string {
 
 export const isSlug = (s: string) => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(s);
 
-// Artículos que se leen entrada a entrada (SOPHIE-3): cada título de nivel 2 del cuerpo abre la entrada de un personaje
-// y la web muestra solo la elegida, con un selector con el nombre de cada uno. Lista explícita por slug: en otros
-// artículos Sofi usa títulos para estructurar el texto, no como entradas alternativas.
-export const TOGGLE_ARTICLE_SLUGS: readonly string[] = ["los-sully"];
-export const hasEntryToggle = (slug: string) => TOGGLE_ARTICLE_SLUGS.includes(slug);
+// Secciones cuyos artículos se leen entrada a entrada (SOPHIE-3): cada título de nivel 2 del cuerpo abre la entrada de
+// un personaje y la web muestra solo la elegida, con un selector con el nombre de cada uno. Va por sección: en las demás
+// Sofi usa los títulos para estructurar el texto, no como entradas alternativas. Con menos de dos entradas, se lee seguido.
+export const ENTRY_TOGGLE_SECTIONS: readonly string[] = ["personajes"];
+export const hasEntryToggle = (sectionSlug: string) => ENTRY_TOGGLE_SECTIONS.includes(sectionSlug);
 
 export type BodyEntry = { id: string; label: string; body: string }; // body incluye su título
 export type SplitBody = { intro: string; entries: BodyEntry[] };
