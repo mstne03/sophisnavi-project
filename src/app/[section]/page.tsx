@@ -57,7 +57,7 @@ export default async function SectionPage({ params }: PageProps<"/[section]">) {
 
         {/* scroll={false}: la portada restaura ella misma el scroll que tenía el usuario */}
         <Link href="/" scroll={false} className="mt-16 inline-block text-fuchsia-200 underline-offset-4 hover:underline">
-          ← Volver al menú
+          ← Volver al inicio
         </Link>
       </div>
     </main>
