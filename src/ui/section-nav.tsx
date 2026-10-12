@@ -86,12 +86,11 @@ export function SectionNav({ sections, current, onSectionPage = true }: { sectio
                     href={`/${s.slug}`}
                     aria-current={ariaCurrent(s.slug)}
                     onClick={() => setOpen(false)}
-                    className={`flex items-center justify-between rounded-xl px-4 py-3 font-display text-lg outline-none transition-colors focus-visible:ring-2 focus-visible:ring-cyan-300 ${
+                    className={`block rounded-xl px-4 py-3 font-display text-lg outline-none transition-colors focus-visible:ring-2 focus-visible:ring-cyan-300 ${
                       on ? "bg-white/15 text-white" : "text-white/70 hover:bg-white/5 hover:text-white"
                     }`}
                   >
                     {s.title}
-                    {on && <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-cyan-300" />}
                   </Link>
                 </li>
               );

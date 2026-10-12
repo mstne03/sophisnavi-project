@@ -23,7 +23,7 @@ describe("SectionPage", () => {
     const list = screen.getByRole("list", { name: "Artículos de la sección" });
     const links = within(list).getAllByRole("link").map((a) => a.getAttribute("href"));
     expect(links).toEqual(["/pandora/el-mundo-de-avatar", "/pandora/la-ciencia-real-detras-de-avatar"]);
-    expect(screen.getByRole("link", { name: /volver/i }).getAttribute("href")).toBe("/");
+    expect(screen.getByRole("link", { name: "← Volver al inicio" }).getAttribute("href")).toBe("/");
     const nav = screen.getAllByRole("navigation", { name: "Secciones", hidden: true })[0];
     expect(within(nav).getAllByRole("link", { hidden: true })).toHaveLength(6);
     expect(within(nav).getByRole("link", { name: "Pandora", hidden: true }).getAttribute("aria-current")).toBe("page");
