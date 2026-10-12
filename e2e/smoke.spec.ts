@@ -127,6 +127,20 @@ test("el HTML del servidor trae artículo, canonical, Open Graph y JSON-LD", asy
   expect(html).toMatch(/<link rel="apple-touch-icon" href="\/apple-icon\.png[^"]*"/);
 });
 
+// Flujo 4a: la imagen que declara cada página para compartir (og:image) existe de verdad. Las tarjetas de sección daban
+// 404 porque Next las servía con un sufijo aleatorio en la URL.
+test("la og:image de cada página existe y es una imagen", async ({ request }) => {
+  const pages = ["/", "/quien-soy", ...SECTIONS.map((s) => `/${s.slug}`), ...content.articles.map(url)];
+  for (const path of pages) {
+    const html = await (await request.get(path)).text();
+    const og = html.match(/<meta property="og:image" content="([^"]+)"/)?.[1];
+    expect(og, `og:image en ${path}`).toBeTruthy();
+    const res = await request.get(og!.replace("https://www.sophisnavi.com", ""));
+    expect(res.status(), `${og} (${path})`).toBe(200);
+    expect(res.headers()["content-type"]).toMatch(/^image\//);
+  }
+});
+
 // Flujo 4b (SOPHIE-3): en un artículo por entradas solo se ve el personaje elegido y el selector cambia de uno a otro.
 const toggled = content.articles.find((a) => hasEntryToggle(a.sectionSlug) && splitEntries(a.body).entries.length > 1);
 test("artículo por entradas: selector de personajes", async ({ page }) => {

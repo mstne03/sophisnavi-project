@@ -11,13 +11,19 @@ vi.mock("next/og", () => ({
   },
 }));
 
-import Image, { generateStaticParams } from "./opengraph-image";
+import { dynamic, dynamicParams, GET, generateStaticParams } from "./route";
 
 type Captured = { element: React.ReactElement; options: { fonts: { name: string }[] } };
-const render = async (section: string) => (await Image({ params: Promise.resolve({ section }) })) as unknown as Captured;
+const render = async (section: string) => (await GET(new Request("http://x"), { params: Promise.resolve({ section }) })) as unknown as Captured;
 
-// Protege: una tarjeta por sección con su título, el árbol y Marcellus; una sección desconocida cae al nombre del sitio.
-describe("opengraph-image (sección)", () => {
+// Protege: /<sección>/opengraph-image (la URL que declara pageMetadata) existe y es estática, una por sección, con su
+// título, el árbol y Marcellus; una sección desconocida cae al nombre del sitio.
+describe("/[section]/opengraph-image", () => {
+  it("es estática y solo existe para las secciones del build", () => {
+    expect(dynamic).toBe("force-static");
+    expect(dynamicParams).toBe(false);
+  });
+
   it("genera un parámetro por sección y pinta el título de cada una", async () => {
     expect(generateStaticParams()).toContainEqual({ section: "personajes" });
     const res = await render("personajes");

@@ -8,7 +8,8 @@ describe("pageMetadata", () => {
     expect(m.title).toEqual({ absolute: "Sophisnavi" });
     expect(m.alternates).toEqual({ canonical: SITE_URL, languages: { es: SITE_URL, "x-default": SITE_URL } });
     expect(m.openGraph).toMatchObject({ type: "website", locale: "es_ES", url: SITE_URL, siteName: "Sophisnavi" });
-    expect(m.openGraph.images[0].url).toBe(`${SITE_URL}/opengraph-image`);
+    expect(m.openGraph.images[0]).toEqual({ url: `${SITE_URL}/opengraph-image`, width: 1200, height: 630, alt: "Sophisnavi" });
+    expect(pageMetadata({ title: "Pandora", description: "d", path: "/pandora" }).openGraph.images[0].alt).toBe("Pandora · Sophisnavi");
     expect(m.twitter.card).toBe("summary_large_image");
     expect(m.robots.googleBot["max-image-preview"]).toBe("large");
   });
@@ -21,12 +22,13 @@ describe("pageMetadata", () => {
       type: "article",
       publishedAt: "2026-10-08",
       updatedAt: "2026-10-09",
-      image: { url: `${SITE_URL}/content/x/1.webp`, alt: "Pandora" },
+      image: { url: `${SITE_URL}/content/x/1.webp`, alt: "Pandora", width: 1200, height: 750 },
     });
     expect(m.title).toBe("El mundo"); // el sufijo lo pone la plantilla del layout
     expect(m.alternates.canonical).toBe(`${SITE_URL}/pandora/el-mundo`);
     expect(m.openGraph).toMatchObject({ type: "article", publishedTime: "2026-10-08", modifiedTime: "2026-10-09", authors: ["Sofi"] });
-    expect(m.openGraph.images[0]).toMatchObject({ url: `${SITE_URL}/content/x/1.webp`, alt: "Pandora" });
+    // Las medidas declaradas son las de la imagen, no las de la tarjeta OG.
+    expect(m.openGraph.images[0]).toEqual({ url: `${SITE_URL}/content/x/1.webp`, width: 1200, height: 750, alt: "Pandora" });
   });
 });
 

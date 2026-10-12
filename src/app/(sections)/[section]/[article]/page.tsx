@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { articleJsonLd, breadcrumbJsonLd, pageMetadata, SITE_URL } from "@/application/seo/metadata";
-import { hasEntryToggle, splitEntries } from "@/domain/content";
+import { articleJsonLd, breadcrumbJsonLd, pageMetadata, SITE_NAME, SITE_URL } from "@/application/seo/metadata";
+import { hasEntryToggle, SECTIONS, splitEntries } from "@/domain/content";
 import { ArticleNav } from "@/ui/article-nav";
 import { EntryTabs } from "@/ui/entry-tabs";
 import { formatDate } from "@/ui/format";
@@ -13,6 +13,13 @@ import { ReadingProgress } from "@/ui/reading-progress";
 import { content } from "../../../content";
 
 export const dynamicParams = false;
+
+// Tarjeta OG de la sección (/[section]/opengraph-image): imagen de respaldo de los artículos sin portada.
+const sectionCard = (slug: string) => {
+  const section = SECTIONS.find((x) => x.slug === slug);
+  const path = `/${slug}/opengraph-image`;
+  return { path, url: `${SITE_URL}${path}`, alt: `${section?.title ?? SITE_NAME} · ${SITE_NAME}` };
+};
 
 export async function generateStaticParams() {
   return (await content.listArticles()).map((a) => ({ section: a.sectionSlug, article: a.slug }));
@@ -31,7 +38,8 @@ export async function generateMetadata({ params }: PageProps<"/[section]/[articl
     type: "article",
     publishedAt: a.createdAt,
     updatedAt: a.updatedAt,
-    image: cover ? { url: `${SITE_URL}${cover.src}`, alt: cover.alt } : undefined,
+    // Portada del artículo con sus medidas reales; sin portada, la tarjeta de su sección (no hay tarjeta por artículo).
+    image: cover ? { url: `${SITE_URL}${cover.src}`, alt: cover.alt, width: cover.width, height: cover.height } : sectionCard(a.sectionSlug),
   });
 }
 
@@ -49,7 +57,7 @@ export default async function ArticlePage({ params }: PageProps<"/[section]/[art
   return (
     <main className="min-h-dvh w-full bg-[radial-gradient(ellipse_at_50%_100%,#1a0b2e,#02040a_70%)] pb-24 text-white">
       <JsonLd data={breadcrumbJsonLd([{ name: "Inicio", path: "/" }, { name: s.title, path: `/${s.slug}` }, { name: a.title, path }])} />
-      <JsonLd data={articleJsonLd({ title: a.title, description: a.description, path, publishedAt: a.createdAt, updatedAt: a.updatedAt, section: s.title, image: a.images[0]?.src })} />
+      <JsonLd data={articleJsonLd({ title: a.title, description: a.description, path, publishedAt: a.createdAt, updatedAt: a.updatedAt, section: s.title, image: a.images[0]?.src ?? sectionCard(s.slug).path })} />
       <ReadingProgress />
       <div className={`${PAGE_CONTAINER} pt-28`}>
         <article className={READING}>
