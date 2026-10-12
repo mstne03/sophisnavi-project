@@ -1,30 +1,62 @@
 import { fireEvent, render, screen } from "@testing-library/react";
+import { renderToString } from "react-dom/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { TreeScene } from "@/ui/tree-scene/renderer";
 
 type Opts = { reducedMotion: boolean; skipIntro: boolean; onIntroDone: () => void };
 const createTreeScene = vi.fn<(canvas: HTMLCanvasElement, opts: Opts) => TreeScene>();
 vi.mock("@/ui/tree-scene/renderer", () => ({ createTreeScene: (c: HTMLCanvasElement, o: Opts) => createTreeScene(c, o) }));
+// Router de Next simulado: la ruta la fija cada test y push/replace solo se registran (el test decide cuándo «llega»).
+const nav = vi.hoisted(() => ({ pathname: "/", router: { push: vi.fn(), replace: vi.fn() } }));
+vi.mock("next/navigation", () => ({ usePathname: () => nav.pathname, useRouter: () => nav.router }));
 
 import { Experience } from "./experience";
 
 const fakeScene = (opts: Opts): TreeScene => ({ skipIntro: () => opts.onIntroDone(), time: () => 0, dispose: vi.fn() });
+const SECTIONS = [{ slug: "pandora", title: "Pandora", description: "Luna" }];
+const track = () => document.querySelector("[data-home-track]")!;
+const menuShown = () => vi.waitFor(() => expect(track().hasAttribute("inert")).toBe(false));
 
 // Protege: la intro se puede saltar (clic, teclado o sesión ya vista) y sin WebGL se va directo al menú.
 describe("Experience", () => {
   beforeEach(() => {
     sessionStorage.clear();
     history.replaceState(null, "", "/");
+    nav.pathname = "/";
+    nav.router.push.mockReset();
+    nav.router.replace.mockReset();
     createTreeScene.mockReset().mockImplementation((_c, o) => fakeScene(o));
   });
 
-  it("muestra la intro y pasa al menú al pulsar Saltar intro, recordándolo en la sesión", async () => {
-    render(<Experience sections={[]} />);
-    expect(screen.getByRole("heading", { level: 1, name: "Sophisnavi" })).toBeTruthy();
+  // Protege (SEO): el HTML del servidor trae el menú con sus enlaces y el extracto, y no trae la pista inert (sin JS se
+  // puede usar). Primer test del fichero: la intro aún no se ha hecho en esta visita.
+  it("en el HTML del servidor van el h1, los enlaces a las secciones y el extracto, sin inert ni la bienvenida", () => {
+    const html = renderToString(<Experience sections={SECTIONS} about={<p>Kaltxì</p>} excerpt="Soy Sofi" />);
+    expect(html).toMatch(/<h1[^>]*>Sophisnavi<\/h1>/);
+    expect(html).toContain('href="/pandora"');
+    expect(html).toContain("Soy Sofi");
+    expect(html).toContain('href="/quien-soy"');
+    expect(html).toContain("Saltar intro");
+    expect(html).not.toMatch(/data-home-track[^>]*inert|inert[^>]*data-home-track/);
+    expect(html).not.toContain("Kaltxì"); // en / la bienvenida completa no va
+    expect(html).not.toMatch(/ hidden(=""|>| )/); // nada escondido con el atributo hidden
+  });
+
+  it("en /quien-soy el HTML del servidor trae la bienvenida visible en su panel", () => {
+    nav.pathname = "/quien-soy";
+    const html = renderToString(<Experience sections={SECTIONS} about={<p>Kaltxì</p>} />);
+    expect(html).toMatch(/id="quien-soy"[^>]*><p>Kaltxì<\/p>/);
+  });
+
+  it("durante la intro el menú ya está en el DOM pero inert; al pulsar Saltar intro se libera, recordándolo en la sesión", async () => {
+    render(<Experience sections={SECTIONS} excerpt="Soy Sofi" />);
+    expect(screen.getByRole("navigation", { name: "Menú principal" })).toBeTruthy();
+    expect(track().hasAttribute("inert")).toBe(true); // tras hidratar: ni foco ni clics bajo la intro
+    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1); // el título de la intro no es otro h1
     expect(screen.queryByRole("navigation", { name: "Portada" })).toBeNull();
     await vi.waitFor(() => expect(createTreeScene).toHaveBeenCalled());
     fireEvent.click(screen.getByRole("button", { name: "Saltar intro" }));
-    expect(await screen.findByRole("navigation", { name: "Menú principal" })).toBeTruthy();
+    await menuShown();
     expect(screen.getByRole("navigation", { name: "Portada" })).toBeTruthy(); // pestañas solo tras la intro
     expect(sessionStorage.getItem("sophisnavi:intro-seen")).toBe("1");
   });
@@ -33,7 +65,7 @@ describe("Experience", () => {
     render(<Experience sections={[]} />);
     await vi.waitFor(() => expect(createTreeScene).toHaveBeenCalled());
     fireEvent.keyDown(window, { key: "Enter" });
-    expect(await screen.findByRole("navigation", { name: "Menú principal" })).toBeTruthy();
+    await menuShown();
   });
 
   it("pide saltar la intro si ya se vio en esta sesión", async () => {
@@ -48,38 +80,59 @@ describe("Experience", () => {
       throw new Error("no webgl");
     });
     render(<Experience sections={[]} />);
-    expect(await screen.findByRole("navigation", { name: "Menú principal" })).toBeTruthy();
+    await menuShown();
   });
 
-  // Protege: «Quién soy» solo se abre desde las pestañas, queda en el historial (#quien-soy) y «atrás» lo cierra.
-  it("muestra «Quién soy» solo desde la pestaña, con #quien-soy en el historial, y el botón atrás vuelve a Inicio", async () => {
-    render(<Experience sections={[]} about={<p>Kaltxì, soy Sofi</p>} />);
+  // Protege: «Quién soy» es la ruta /quien-soy; la pestaña desliza en el acto (sin esperar a la navegación) y la vista
+  // sigue a la ruta, así «atrás» la cierra. La bienvenida completa no está en el DOM de / hasta que se abre.
+  it("abre «Quién soy» desde la pestaña navegando a /quien-soy, y vuelve a Inicio cuando la ruta vuelve a /", async () => {
+    const { rerender } = render(<Experience sections={[]} about={<p>Kaltxì, soy Sofi</p>} excerpt="Soy Sofi" />);
     // Según el estado de la visita (módulo), la intro puede estar ya hecha; si no, se salta.
     screen.queryByRole("button", { name: "Saltar intro" })?.click();
-    await screen.findByRole("navigation", { name: "Menú principal" });
+    await menuShown();
     // Las dos vistas conviven en la pista: la que no se ve queda inert (ni foco ni clics)
     const panel = document.getElementById("quien-soy")!;
-    expect(panel.textContent).toContain("Kaltxì, soy Sofi");
     expect(panel.hasAttribute("inert")).toBe(true);
-    const menuPane = screen.getByRole("navigation", { name: "Menú principal" }).closest("[inert]");
-    expect(menuPane).toBeNull();
+    expect(panel.textContent).toBe(""); // en / solo va el extracto: el texto no se duplica entre URL
+    expect(screen.getByText(/Soy Sofi/)).toBeTruthy();
+    expect(screen.getByRole("navigation", { name: "Menú principal" }).closest("[inert]")).toBeNull();
 
     fireEvent.click(screen.getByRole("link", { name: "Quién soy" }));
-    expect(window.location.hash).toBe("#quien-soy");
-    expect(panel.hasAttribute("inert")).toBe(false);
+    expect(nav.router.push).toHaveBeenCalledWith("/quien-soy", { scroll: false });
+    expect(panel.hasAttribute("inert")).toBe(false); // antes de que la navegación termine
+    expect(panel.textContent).toContain("Kaltxì, soy Sofi");
     expect(screen.getByRole("navigation", { name: "Menú principal" }).closest("[inert]")).not.toBeNull();
     expect(screen.getByRole("link", { name: "Quién soy" }).getAttribute("aria-current")).toBe("page");
 
-    history.back(); // jsdom no dispara popstate por sí solo
-    history.replaceState(null, "", "/");
-    fireEvent(window, new PopStateEvent("popstate"));
-    await vi.waitFor(() => expect(screen.getByRole("link", { name: "Inicio" }).getAttribute("aria-current")).toBe("page"));
+    nav.pathname = "/quien-soy"; // la navegación llega
+    rerender(<Experience sections={[]} about={<p>Kaltxì, soy Sofi</p>} excerpt="Soy Sofi" />);
+    expect(panel.hasAttribute("inert")).toBe(false);
+
+    nav.pathname = "/"; // botón atrás
+    rerender(<Experience sections={[]} about={<p>Kaltxì, soy Sofi</p>} excerpt="Soy Sofi" />);
+    expect(screen.getByRole("link", { name: "Inicio" }).getAttribute("aria-current")).toBe("page");
+    expect(panel.hasAttribute("inert")).toBe(true);
+    expect(panel.textContent).toContain("Kaltxì, soy Sofi"); // se queda montada para el deslizamiento de vuelta
+
+    fireEvent.click(screen.getByRole("link", { name: "Conoce mi historia →" })); // el extracto también la abre
+    expect(nav.router.push).toHaveBeenLastCalledWith("/quien-soy", { scroll: false });
+    expect(panel.hasAttribute("inert")).toBe(false);
   });
 
-  it("abre «Quién soy» directamente si la URL ya trae #quien-soy", async () => {
+  it("en /quien-soy llega con «Quién soy» abierta y la bienvenida en el HTML desde el primer render", async () => {
+    nav.pathname = "/quien-soy";
+    render(<Experience sections={[]} about={<p>Kaltxì</p>} />);
+    expect(screen.getByText("Kaltxì")).toBeTruthy(); // en el panel o, durante la intro, oculta para los bots
+    screen.queryByRole("button", { name: "Saltar intro" })?.click();
+    await menuShown();
+    expect(document.getElementById("quien-soy")!.hasAttribute("inert")).toBe(false);
+    expect(nav.router.push).not.toHaveBeenCalled();
+  });
+
+  it("redirige los enlaces antiguos /#quien-soy a /quien-soy", () => {
     history.replaceState(null, "", "/#quien-soy");
     render(<Experience sections={[]} about={<p>Kaltxì</p>} />);
-    screen.queryByRole("button", { name: "Saltar intro" })?.click();
-    await vi.waitFor(() => expect(document.getElementById("quien-soy")!.hasAttribute("inert")).toBe(false));
+    expect(nav.router.replace).toHaveBeenCalledWith("/quien-soy", { scroll: false });
+    expect(nav.router.push).not.toHaveBeenCalled(); // replace: el enlace viejo no queda en el historial
   });
 });

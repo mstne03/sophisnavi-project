@@ -16,7 +16,7 @@ describe("HomeNav", () => {
     const onSelect = vi.fn();
     render(<HomeNav view="inicio" onSelect={onSelect} />);
     const link = screen.getByRole("link", { name: "Quién soy" });
-    expect(link.getAttribute("href")).toBe("#quien-soy"); // sin JS sigue siendo un ancla válida
+    expect(link.getAttribute("href")).toBe("/quien-soy"); // sin JS es un enlace normal a la página
     const ev = fireEvent.click(link);
     expect(ev).toBe(false); // preventDefault
     expect(onSelect).toHaveBeenCalledWith("about");

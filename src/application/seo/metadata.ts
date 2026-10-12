@@ -12,6 +12,7 @@ export const SOCIAL = [
   "https://www.pinterest.com/sophisnavi",
 ];
 export const LOCALE = "es";
+export const AUTHOR_PATH = "/quien-soy"; // página de autora: url de la Person en todos los datos estructurados
 
 export type PageMeta = {
   title: string;
@@ -65,8 +66,19 @@ export const personJsonLd = () => ({
   name: AUTHOR.name,
   alternateName: AUTHOR.handle,
   description: AUTHOR.description,
-  url: SITE_URL,
+  url: `${SITE_URL}${AUTHOR_PATH}`,
   sameAs: SOCIAL,
+});
+
+// Página «Quién soy»: la Person es su entidad principal.
+export const profilePageJsonLd = (p: { name: string; updatedAt?: string }) => ({
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  name: p.name,
+  url: `${SITE_URL}${AUTHOR_PATH}`,
+  inLanguage: LOCALE,
+  ...(p.updatedAt ? { dateModified: p.updatedAt } : {}),
+  mainEntity: personJsonLd(),
 });
 
 export const breadcrumbJsonLd = (items: { name: string; path: string }[]) => ({
