@@ -9,6 +9,7 @@ import { formatDate } from "@/ui/format";
 import { JsonLd } from "@/ui/json-ld";
 import { Markdown } from "@/ui/markdown";
 import { PAGE_CONTAINER, READING } from "@/ui/page-container";
+import { ReadingProgress } from "@/ui/reading-progress";
 import { content } from "../../../content";
 
 export const dynamicParams = false;
@@ -49,6 +50,7 @@ export default async function ArticlePage({ params }: PageProps<"/[section]/[art
     <main className="min-h-dvh w-full bg-[radial-gradient(ellipse_at_50%_100%,#1a0b2e,#02040a_70%)] pb-24 text-white">
       <JsonLd data={breadcrumbJsonLd([{ name: "Inicio", path: "/" }, { name: s.title, path: `/${s.slug}` }, { name: a.title, path }])} />
       <JsonLd data={articleJsonLd({ title: a.title, description: a.description, path, publishedAt: a.createdAt, updatedAt: a.updatedAt, section: s.title, image: a.images[0]?.src })} />
+      <ReadingProgress />
       <div className={`${PAGE_CONTAINER} pt-28`}>
         <article className={READING}>
           <p className="text-xs uppercase tracking-[0.4em] text-cyan-200">
