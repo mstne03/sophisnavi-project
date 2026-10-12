@@ -52,10 +52,10 @@ export function EntryTabs({
   };
 
   // Los enlaces de pie piden subir al selector, pero el salto se hace después de pintar la entrada nueva. Lanzado antes
-  // (y suave), el cambio de entrada llegaba con el desplazamiento en curso: al pasar a una más corta el navegador
-  // recorta el scroll al nuevo final de página y puede cancelarlo, y en algunos clics la página se quedaba abajo. Ya
-  // con la entrada nueva en el DOM, se calcula la posición exacta y se salta sin animación, que nada interrumpe; el
-  // contenido cambia de golpe igualmente.
+  // (y suave), el cambio de entrada llegaba con el desplazamiento en curso y Safari lo cancelaba en algunos clics: al
+  // pasar a una entrada más corta recorta el scroll al nuevo final de página y la página se quedaba abajo. Ya con la
+  // entrada nueva en el DOM, se calcula la posición exacta y se salta sin animación; el contenido cambia de golpe
+  // igualmente. Se repasa en el fotograma siguiente por si el navegador aún reajusta el scroll tras pintar.
   const jumpToList = useRef(false);
   const goTo = (e: MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
@@ -67,8 +67,9 @@ export function EntryTabs({
     if (!jumpToList.current || !list) return;
     jumpToList.current = false;
     document.getElementById(`tab-${selected}`)?.focus({ preventScroll: true });
-    const margin = parseFloat(getComputedStyle(list).scrollMarginTop) || 0; // scroll-mt: bajo la barra superior
-    window.scrollTo({ top: list.getBoundingClientRect().top + window.scrollY - margin, behavior: "instant" });
+    jumpTo(list);
+    const frame = requestAnimationFrame(() => jumpTo(list));
+    return () => cancelAnimationFrame(frame);
   }, [selected]);
 
   return (
@@ -113,6 +114,19 @@ export function EntryTabs({
       })}
     </>
   );
+}
+
+// Coloca `el` arriba de la ventana, bajo la barra superior (su scroll-margin-top), sin animación. No usa
+// behavior: "instant", que Safari no reconoce en todas sus versiones (lanza TypeError): quita un momento el
+// scroll-behavior: smooth de html y usa la forma de dos números, que entienden todos. Si ya está ahí no hace nada.
+function jumpTo(el: HTMLElement) {
+  const offset = el.getBoundingClientRect().top - (parseFloat(getComputedStyle(el).scrollMarginTop) || 0);
+  if (Math.abs(offset) < 1) return;
+  const root = document.documentElement;
+  const previous = root.style.scrollBehavior;
+  root.style.scrollBehavior = "auto";
+  window.scrollTo(window.scrollX, window.scrollY + offset);
+  root.style.scrollBehavior = previous;
 }
 
 // Enlace de paso a otra entrada: etiqueta pequeña («Personaje anterior») y el nombre con su flecha, alineado hacia
