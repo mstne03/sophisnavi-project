@@ -15,15 +15,42 @@ html {
     scroll-behavior: auto;
   }
 }
-/* Sin barra de desplazamiento vertical en toda la web: se sigue desplazando con rueda, táctil y teclado, solo no se
-   pinta la barra. `html` cubre secciones y artículos (scroll de la página); la portada desplaza sus propios
-   contenedores (Experience), que llevan .no-scrollbar. El carrusel de artículos mantiene su barra fina (.thin-scrollbar):
-   en escritorio es la pista de que hay más cards y la forma de moverlo con el ratón. */
-html,
+/* Barra de desplazamiento de la página (secciones y artículos): fina, sin fondo ni flechas, y con su hueco siempre
+   reservado (scrollbar-gutter), así el ancho útil es el mismo en todas las páginas, se pueda desplazar o no, y nada se
+   mueve de lado al navegar. La portada desplaza sus propios contenedores (Experience), que no la pintan
+   (.no-scrollbar); la página no desborda y el hueco queda vacío, del color del fondo. Con barras superpuestas (macOS,
+   móvil) el hueco no ocupa nada. Chromium y Safari usan los pseudo-elementos; Firefox, las propiedades estándar (ver
+   la nota de .thin-scrollbar). */
+html {
+  scrollbar-gutter: stable;
+}
+html::-webkit-scrollbar {
+  width: 8px;
+}
+html::-webkit-scrollbar-track {
+  background: transparent;
+}
+html::-webkit-scrollbar-button {
+  display: none;
+}
+html::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 9999px;
+  background: rgb(255 255 255 / 0.25) padding-box;
+}
+html::-webkit-scrollbar-thumb:hover {
+  border-width: 1px;
+  background-color: rgb(255 255 255 / 0.45);
+}
+@supports not selector(::-webkit-scrollbar) {
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(255 255 255 / 0.3) transparent;
+  }
+}
 .no-scrollbar {
   scrollbar-width: none;
 }
-html::-webkit-scrollbar,
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
