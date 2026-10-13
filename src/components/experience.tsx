@@ -141,7 +141,12 @@ export function Experience({ sections, about }: { sections: MenuSection[]; about
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       >
         <div className="no-scrollbar h-full w-1/2 overflow-x-hidden overflow-y-auto" inert={view === "about" || undefined}>
-          <MainMenu sections={sections} animateIn={!returning} revealed={phase === "menu"} />
+          <MainMenu
+            sections={sections}
+            animateIn={!returning}
+            revealed={phase === "menu"}
+            titleAs={routeView === "about" ? "p" : "h1"}
+          />
         </div>
         <div
           id={ABOUT_ID}
@@ -161,7 +166,7 @@ export function Experience({ sections, about }: { sections: MenuSection[]; about
             onClick={skip}
             exit={{ opacity: 0, filter: "blur(10px)", transition: { duration: 0.8 } }}
           >
-            {/* El h1 de la página es el del menú (ya en el HTML); el título de la intro es decorativo y se lee una vez. */}
+            {/* El h1 de la página es el del menú o el de «Quién soy» (ya en el HTML); el título de la intro es decorativo. */}
             <p className="font-display text-5xl tracking-[0.2em] text-white sm:text-7xl">
               <span className="sr-only">{TITLE}</span>
               {TITLE.split("").map((ch, i) => (

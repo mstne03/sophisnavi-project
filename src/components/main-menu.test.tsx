@@ -16,4 +16,15 @@ describe("MainMenu", () => {
     const links = within(nav).getAllByRole("link");
     expect(links.map((a) => a.getAttribute("href"))).toEqual(SECTIONS.map((s) => `/${s.slug}`));
   });
+
+  it("en /quien-soy el título del menú es un párrafo: el h1 de esa página es «Kaltxì!»", () => {
+    render(<MainMenu sections={SECTIONS} titleAs="p" />);
+    expect(screen.queryByRole("heading", { level: 1 })).toBeNull();
+    expect(screen.getByText("Sophisnavi").tagName).toBe("P");
+  });
+
+  it("el lema de la portada termina en punto", () => {
+    render(<MainMenu sections={SECTIONS} />);
+    expect(screen.getByText(/^Un viaje al corazón de AVATAR/).textContent).toMatch(/detalles\.$/);
+  });
 });

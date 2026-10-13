@@ -46,6 +46,7 @@ describe("Experience", () => {
     nav.pathname = "/quien-soy";
     const html = renderToString(<Experience sections={SECTIONS} about={<p>Kaltxì</p>} />);
     expect(html).toMatch(/id="quien-soy"[^>]*><p>Kaltxì<\/p>/);
+    expect(html).not.toMatch(/<h1/); // ahí el h1 es «Kaltxì!» (AboutHeading); «Sophisnavi» es un párrafo
   });
 
   it("durante la intro el menú ya está en el DOM pero inert; al pulsar Saltar intro se libera, recordándolo en la sesión", async () => {

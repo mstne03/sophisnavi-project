@@ -20,9 +20,11 @@ type MainMenuProps = {
   animateIn?: boolean;
   // false mientras la intro tapa el menú: ya está en el HTML (buscadores, sin JS) pero espera para entrar animado.
   revealed?: boolean;
+  // En /quien-soy el h1 es «Kaltxì!» (un solo h1 por página): ahí el título del menú es un párrafo con el mismo aspecto.
+  titleAs?: "h1" | "p";
 };
 
-export function MainMenu({ sections, animateIn = true, revealed = true }: MainMenuProps) {
+export function MainMenu({ sections, animateIn = true, revealed = true, titleAs: Title = "h1" }: MainMenuProps) {
   return (
     <motion.div
       className={`${PAGE_CONTAINER} relative z-10 flex min-h-dvh flex-col pt-20 pb-10 [text-shadow:0_1px_14px_rgba(2,4,10,0.9)] sm:pt-24 sm:pb-14`}
@@ -33,9 +35,9 @@ export function MainMenu({ sections, animateIn = true, revealed = true }: MainMe
     >
       <motion.header variants={item}>
         <p className="text-xs font-medium uppercase tracking-[0.4em] text-cyan-200">Eywa ngahu</p>
-        <h1 className="mt-3 font-display text-5xl text-white sm:text-7xl">Sophisnavi</h1>
+        <Title className="mt-3 font-display text-5xl text-white sm:text-7xl">Sophisnavi</Title>
         <p className="mt-4 max-w-md text-base leading-relaxed text-white/85">
-          Un viaje al corazón de AVATAR: descubre las historias que se esconden tras los detalles
+          Un viaje al corazón de AVATAR: descubre las historias que se esconden tras los detalles.
         </p>
       </motion.header>
 

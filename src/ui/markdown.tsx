@@ -124,6 +124,23 @@ export function rehypeOwnLineImages() {
   return visit;
 }
 
+// Jerarquía de títulos sin saltos (SEO y lectores de pantalla). Un título cuelga del último anterior que sea menos
+// profundo y queda justo un nivel por debajo de él; si no cuelga de ninguno, es h2 (el h1 lo pone la página). Los
+// hermanos siguen siendo hermanos y lo que ya está bien no cambia: «### ### ## ####» de Notion queda h2 h2 h2 h3.
+type MdHeading = MdNode & { depth?: number };
+export function remarkHeadingLevels() {
+  return (tree: MdNode) => {
+    const parents: { from: number; to: number }[] = [];
+    for (const node of (tree.children ?? []) as MdHeading[]) {
+      if (node.type !== "heading" || node.depth === undefined) continue;
+      while (parents.length > 0 && parents[parents.length - 1].from >= node.depth) parents.pop();
+      const to = Math.min(parents.length > 0 ? parents[parents.length - 1].to + 1 : 2, 6);
+      parents.push({ from: node.depth, to });
+      node.depth = to;
+    }
+  };
+}
+
 // Markdown → HTML semántico, en el servidor, sanitizado: el contenido de Notion es entrada no confiable
 // (sin HTML crudo; un enlace externo nunca abre con acceso al opener).
 type MarkdownProps = { source: string; images?: ImageMeta[]; videos?: VideoMeta[]; className?: string };
@@ -134,7 +151,7 @@ export function Markdown({ source, images = [], videos = [], className }: Markdo
   return (
     <div className={className}>
       <ReactMarkdown
-        remarkPlugins={[remarkGroupImages]}
+        remarkPlugins={[remarkHeadingLevels, remarkGroupImages]}
         rehypePlugins={[rehypeSanitize, rehypeOwnLineImages, [rehypeVerticalRows, bydSrc]]} // tras sanitizar: lo demás es nuestro
         components={{
           a: ({ href, children }) => {

@@ -1,3 +1,4 @@
+import { AboutHeading } from "@/components/about-heading";
 import { Experience } from "@/components/experience";
 import { Markdown } from "@/ui/markdown";
 import { PAGE_CONTAINER, READING } from "@/ui/page-container";
@@ -23,9 +24,9 @@ export default async function HomeLayout({ children }: LayoutProps<"/">) {
             <section aria-labelledby="bienvenida" className="min-h-full pt-24 pb-24 text-white">
               <div className={PAGE_CONTAINER}>
                 <div className={READING}>
-                  <h2 id="bienvenida" className="font-display text-3xl text-cyan-100 sm:text-4xl">
+                  <AboutHeading id="bienvenida" className="font-display text-3xl text-cyan-100 sm:text-4xl">
                     Kaltxì!
-                  </h2>
+                  </AboutHeading>
                   <Markdown source={home.body} images={home.images} videos={home.videos} className="prose-sophis mt-6" />
                 </div>
               </div>

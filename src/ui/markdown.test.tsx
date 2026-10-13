@@ -15,6 +15,21 @@ describe("Markdown", () => {
     expect(container.querySelector("blockquote")?.textContent).toContain("Ojo");
   });
 
+  // Protege (SEO, accesibilidad): los títulos de Notion no saltan niveles bajo el h1 de la página.
+  it("cierra los saltos de nivel de los títulos conservando hermanos y subordinados", () => {
+    const levels = (md: string) => {
+      const { container, unmount } = render(<Markdown source={md} />);
+      const out = [...container.querySelectorAll("h1,h2,h3,h4,h5,h6")].map((h) => `${h.tagName}:${h.textContent}`);
+      unmount();
+      return out;
+    };
+    // Como «La flora de Pandora»: h3 sueltos antes del primer h2 y h4 bajo un h2
+    expect(levels("### A\n\n### B\n\n## C\n\n#### D\n\n#### E")).toEqual(["H2:A", "H2:B", "H2:C", "H3:D", "H3:E"]);
+    // Una jerarquía correcta no cambia; un h1 del cuerpo baja a h2 (el h1 es el de la página)
+    expect(levels("## A\n\n### B\n\n#### C\n\n## D\n\n### E")).toEqual(["H2:A", "H3:B", "H4:C", "H2:D", "H3:E"]);
+    expect(levels("# A\n\n### B")).toEqual(["H2:A", "H3:B"]);
+  });
+
   it("una imagen en su propia línea dentro de un ítem de lista (viñeta de un callout) pasa a <figure> acotada con pie", () => {
     const images = [{ src: "/content/p/comic.webp", width: 800, height: 1400, alt: "" }];
     const md = "> ❓\n> **¿SABÍAS?**\n> - Uno.\n> - Dos con **énfasis**.\n> ![Viñeta](/content/p/comic.webp)\n> - Tres.";

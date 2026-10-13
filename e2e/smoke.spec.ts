@@ -24,7 +24,7 @@ test("portada → pestaña Quién soy → /quien-soy → atrás", async ({ page 
   await page.locator("canvas").evaluate((c) => c.setAttribute("data-e2e", "same"));
   await top.getByRole("link", { name: "Quién soy" }).click();
   await expect(page).toHaveURL(/\/quien-soy$/);
-  await expect(page.getByRole("heading", { level: 2, name: "Kaltxì!" })).toBeInViewport();
+  await expect(page.getByRole("heading", { level: 1, name: "Kaltxì!" })).toBeInViewport();
   await expect(page.locator('canvas[data-e2e="same"]')).toHaveCount(1); // navegación en cliente: ni recarga ni remonte
   await expect(page).toHaveTitle("Quién soy · Sophisnavi");
   await page.goBack();
@@ -39,11 +39,12 @@ test("el HTML de /quien-soy trae la bienvenida y sus datos estructurados; / no",
   expect(about).toContain('id="bienvenida"');
   expect(about).toContain('rel="canonical" href="https://www.sophisnavi.com/quien-soy"');
   expect(about).toContain('"@type":"ProfilePage"');
+  expect(about.match(/<h1[\s>][\s\S]*?<\/h1>/g)).toEqual([expect.stringMatching(/^<h1 id="bienvenida"[^>]*>Kaltxì!<\/h1>$/)]); // un solo h1, el suyo
   const home = await (await request.get("/")).text();
   expect(home).not.toContain('id="bienvenida"');
   expect(home).toContain('href="/quien-soy"');
   for (const s of SECTIONS) expect(home).toContain(`href="/${s.slug}"`); // el menú va en el HTML, no solo tras la intro
-  expect(home).toMatch(/<h1[^>]*>Sophisnavi<\/h1>/);
+  expect(home.match(/<h1[\s>][\s\S]*?<\/h1>/g)).toEqual([expect.stringMatching(/>Sophisnavi<\/h1>$/)]);
 });
 
 // Flujo crítico 1d: sin JS no hay intro que termine; la portada enseña el menú y se puede navegar.
