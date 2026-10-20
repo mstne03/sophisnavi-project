@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import ArticlePage, { dynamicParams, generateMetadata, generateStaticParams } from "./page";
 
@@ -26,6 +26,9 @@ describe("ArticlePage", () => {
     expect(screen.getByRole("link", { name: /anterior/i }).getAttribute("href")).toBe("/pandora/el-mundo-de-avatar");
     expect(screen.queryByRole("link", { name: /siguiente/i })).toBeNull();
     expect(screen.getByRole("link", { name: /volver a pandora/i }).getAttribute("href")).toBe("/pandora");
+    const crumbs = screen.getByRole("navigation", { name: "Migas de pan" });
+    expect(within(crumbs).getAllByRole("link").map((a) => a.getAttribute("href"))).toEqual(["/", "/pandora"]);
+    expect(within(crumbs).getByText("La ciencia real detrás de AVATAR").getAttribute("aria-current")).toBe("page");
     const ld = [...container.querySelectorAll('script[type="application/ld+json"]')].map((s) => JSON.parse(s.textContent ?? ""));
     expect(ld.map((d) => d["@type"])).toEqual(["BreadcrumbList", "Article"]);
     expect(container.querySelector("[data-reading-progress]")).toBeTruthy(); // progreso de lectura
