@@ -82,6 +82,15 @@ html::-webkit-scrollbar-thumb:hover {
   }
 }
 
+/* Cursor de mano en todo lo cliqueable que no sea un enlace (SOPHIE-5): el preflight de Tailwind 4 deja los botones con
+   el cursor por defecto del navegador. Va en la capa base para que una utilidad (cursor-wait, cursor-not-allowed…) la
+   pueda anular, y los deshabilitados conservan el cursor normal. */
+@layer base {
+  :is(button, [role="button"], [role="tab"], summary, select, label[for], input:is([type="checkbox"], [type="radio"], [type="submit"], [type="button"], [type="reset"])):not(:disabled, [aria-disabled="true"]) {
+    cursor: pointer;
+  }
+}
+
 body {
   background: #02040a;
   color: #f5f3ff;
