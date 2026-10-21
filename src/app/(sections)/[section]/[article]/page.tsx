@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { articleJsonLd, breadcrumbJsonLd, pageMetadata, SITE_NAME, SITE_URL } from "@/application/seo/metadata";
 import { hasEntryToggle, SECTIONS, splitEntries } from "@/domain/content";
 import { ArticleNav } from "@/ui/article-nav";
+import { Breadcrumbs } from "@/ui/breadcrumbs";
 import { EntryTabs } from "@/ui/entry-tabs";
 import { formatDate } from "@/ui/format";
 import { JsonLd } from "@/ui/json-ld";
@@ -49,6 +50,7 @@ export default async function ArticlePage({ params }: PageProps<"/[section]/[art
   if (!s || !v) notFound();
   const a = v.article;
   const path = `/${s.slug}/${a.slug}`;
+  const crumbs = [{ name: "Inicio", path: "/" }, { name: s.title, path: `/${s.slug}` }, { name: a.title, path }];
   // Artículo por entradas (SOPHIE-3, todos los de Personajes): intro común y un selector con una entrada por título. Con
   // menos de dos, se lee seguido.
   const split = hasEntryToggle(s.slug) ? splitEntries(a.body) : undefined;
@@ -56,16 +58,12 @@ export default async function ArticlePage({ params }: PageProps<"/[section]/[art
 
   return (
     <main className="min-h-dvh w-full bg-[radial-gradient(ellipse_at_50%_100%,#1a0b2e,#02040a_70%)] pb-24 text-white">
-      <JsonLd data={breadcrumbJsonLd([{ name: "Inicio", path: "/" }, { name: s.title, path: `/${s.slug}` }, { name: a.title, path }])} />
+      <JsonLd data={breadcrumbJsonLd(crumbs)} />
       <JsonLd data={articleJsonLd({ title: a.title, description: a.description, path, publishedAt: a.createdAt, updatedAt: a.updatedAt, section: s.title, image: a.images[0]?.src ?? sectionCard(s.slug).path })} />
       <ReadingProgress />
       <div className={`${PAGE_CONTAINER} pt-28`}>
         <article className={READING}>
-          <p className="text-xs uppercase tracking-[0.4em] text-cyan-200">
-            <Link href={`/${s.slug}`} className="hover:underline">
-              {s.title}
-            </Link>
-          </p>
+          <Breadcrumbs items={crumbs} />
           <h1 className="mt-3 font-display text-4xl sm:text-6xl">{a.title}</h1>
           <p className="mt-3 text-xs text-white/50">
             Publicado el <time dateTime={a.createdAt}>{formatDate(a.createdAt)}</time>

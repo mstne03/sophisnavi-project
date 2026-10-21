@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { breadcrumbJsonLd, pageMetadata } from "@/application/seo/metadata";
 import { ArticleCard } from "@/ui/article-card";
+import { Breadcrumbs } from "@/ui/breadcrumbs";
 import { JsonLd } from "@/ui/json-ld";
 import { Markdown } from "@/ui/markdown";
 import { PAGE_CONTAINER, READING } from "@/ui/page-container";
@@ -25,13 +26,14 @@ export default async function SectionPage({ params }: PageProps<"/[section]">) {
   const s = await content.getSection(section);
   if (!s) notFound();
   const articles = await content.listArticles(s.slug);
+  const crumbs = [{ name: "Inicio", path: "/" }, { name: s.title, path: `/${s.slug}` }];
 
   return (
     <main className="min-h-dvh w-full bg-[radial-gradient(ellipse_at_50%_100%,#1a0b2e,#02040a_70%)] pb-24 text-white">
-      <JsonLd data={breadcrumbJsonLd([{ name: "Inicio", path: "/" }, { name: s.title, path: `/${s.slug}` }])} />
+      <JsonLd data={breadcrumbJsonLd(crumbs)} />
       <div className={`${PAGE_CONTAINER} pt-28`}>
         <div className={READING}>
-          <p className="text-xs uppercase tracking-[0.4em] text-cyan-200">Sección</p>
+          <Breadcrumbs items={crumbs} />
           <h1 className="mt-3 font-display text-5xl sm:text-7xl">{s.title}</h1>
           {s.intro ? (
             <Markdown source={s.intro.body} images={s.intro.images} videos={s.intro.videos} className="prose-sophis mt-8" />
