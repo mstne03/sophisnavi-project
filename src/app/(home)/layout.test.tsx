@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import HomeLayout from "./layout";
@@ -21,6 +21,7 @@ describe("HomeLayout", () => {
     const heading = screen.getByRole("heading", { level: 2, name: "Kaltxì!" });
     expect(heading.closest("section")?.className).not.toMatch(/bg-/); // sin fondo propio: el árbol 3D sigue detrás
     expect(screen.getByText(/Soy Sofi/, { selector: "section p" })).toBeTruthy(); // cuerpo de Notion
+    expect(within(heading.closest("section")!).getByRole("list", { name: "Redes sociales" })).toBeTruthy(); // SOPHIE-8
     expect(screen.getByText("página")).toBeTruthy();
   });
 

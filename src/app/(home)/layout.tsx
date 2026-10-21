@@ -2,6 +2,7 @@ import { AboutHeading } from "@/components/about-heading";
 import { Experience } from "@/components/experience";
 import { Markdown } from "@/ui/markdown";
 import { PAGE_CONTAINER, READING } from "@/ui/page-container";
+import { SocialLinks } from "@/ui/social-links";
 import { content } from "../content";
 
 // Las entradas animadas del menú llegan del servidor con su estado inicial en `style` (transparentes, desplazadas).
@@ -28,6 +29,7 @@ export default async function HomeLayout({ children }: LayoutProps<"/">) {
                     Kaltxì!
                   </AboutHeading>
                   <Markdown source={home.body} images={home.images} videos={home.videos} className="prose-sophis mt-6" />
+                  <SocialLinks className="mt-10" />
                 </div>
               </div>
             </section>
