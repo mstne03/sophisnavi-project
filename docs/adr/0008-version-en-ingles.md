@@ -56,8 +56,7 @@ API de Notion y el frontend? Y exige conservar el prerenderizado.
 
 1. **Traducción automática en el build, con revisión opcional en Notion.**
    - `notion-pull` traduce al inglés cada página publicada con Claude, con glosario y caché por hash.
-   - Si Sofi quiere controlar una traducción concreta, se añade a la base de datos una columna opcional
-     **`Contenido EN`** (o una página hija «EN»). Si existe, sustituye a la traducción automática de esa página.
+   - Las correcciones van por los tres niveles de la decisión 6.
    - Una columna **`Slug EN`** permite fijar la URL inglesa. Si está vacía, se genera una vez a partir del título traducido
      y se congela en el snapshot, para que una retraducción no cambie la URL.
    - Respuesta a las dos preguntas: **no hace falta duplicar las páginas de Notion**, y **sí se puede poner un traductor
@@ -99,6 +98,31 @@ API de Notion y el frontend? Y exige conservar el prerenderizado.
    - **Nunca páginas EN a medias:** si una página no tiene traducción (todavía, o porque falló la API en su primer
      build), no se genera su ruta EN ni su hreflang.
 
+6. **Corregir una traducción: tres niveles, de menos a más control.**
+   1. **Glosario** (un término mal traducido en toda la web, p. ej. «tulkun» como «whale»).
+      - Vive en una página «Glosario EN» de Notion y se pasa al traductor en cada llamada.
+      - Su versión forma parte de la huella de cada traducción. Al cambiar una entrada, el siguiente build retraduce solo
+        las páginas donde aparece el término.
+   2. **`Notas EN`** (un matiz en una página concreta: un juego de palabras, el tono de un párrafo).
+      - Columna corta de texto en la fila de Notion, con indicaciones para el traductor; también entra en la huella.
+      - La página sigue siendo automática: si cambia el español, el inglés se actualiza solo. No garantiza una frase
+        exacta.
+   3. **Página hija «EN»** (texto exacto, palabra por palabra).
+      - **Manda sobre el traductor:** si existe, el build usa su contenido tal cual y **no llama a la API para esa
+        página** (cero tokens).
+      - Es completa: el título de la página hija es el título en inglés y su primer párrafo, si empieza por
+        «Descripción:», la descripción; si falta alguno, solo ese campo se traduce automáticamente (unas decenas de
+        tokens).
+      - Lleva solo texto: el build reutiliza las imágenes del artículo en español en el mismo orden (sin descargarlas
+        otra vez) y toma sus textos alternativos de la página «EN» si los tiene; si no, se traducen.
+      - **Si después cambia el español**, el inglés manual se mantiene: el build guarda la huella del español con la
+        que se escribió la versión manual y, si ya no coincide, avisa en el log de que está desactualizada. No
+        retraduce por su cuenta.
+      - Si Sofi borra la página «EN», el artículo vuelve a la traducción automática en el siguiente build.
+      - La integración de Notion sigue siendo de solo lectura (ADR-0007): el build no crea la página «EN». Sofi copia el
+        texto desde la web en inglés y lo corrige.
+   - Las correcciones se ven en el siguiente build (unos minutos), como cualquier cambio publicado.
+
 ## Consequences
 
 - Sofi sigue escribiendo solo en español. El inglés aparece solo en el siguiente build, con calidad de traducción
@@ -106,27 +130,38 @@ API de Notion y el frontend? Y exige conservar el prerenderizado.
 - Nueva variable de servidor `ANTHROPIC_API_KEY` en Vercel (solo build). Sin ella, el build usa la traducción del snapshot
   versionado, igual que ahora con `NOTION_TOKEN`.
 - El snapshot crece: `content.en.json`. Las imágenes no se duplican: son las mismas y solo cambia el `alt`.
-- El webhook y el cron de ADR-0007 no cambian: un cambio en Notion ya dispara el build, que retraduce lo editado.
+- El webhook y el cron de ADR-0007 cubren ya las filas de la base de datos (artículos, `Notas EN`, `Slug EN`), pero no
+  las páginas hijas «EN» ni el glosario, que no tienen columna `Estado`:
+  - el webhook tiene que resolver la página padre de una página «EN» y decidir con su estado;
+  - el glosario tiene que disparar siempre el despliegue;
+  - la revisión diaria tiene que comparar también la última edición de esas páginas.
 - Riesgos:
-  - matices o juegos de palabras mal traducidos (lo mitigan el glosario y `Contenido EN`);
+  - matices o juegos de palabras mal traducidos (lo mitigan los tres niveles de corrección);
+  - una página «EN» manual que se queda atrás respecto al español (lo mitiga el aviso del build);
   - las URLs EN derivadas del título deben congelarse;
   - el cambio de rutas a `[lang]` toca todas las páginas y sus tests.
 
 ## Plan por fases
 
 1. **Rutas e interfaz:**
-   - `app/[lang]`, `proxy.ts`, diccionarios, `SECTIONS` por idioma;
+   - `app/[lang]`, `rewrites` del español sin prefijo, diccionarios, `SECTIONS` por idioma;
    - hreflang, sitemap y selector de idioma;
    - EN solo para la portada y los índices de sección. Los textos fijos y las descripciones de sección los redacto yo y
      los revisa Sofi, como preveía el plan.
 2. **Traducción en `notion-pull`:** Claude, glosario, caché por hash, `content.en.json`, `Slug EN`. Aparecen las rutas EN
    de bienvenida, intros y artículos.
-3. **Revisión manual:** columna `Contenido EN` y un informe en el log del build con lo retraducido.
+3. **Correcciones:**
+   - glosario y `Notas EN` en la huella;
+   - páginas hijas «EN» con prioridad sobre el traductor y aviso de desactualización;
+   - webhook y revisión diaria para páginas hijas y glosario;
+   - un informe en el log del build con lo retraducido y lo desactualizado.
 
 ## Alternatives
 
+- **Columna `Contenido EN` con el texto inglés completo:** era la primera idea de este ADR. Se descarta porque una
+  propiedad de texto de Notion no admite títulos, imágenes ni bloques, y cada fragmento está limitado a 2.000 caracteres.
 - **Duplicar cada página en Notion (columna `Idioma` + relación con la original):** control total, pero duplica el
-  trabajo de Sofi y las dos versiones se desincronizan. Queda como posibilidad página a página (`Contenido EN`).
+  trabajo de Sofi y las dos versiones se desincronizan. Queda como posibilidad página a página (página hija «EN»).
 - **Conector de traducción dentro de Notion (Crowdin, Phrase, `notion-translator`):** escribe páginas traducidas en
   Notion, que luego se descargarían como en la alternativa anterior. Añade otra herramienta de pago y tiene los límites
   citados con imágenes y tablas.
