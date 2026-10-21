@@ -5,12 +5,14 @@
 export const SITE_URL = "https://www.sophisnavi.com";
 export const SITE_NAME = "Sophisnavi";
 export const AUTHOR = { name: "Sofi", handle: "sophisnavi", description: "Fan y creadora de contenido de Avatar en España desde 2009." };
+// Perfiles de la autora: sameAs de la Person y enlaces con logo en «Quién soy» (SOPHIE-8).
 export const SOCIAL = [
-  "https://www.tiktok.com/@sophisnavi",
-  "https://www.instagram.com/sophisnavi",
-  "https://www.youtube.com/@sophisnavi",
-  "https://www.pinterest.com/sophisnavi",
-];
+  { network: "tiktok", name: "TikTok", url: "https://www.tiktok.com/@sophisnavi" },
+  { network: "instagram", name: "Instagram", url: "https://www.instagram.com/sophisnavi" },
+  { network: "youtube", name: "YouTube", url: "https://www.youtube.com/@sophisnavi" },
+  { network: "pinterest", name: "Pinterest", url: "https://www.pinterest.com/sophisnavi" },
+] as const;
+export type SocialNetwork = (typeof SOCIAL)[number]["network"];
 export const LOCALE = "es";
 export const AUTHOR_PATH = "/quien-soy"; // página de autora: url de la Person en todos los datos estructurados
 
@@ -67,7 +69,7 @@ export const personJsonLd = () => ({
   alternateName: AUTHOR.handle,
   description: AUTHOR.description,
   url: `${SITE_URL}${AUTHOR_PATH}`,
-  sameAs: SOCIAL,
+  sameAs: SOCIAL.map((s) => s.url),
 });
 
 // Página «Quién soy»: la Person es su entidad principal.
