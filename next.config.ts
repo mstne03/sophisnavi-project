@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // sharp solo lo usa scripts/notion-pull.ts antes del build; Next lo traza en cada función por estar instalado
+  // (~19 MB de libvips de ~27 MB). En Vercel la optimización de imágenes no corre en las funciones.
+  outputFileTracingExcludes: {
+    "/**": ["node_modules/sharp/**", "node_modules/@img/**", "node_modules/.pnpm/sharp@*/**", "node_modules/.pnpm/@img+*/**"],
+  },
   async headers() {
     return [
       {
