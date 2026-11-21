@@ -26,9 +26,11 @@ estático con SEO completo (canonical, Open Graph, JSON-LD, hreflang, sitemap).
    `data/content/content.json`. Sin `NOTION_TOKEN` el build usa el JSON versionado: el CI de forks y los clones sin
    credenciales siguen funcionando.
 3. **Publicar = disparar un build.** `POST /api/notion/webhook` recibe los eventos de Notion, verifica la firma HMAC-SHA256
-   con el `verification_token`, consulta el estado de la página y, solo si el cambio afecta a lo publicado
-   (`src/application/content/publishDecision.ts`), llama al Deploy Hook de Vercel. Vercel cancela builds repetidos del mismo
-   hook; el límite es de 60 disparos por hora.
+   con el `verification_token`, consulta el estado de la página y, solo si se publica, despublica, borra, restaura o mueve
+   (`src/application/content/publishDecision.ts`), llama al Deploy Hook de Vercel. Editar una página ya publicada no dispara
+   build: Notion manda eventos continuos mientras se escribe, y cada build era un despliegue más guardado en Vercel (llegaron
+   a ocupar 10 GB de almacenamiento de funciones). Esas ediciones las publica la red de seguridad diaria (punto 5). El límite
+   del hook es de 60 disparos por hora.
 4. **Si Notion falla, el build falla** y Vercel conserva el despliegue anterior. Nunca se publica una web a medias.
 5. **Red de seguridad diaria.** Un evento se puede perder: el Deploy Hook responde 429 en una ráfaga de ediciones, Notion
    pausa una suscripción que recibe errores, o el aviso llega cuando ya hay un build leyendo una versión anterior. Pasó el
@@ -43,6 +45,8 @@ Variables (solo servidor): `NOTION_TOKEN` (integración interna de solo lectura,
 ## Consequences
 
 - Entre que Sofi marca `Publicado` y la web cambia pasan unos minutos (el build), no segundos.
+- Corregir una página ya publicada tarda hasta un día en verse (la sincronización de las 05:00 UTC). Para publicarlo antes,
+  se llama a mano a `GET /api/notion/sync` con `Authorization: Bearer <CRON_SECRET>`.
 - El contenido de Notion es entrada no confiable: se renderiza con `react-markdown` + `rehype-sanitize`, sin HTML crudo,
   con enlaces externos `rel="noopener noreferrer"`. Las imágenes se sirven desde el dominio propio (las URL de Notion caducan).
 - `data/content/content.json` y `public/content/**` se versionan como instantánea; cada build con token los regenera.

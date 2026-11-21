@@ -47,24 +47,26 @@ describe("handleNotionWebhook", () => {
     expect((await handleNotionWebhook(event("page.content_updated"), "sha256=x", d)).status).toBe(503);
   });
 
-  it("con firma válida despliega solo cuando el cambio afecta a lo publicado", async () => {
+  it("con firma válida despliega solo al publicar o despublicar, no al editar", async () => {
     const d = deps("Publicado");
-    const body = event("page.content_updated");
+    const body = event("page.properties_updated", { updated_properties: ["O2dmOw"] });
     const sig = await signWebhookPayload({ body, verificationToken: TOKEN });
     expect(await handleNotionWebhook(body, sig, d)).toEqual({ status: 200, body: { ok: true, deployed: true } });
     expect(d.deployed).toBe(1);
 
-    const draft = deps("En proceso");
-    expect((await handleNotionWebhook(body, sig, draft)).body.deployed).toBe(false);
-    expect(draft.deployed).toBe(0);
+    const edit = event("page.content_updated");
+    const editSig = await signWebhookPayload({ body: edit, verificationToken: TOKEN });
+    const editing = deps("Publicado");
+    expect((await handleNotionWebhook(edit, editSig, editing)).body.deployed).toBe(false);
+    expect(editing.deployed).toBe(0);
 
     const gone = deps(null);
-    expect((await handleNotionWebhook(body, sig, gone)).body.deployed).toBe(true);
+    expect((await handleNotionWebhook(edit, editSig, gone)).body.deployed).toBe(true);
   });
 
   it("si el Deploy Hook está saturado responde 200 sin desplegar, para que Notion no pause la suscripción", async () => {
     const d = { ...deps("Publicado"), deploy: async () => false };
-    const body = event("page.content_updated");
+    const body = event("page.properties_updated", { updated_properties: ["O2dmOw"] });
     const sig = await signWebhookPayload({ body, verificationToken: TOKEN });
     expect(await handleNotionWebhook(body, sig, d)).toEqual({ status: 200, body: { ok: true, deployed: false, reason: "deploy hook rate limited" } });
     expect(d.logs.at(-1)).toContain("saturado");

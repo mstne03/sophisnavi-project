@@ -1,5 +1,8 @@
 // Decide si un evento de webhook de Notion justifica un despliegue (ADR-0007).
 // Pura: el estado de la página lo aporta quien llama, tras consultar la API.
+// Solo publicar, despublicar, borrar, restaurar o mover dispara un build. Editar una página ya publicada (texto u otras
+// propiedades) no: Notion manda eventos sin parar mientras se escribe y cada build es un despliegue más guardado en Vercel.
+// Esas ediciones las publica la sincronización diaria (stalePages).
 
 export type WebhookEventLike = {
   type: string;
@@ -20,13 +23,13 @@ export function shouldDeploy(event: WebhookEventLike, page: PageState): boolean 
     case "page.undeleted":
     case "page.moved":
       return true;
-    case "page.properties_updated": {
-      // Cambió el estado: publica o despublica. Si no, solo importa si ya está publicada.
-      const changedStatus = page.statusPropertyId !== null && (event.data?.updated_properties ?? []).includes(page.statusPropertyId);
-      return changedStatus || page.status === PUBLISHED;
-    }
-    case "page.content_updated":
+    case "page.properties_updated":
+      // Solo cuenta el cambio de Estado: publica o despublica. Sin el id de la propiedad no se puede saber, y se despliega
+      // si la página está publicada por si acaba de publicarse.
+      if (page.statusPropertyId === null) return page.status === PUBLISHED;
+      return (event.data?.updated_properties ?? []).includes(page.statusPropertyId);
     case "page.created":
+      // Una página que nace publicada (p. ej. al duplicar una publicada). Es un único evento, no una ráfaga.
       return page.status === PUBLISHED;
     default:
       return false;

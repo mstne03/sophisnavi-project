@@ -5,7 +5,8 @@ const ev = (type: string, updated_properties?: string[]) => ({ type, entity: { i
 const published: PageState = { inTrash: false, status: "Publicado", statusPropertyId: "O2dmOw" };
 const draft: PageState = { inTrash: false, status: "En proceso", statusPropertyId: "O2dmOw" };
 
-// Protege: solo se despliega cuando el cambio puede afectar a lo publicado; las ediciones de borradores no gastan builds.
+// Protege: solo se despliega al publicar, despublicar, borrar, restaurar o mover; editar (borradores o páginas ya
+// publicadas) no gasta builds, lo recoge la sincronización diaria.
 describe("shouldDeploy", () => {
   it("ignora entidades que no son páginas", () => {
     expect(shouldDeploy({ type: "page.content_updated", entity: { id: "x", type: "database" } }, published)).toBe(false);
@@ -25,15 +26,24 @@ describe("shouldDeploy", () => {
     expect(shouldDeploy(ev("page.properties_updated", ["O2dmOw"]), published)).toBe(true);
   });
 
-  it("con otras propiedades, solo despliega si la página está publicada", () => {
+  it("no despliega al cambiar otras propiedades, aunque la página esté publicada", () => {
     expect(shouldDeploy(ev("page.properties_updated", ["title"]), draft)).toBe(false);
-    expect(shouldDeploy(ev("page.properties_updated", ["title"]), published)).toBe(true);
-    expect(shouldDeploy(ev("page.properties_updated"), { ...published, statusPropertyId: null })).toBe(true);
+    expect(shouldDeploy(ev("page.properties_updated", ["title"]), published)).toBe(false);
+    expect(shouldDeploy(ev("page.properties_updated"), published)).toBe(false);
   });
 
-  it("el contenido solo cuenta si la página está publicada", () => {
+  it("sin el id de Estado, despliega solo si la página está publicada", () => {
+    expect(shouldDeploy(ev("page.properties_updated", ["title"]), { ...published, statusPropertyId: null })).toBe(true);
+    expect(shouldDeploy(ev("page.properties_updated", ["title"]), { ...draft, statusPropertyId: null })).toBe(false);
+  });
+
+  it("no despliega al editar el contenido, esté o no publicada", () => {
     expect(shouldDeploy(ev("page.content_updated"), draft)).toBe(false);
-    expect(shouldDeploy(ev("page.content_updated"), published)).toBe(true);
+    expect(shouldDeploy(ev("page.content_updated"), published)).toBe(false);
+  });
+
+  it("despliega una página que nace publicada, no un borrador nuevo", () => {
+    expect(shouldDeploy(ev("page.created"), published)).toBe(true);
     expect(shouldDeploy(ev("page.created"), draft)).toBe(false);
   });
 
